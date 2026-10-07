@@ -4,7 +4,7 @@ import { Shell } from '@/components/Shell'
 import { deployment } from '@/lib/server'
 import './globals.css'
 
-export const metadata: Metadata = { title: 'Quorum Console', description: 'Exchange withdrawal second line of defense' }
+export const metadata: Metadata = { title: 'Qu3ee Console', description: 'Exchange withdrawal second line of defense' }
 export const dynamic = 'force-dynamic'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

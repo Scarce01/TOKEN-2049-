@@ -33,7 +33,7 @@ function StatusBar() {
   const sim = d.mode === 'SIM'
   return (
     <div className="flex flex-wrap items-center gap-4 border-b border-line px-4 py-2 text-xs">
-      <span className="font-semibold">QUORUM</span>
+      <span className="font-semibold">Qu3ee</span>
       <span className="text-muted">{d.chainId === 84532 ? 'Base Sepolia' : `chain ${d.chainId}`}</span>
       <span className={sim ? 'badge lv-2' : 'badge lv-0'}>{sim ? 'CRE simulation mode' : 'PROD (DON)'}</span>
       {data?.orgs.map((o) => (
