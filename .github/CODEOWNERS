@@ -1,0 +1,13 @@
+# Only shared interfaces and the team machinery need an approval from the integrator.
+# Everything else is open: no fixed roles, anyone can change anything through a PR.
+# Takes effect once branch protection "Require review from Code Owners" is on.
+
+docs/10_interfaces.md           @Scarce01
+contracts/src/interfaces/       @Scarce01
+contracts/src/lib/              @Scarce01
+packages/shared/                @Scarce01
+workflows/common/               @Scarce01
+supabase/migrations/            @Scarce01
+.github/                        @Scarce01
+CLAUDE.md                       @Scarce01
+AGENTS.md                       @Scarce01

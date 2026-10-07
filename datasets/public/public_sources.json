@@ -1,0 +1,261 @@
+{
+  "accessed": "2026-10-05",
+  "fbi_bybit": {
+    "url": "https://www.ic3.gov/psa/2025/psa250226",
+    "title": "North Korea Responsible for $1.5 Billion Bybit Hack",
+    "alert_number": "I-022625-PSA",
+    "date": "2025-02-26",
+    "count": 51,
+    "addresses": [
+      "0x51E9d833Ecae4E8D9D8Be17300AEE6D3398C135D",
+      "0x96244D83DC15d36847C35209bBDc5bdDE9bEc3D8",
+      "0x83c7678492D623fb98834F0fbcb2E7b7f5Af8950",
+      "0x83Ef5E80faD88288F770152875Ab0bb16641a09E",
+      "0xAF620E6d32B1c67f3396EF5d2F7d7642Dc2e6CE9",
+      "0x3A21F4E6Bbe527D347ca7c157F4233c935779847",
+      "0xfa3FcCCB897079fD83bfBA690E7D47Eb402d6c49",
+      "0xFc926659Dd8808f6e3e0a8d61B20B871F3Fa6465",
+      "0xb172F7e99452446f18FF49A71bfEeCf0873003b4",
+      "0x6d46bd3AfF100f23C194e5312f93507978a6DC91",
+      "0xf0a16603289eAF35F64077Ba3681af41194a1c09",
+      "0x23Db729908137cb60852f2936D2b5c6De0e1c887",
+      "0x40e98FeEEbaD7Ddb0F0534Ccaa617427eA10187e",
+      "0x140c9Ab92347734641b1A7c124ffDeE58c20C3E3",
+      "0x684d4b58Dc32af786BF6D572A792fF7A883428B9",
+      "0xBC3e5e8C10897a81b63933348f53f2e052F89a7E",
+      "0x5Af75eAB6BEC227657fA3E749a8BFd55f02e4b1D",
+      "0xBCA02B395747D62626a65016F2e64A20bd254A39",
+      "0x4C198B3B5F3a4b1Aa706daC73D826c2B795ccd67",
+      "0xCd7eC020121Ead6f99855cbB972dF502dB5bC63a",
+      "0xbdE2Cc5375fa9E0383309A2cA31213f2D6cabcbd",
+      "0xD3C611AeD139107DEC2294032da3913BC26507fb",
+      "0xB72334cB9D0b614D30C4c60e2bd12fF5Ed03c305",
+      "0x8c7235e1A6EeF91b980D0FcA083347FBb7EE1806",
+      "0x1bb0970508316DC735329752a4581E0a4bAbc6B4",
+      "0x1eB27f136BFe7947f80d6ceE3Cf0bfDf92b45e57",
+      "0xCd1a4A457cA8b0931c3BF81Df3CFa227ADBdb6E9",
+      "0x09278b36863bE4cCd3d0c22d643E8062D7a11377",
+      "0x660BfcEa3A5FAF823e8f8bF57dd558db034dea1d",
+      "0xE9bc552fdFa54b30296d95F147e3e0280FF7f7e6",
+      "0x30a822CDD2782D2B2A12a08526452e885978FA1D",
+      "0xB4a862A81aBB2f952FcA4C6f5510962e18c7f1A2",
+      "0x0e8C1E2881F35Ef20343264862A242FB749d6b35",
+      "0x9271EDdda0F0f2bB7b1A0c712bdF8dbD0A38d1Ab",
+      "0xe69753Ddfbedbd249E703EB374452E78dae1ae49",
+      "0x2290937A4498C96eFfb87b8371a33D108F8D433f",
+      "0x959c4CA19c4532C97A657D82d97acCBAb70e6fb4",
+      "0x52207Ec7B1b43AA5DB116931a904371ae2C1619e",
+      "0x9eF42873Ae015AA3da0c4354AeF94a18D2B3407b",
+      "0x1542368a03ad1f03d96D51B414f4738961Cf4443",
+      "0x21032176B43d9f7E9410fB37290a78f4fEd6044C",
+      "0xA4B2Fd68593B6F34E51cB9eDB66E71c1B4Ab449e",
+      "0x55CCa2f5eB07907696afe4b9Db5102bcE5feB734",
+      "0xA5A023E052243b7cce34Cbd4ba20180e8Dea6Ad6",
+      "0xdD90071D52F20e85c89802e5Dc1eC0A7B6475f92",
+      "0x1512fcb09463A61862B73ec09B9b354aF1790268",
+      "0xF302572594a68aA8F951faE64ED3aE7DA41c72Be",
+      "0x723a7084028421994d4a7829108D63aB44658315",
+      "0xf03AfB1c6A11A7E370920ad42e6eE735dBedF0b1",
+      "0xEB0bAA3A556586192590CAD296b1e48dF62a8549",
+      "0xD5b58Cf7813c1eDC412367b97876bD400ea5c489"
+    ]
+  },
+  "bybit": {
+    "seed_addresses": [
+      "0xdd90071d52f20e85c89802e5dc1ec0a7b6475f92",
+      "0x0fa09c3a328792253f8dee7116848723b72a6d2e",
+      "0xe8b36709dd86893bf7bb78a7f9746b826f0e8c84",
+      "0x47666Fab8bd0Ac7003bce3f5C3585383F09486E2",
+      "0xa4b2fd68593b6f34e51cb9edb66e71c1b4ab449e",
+      "0x1542368a03ad1f03d96D51B414f4738961Cf4443",
+      "0x36ed3c0213565530c35115d93a80f9c04d94e4cb"
+    ],
+    "seed_addresses_note": "Verichains preliminary report v1.0 (2025-02-24), list titled Hacker initial addresses. 0x47666... is Etherscan 'Bybit Exploiter 1' (first receiver of drained ETH). 0x0fa09c... is Etherscan 'ByBit Exploiter' (sent the malicious execTransaction).",
+    "seed_in_fbi_list": {
+      "0xdd90071d52f20e85c89802e5dc1ec0a7b6475f92": true,
+      "0x0fa09c3a328792253f8dee7116848723b72a6d2e": false,
+      "0xe8b36709dd86893bf7bb78a7f9746b826f0e8c84": false,
+      "0x47666Fab8bd0Ac7003bce3f5C3585383F09486E2": false,
+      "0xa4b2fd68593b6f34e51cb9edb66e71c1b4ab449e": true,
+      "0x1542368a03ad1f03d96D51B414f4738961Cf4443": true,
+      "0x36ed3c0213565530c35115d93a80f9c04d94e4cb": false
+    },
+    "malicious_safe_tx": "0x46deef0f52e3a983b67abf4714448a41dd7ffd6d32d32da69d62081c68ad7882",
+    "malicious_safe_tx_details": {
+      "block_number": 21895238,
+      "block_timestamp_utc": "2025-02-21T14:13:35Z",
+      "tx_from": "0x0fa09c3a328792253f8dee7116848723b72a6d2e",
+      "tx_to": "0x1db92e2eebc8e0c075a02bea49a2935bcd2dfcf4",
+      "receipt_status": 1,
+      "safe_call_to": "0x96221423681a6d52e184d440a8efcebb105c7242",
+      "operation": 1,
+      "inner_call": "transfer(0xbdd077f651ebe7f7b3ce16fe5f2b025be2969516, 0) executed via delegatecall in the Safe context; overwrites slot 0 (masterCopy)",
+      "malicious_implementation": "0xbdd077f651ebe7f7b3ce16fe5f2b025be2969516"
+    },
+    "safe_wallet": "0x1Db92e2EeBC8E0c075a02BeA49a2935BcD2dFCF4",
+    "safe_wallet_label": "Bybit: Cold Wallet 1 (Etherscan)",
+    "sources": [
+      "https://etherscan.io/tx/0x46deef0f52e3a983b67abf4714448a41dd7ffd6d32d32da69d62081c68ad7882",
+      "https://etherscan.io/address/0x47666fab8bd0ac7003bce3f5c3585383f09486e2",
+      "https://etherscan.io/address/0x1db92e2eebc8e0c075a02bea49a2935bcd2dfcf4",
+      "https://coinacademy.fr/wp-content/uploads/2025/02/Bybit-Incident-Investigation-Report.pdf",
+      "https://x.com/benbybit/status/1894768736084885929",
+      "https://www.sygnia.co/blog/sygnia-investigation-bybit-hack/",
+      "eth_getTransactionByHash and eth_getTransactionReceipt via https://ethereum-rpc.publicnode.com"
+    ]
+  },
+  "bitget": {
+    "source_url": "https://blocksec.com/blog/bitget-hack-laundering-fund-tracing",
+    "source_title": "Bitget's $387M Hack: Laundering Path, Freezes and Attribution",
+    "published": "2026-09-30",
+    "date": "2026-09-24",
+    "total_loss_usd": "about 387.5 million (first reported about 351.6 million)",
+    "wallets": null,
+    "wallets_note": "BlockSec article lists no Bitget wallet addresses. Scorechain (2026-09-25) names a Bitget hot wallet only in truncated form 0xffa8...cd54; full address not verified.",
+    "attacker_addresses_truncated": ["0xe07b...7d57", "0x9acc...b046", "0xec13...691f"],
+    "timeline": [
+      {
+        "utc": "2026-09-24T18:31",
+        "event": "Test transfers: 0.84 ETH from Ethereum hot wallet, 93 TRX from TRON hot wallet (below risk threshold, no alert)"
+      },
+      {
+        "utc": "2026-09-24T18:58",
+        "event": "Large outflows begin"
+      },
+      {
+        "utc": "2026-09-24T19:05",
+        "event": "Reconciliation detects large discrepancy; user withdrawals blocked; forged commands keep outflows going"
+      },
+      {
+        "utc": "2026-09-24T21:23",
+        "event": "Last transfer; 26 successful outflows in total"
+      },
+      {
+        "utc": "2026-09-24T21:30",
+        "event": "Bitget CEO posts publicly"
+      },
+      {
+        "utc": "2026-09-24T21:44",
+        "event": "Signing machines and wallet withdrawal services shut down"
+      }
+    ],
+    "figure_228m_18min": {
+      "in_blocksec": false,
+      "actual_source": "https://news.bitcoin.com/featured/bitget-hackers-drain-228m-in-18-minutes-arkham-tracks-7-chains/",
+      "attributed_to": "Arkham Intelligence (X post, 2026-09-25), as reported by Bitcoin.com News",
+      "window_utc": "18:58 to 19:16"
+    }
+  },
+  "chainlink_feeds": {
+    "base_sepolia_eth_usd": "0x4aDC67696bA383F43DD60A9e78F2C97Fbbfc7cb1",
+    "eth_sepolia_eth_usd": "0x694AA1769357215DE4FAC081bf1f309aDC325306",
+    "decimals": 8,
+    "heartbeat": {
+      "base_sepolia_s": 1200,
+      "eth_sepolia_s": 3600
+    },
+    "deviation_pct": {
+      "base_sepolia": 0.15,
+      "eth_sepolia": 1
+    },
+    "sources": [
+      "https://reference-data-directory.vercel.app/feeds-ethereum-testnet-sepolia-base-1.json",
+      "https://reference-data-directory.vercel.app/feeds-ethereum-testnet-sepolia.json",
+      "https://docs.chain.link/data-feeds/price-feeds/addresses",
+      "on-chain decimals(), description(), latestRoundData() via https://sepolia.base.org and https://ethereum-sepolia-rpc.publicnode.com"
+    ]
+  },
+  "cre_forwarders": {
+    "base_sepolia": {
+      "chain_name": "ethereum-testnet-sepolia-base-1",
+      "keystone_forwarder": "0xF8344CFd5c43616a4366C34E3EEE75af79a74482",
+      "mock_keystone_forwarder": "0x82300bd7c3958625581cc2f77bc6464dcecdf3e5"
+    },
+    "eth_sepolia": {
+      "chain_name": "ethereum-testnet-sepolia",
+      "keystone_forwarder": "0xF8344CFd5c43616a4366C34E3EEE75af79a74482",
+      "mock_keystone_forwarder": "0x15fC6ae953E024d975e77382eEeC56A9101f9F88"
+    },
+    "sources": ["https://docs.chain.link/cre/guides/workflow/using-evm-client/forwarder-directory-ts.md"]
+  },
+  "exchange_hot_wallets": [
+    {
+      "exchange": "Binance",
+      "address": "0x28C6c06298d514Db089934071355E5743bf21d60",
+      "label": "Binance 14",
+      "source": "https://etherscan.io/address/0x28C6c06298d514Db089934071355E5743bf21d60"
+    },
+    {
+      "exchange": "Binance",
+      "address": "0x21a31Ee1afC51d94C2eFcCAa2092aD1028285549",
+      "label": "Binance 15",
+      "source": "https://etherscan.io/address/0x21a31Ee1afC51d94C2eFcCAa2092aD1028285549"
+    },
+    {
+      "exchange": "Binance",
+      "address": "0xDFd5293D8e347dFe59E90eFd55b2956a1343963d",
+      "label": "Binance 16",
+      "source": "https://etherscan.io/address/0xDFd5293D8e347dFe59E90eFd55b2956a1343963d"
+    },
+    {
+      "exchange": "Coinbase",
+      "address": "0x71660c4005BA85c37ccec55d0C4493E66Fe775d3",
+      "label": "Coinbase 1",
+      "source": "https://etherscan.io/address/0x71660c4005BA85c37ccec55d0C4493E66Fe775d3"
+    },
+    {
+      "exchange": "Coinbase",
+      "address": "0x503828976D22510aad0201ac7EC88293211D23Da",
+      "label": "Coinbase 12",
+      "source": "https://etherscan.io/address/0x503828976D22510aad0201ac7EC88293211D23Da"
+    },
+    {
+      "exchange": "OKX",
+      "address": "0x6cC5F688a315f3dC28A7781717a9A798a59fDA7b",
+      "label": "OKX",
+      "source": "https://etherscan.io/address/0x6cC5F688a315f3dC28A7781717a9A798a59fDA7b"
+    },
+    {
+      "exchange": "OKX",
+      "address": "0x98ec059Dc3aDFBdd63429454aEB0c990FBA4A128",
+      "label": "OKX 6",
+      "source": "https://etherscan.io/address/0x98ec059Dc3aDFBdd63429454aEB0c990FBA4A128"
+    },
+    {
+      "exchange": "Kraken",
+      "address": "0x2910543Af39abA0Cd09dBb2D50200b3E800A63D2",
+      "label": "Kraken 1",
+      "source": "https://etherscan.io/address/0x2910543Af39abA0Cd09dBb2D50200b3E800A63D2"
+    },
+    {
+      "exchange": "Kraken",
+      "address": "0xDA9dfA130Df4dE4673b89022EE50ff26f6EA73Cf",
+      "label": "Kraken 13",
+      "source": "https://etherscan.io/address/0xDA9dfA130Df4dE4673b89022EE50ff26f6EA73Cf"
+    }
+  ],
+  "exchange_hot_wallets_note": "Etherscan name tags confirm exchange ownership only; the tag does not say hot or cold. Treat as exchange-owned addresses.",
+  "label_datasets": [
+    {
+      "name": "Forta labelled-datasets",
+      "url": "https://github.com/forta-network/labelled-datasets",
+      "format": "CSV: labels/1/malicious_smart_contracts.csv, labels/1/phishing_scams.csv, labels/1/etherscan_malicious_labels.csv, labels/10/malicious_smart_contracts.csv",
+      "license": "MIT",
+      "last_push": "2023-01-26"
+    },
+    {
+      "name": "EtherScamDB",
+      "url": "https://github.com/MrLuit/EtherScamDB",
+      "format": "YAML/JSON: _data/scams.yaml, _data/legit_urls.yaml, _data/metamaskImports.json, _data/twitter.json",
+      "license": "MIT",
+      "last_push": "2022-12-07"
+    },
+    {
+      "name": "CryptoScamDB blacklist",
+      "url": "https://github.com/CryptoScamDB/blacklist",
+      "format": "YAML/JSON: data/urls.yaml, data/uris.yaml, data/twitter.json (URLs and Twitter profiles, not addresses)",
+      "license": null,
+      "last_push": "2023-04-29"
+    }
+  ]
+}

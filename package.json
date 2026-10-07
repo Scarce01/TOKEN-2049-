@@ -1,0 +1,28 @@
+{
+  "name": "quorum",
+  "private": true,
+  "packageManager": "pnpm@10.23.0",
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r --if-present test",
+    "test:db": "pnpm -C packages/verify test:db",
+    "verify:design": "bun packages/verify/src/cli.ts",
+    "lint": "biome check .",
+    "abi": "bun packages/shared/scripts/gen-abi.ts",
+    "deploy:local": "bash scripts/deploy.sh anvil",
+    "deploy:base-sepolia": "bash scripts/deploy.sh base-sepolia",
+    "reset-demo": "bash scripts/reset-demo.sh",
+    "dev": "bash scripts/dev.sh",
+    "redteam:scan": "pnpm -C services/redteam scan",
+    "redteam:attack": "pnpm -C services/redteam attack",
+    "demo:e2e": "pnpm -C services/redteam demo:e2e",
+    "demo:trace": "pnpm -C services/redteam demo:trace"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.2.4",
+    "@electric-sql/pglite": "^0.5.8",
+    "@electric-sql/pglite-socket": "^0.2.11",
+    "@types/bun": "latest",
+    "typescript": "5.9.3"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "chain_id": 1,
+  "start_block": 21895238,
+  "end_block": 21930932,
+  "window_note": "start = Bybit malicious execTransaction block (2025-02-21 14:13:35 UTC); end = last block before 2025-02-26 14:13:35 UTC (FBI PSA time, from Etherscan getblocknobytime)",
+  "attack_ts": 1740147215,
+  "fbi_psa_ts": 1740578015,
+  "hops": 4,
+  "tau_sweep_ppm": [500000, 700000, 900000],
+  "tau_default_ppm": 900000,
+  "min_edge_wei": "100000000000000000",
+  "min_edge_note": "ignore edges below 0.1 ETH-equivalent (dust and address-poisoning spam)",
+  "max_rows_per_address": 20000,
+  "tokens": {
+    "WETH": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+    "stETH": "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84",
+    "mETH": "0xd5F7838F5C461fefF7FE49ea5ebaF7728bB0ADfa",
+    "cmETH": "0xE6829d9a7eE3040e1276Fa75293Bde931859e8fA"
+  },
+  "tokens_note": "symbol() checked on-chain; all counted 1:1 as ETH-equivalent (approximation, see docs/research/trace_bybit.md)",
+  "seeds": {
+    "A": ["0x47666Fab8bd0Ac7003bce3f5C3585383F09486E2"],
+    "B": "datasets/public/public_sources.json:bybit.seed_addresses"
+  },
+  "tau_fetch_ppm": 500000,
+  "tau_fetch_note": "guided expansion: only addresses at least 50% tainted are followed further (attacker wallets are near 100%); scoring sweeps tau at or above this",
+  "max_fetch_per_level": 250,
+  "service_min_senders": 50,
+  "service_note": "an EOA with at least this many distinct senders in the window is treated as a service (exchange deposit or hot wallet): breakpoint",
+  "attacker_like": {
+    "min_taint_ppm": 900000,
+    "max_clean_senders": 3,
+    "note": "fetched, not a contract or service, at least 90% tainted, at most 3 senders outside the tainted set"
+  },
+  "rank_min_taint_ppm": 100000,
+  "rank_note": "headline metric: candidates = reached within hops, not a breakpoint, at least 10% tainted; ranked by tainted amount (what an analyst reads first)",
+  "max_tx_expand_per_level": 100,
+  "tx_expand_note": "swap-transaction expansion: at most 100 per level, largest tainted outflow first (same cap for every case; trades a few small swaps for run time under the free API limit)"
+}

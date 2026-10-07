@@ -1,0 +1,225 @@
+{
+ "by_cap": {
+  "0": {
+   "all_delay": {
+    "lead_seconds_p10_median_p90": [
+     84,
+     216,
+     1860
+    ],
+    "moved_on_after_flag": 933,
+    "share_still_unmoved_if_the_flag_takes": {
+     "12s": 100.0,
+     "3600s": 6.0,
+     "600s": 25.7,
+     "60s": 92.9
+    }
+   },
+   "delay": 3103,
+   "exits": 16,
+   "fbi_delay_tier": 51,
+   "fbi_of": 51,
+   "fbi_proposed": 51,
+   "fbi_that_moved_on_after_flag": 20,
+   "lead_seconds_p10_median_p90": [
+    4752,
+    259884,
+    413040
+   ],
+   "proposals": 4166,
+   "verify_queue": {
+    "12_per_10s": {
+     "delay_proposals": 3103,
+     "moved_on_after_flag": 933,
+     "peak_backlog": 0,
+     "per_tick": 12,
+     "share_caught_pct": 100.0,
+     "tick_s": 10,
+     "verified_before_moving_on": 933,
+     "wait_seconds_median_p90_max": [
+      4,
+      8,
+      8
+     ]
+    },
+    "12_per_30s": {
+     "delay_proposals": 3103,
+     "moved_on_after_flag": 933,
+     "peak_backlog": 0,
+     "per_tick": 12,
+     "share_caught_pct": 99.8,
+     "tick_s": 30,
+     "verified_before_moving_on": 931,
+     "wait_seconds_median_p90_max": [
+      12,
+      24,
+      24
+     ]
+    },
+    "60_per_30s": {
+     "delay_proposals": 3103,
+     "moved_on_after_flag": 933,
+     "peak_backlog": 0,
+     "per_tick": 60,
+     "share_caught_pct": 99.8,
+     "tick_s": 30,
+     "verified_before_moving_on": 931,
+     "wait_seconds_median_p90_max": [
+      12,
+      24,
+      24
+     ]
+    }
+   },
+   "watch": 1047
+  },
+  "10": {
+   "all_delay": {
+    "lead_seconds_p10_median_p90": [
+     4752,
+     243108,
+     402324
+    ],
+    "moved_on_after_flag": 21,
+    "share_still_unmoved_if_the_flag_takes": {
+     "12s": 100.0,
+     "3600s": 90.5,
+     "600s": 95.2,
+     "60s": 100.0
+    }
+   },
+   "delay": 52,
+   "exits": 5,
+   "fbi_delay_tier": 51,
+   "fbi_of": 51,
+   "fbi_proposed": 51,
+   "fbi_that_moved_on_after_flag": 20,
+   "lead_seconds_p10_median_p90": [
+    4752,
+    259884,
+    413040
+   ],
+   "proposals": 57,
+   "verify_queue": {
+    "12_per_10s": {
+     "delay_proposals": 52,
+     "moved_on_after_flag": 21,
+     "peak_backlog": 0,
+     "per_tick": 12,
+     "share_caught_pct": 100.0,
+     "tick_s": 10,
+     "verified_before_moving_on": 21,
+     "wait_seconds_median_p90_max": [
+      4,
+      8,
+      8
+     ]
+    },
+    "12_per_30s": {
+     "delay_proposals": 52,
+     "moved_on_after_flag": 21,
+     "peak_backlog": 0,
+     "per_tick": 12,
+     "share_caught_pct": 100.0,
+     "tick_s": 30,
+     "verified_before_moving_on": 21,
+     "wait_seconds_median_p90_max": [
+      12,
+      24,
+      24
+     ]
+    },
+    "60_per_30s": {
+     "delay_proposals": 52,
+     "moved_on_after_flag": 21,
+     "peak_backlog": 0,
+     "per_tick": 60,
+     "share_caught_pct": 100.0,
+     "tick_s": 30,
+     "verified_before_moving_on": 21,
+     "wait_seconds_median_p90_max": [
+      12,
+      24,
+      24
+     ]
+    }
+   },
+   "watch": 0
+  },
+  "50": {
+   "all_delay": {
+    "lead_seconds_p10_median_p90": [
+     96,
+     312,
+     2448
+    ],
+    "moved_on_after_flag": 506,
+    "share_still_unmoved_if_the_flag_takes": {
+     "12s": 100.0,
+     "3600s": 7.9,
+     "600s": 32.4,
+     "60s": 94.7
+    }
+   },
+   "delay": 1010,
+   "exits": 5,
+   "fbi_delay_tier": 51,
+   "fbi_of": 51,
+   "fbi_proposed": 51,
+   "fbi_that_moved_on_after_flag": 20,
+   "lead_seconds_p10_median_p90": [
+    4752,
+    259884,
+    413040
+   ],
+   "proposals": 1015,
+   "verify_queue": {
+    "12_per_10s": {
+     "delay_proposals": 1010,
+     "moved_on_after_flag": 506,
+     "peak_backlog": 0,
+     "per_tick": 12,
+     "share_caught_pct": 100.0,
+     "tick_s": 10,
+     "verified_before_moving_on": 506,
+     "wait_seconds_median_p90_max": [
+      4,
+      8,
+      8
+     ]
+    },
+    "12_per_30s": {
+     "delay_proposals": 1010,
+     "moved_on_after_flag": 506,
+     "peak_backlog": 0,
+     "per_tick": 12,
+     "share_caught_pct": 100.0,
+     "tick_s": 30,
+     "verified_before_moving_on": 506,
+     "wait_seconds_median_p90_max": [
+      12,
+      24,
+      24
+     ]
+    },
+    "60_per_30s": {
+     "delay_proposals": 1010,
+     "moved_on_after_flag": 506,
+     "peak_backlog": 0,
+     "per_tick": 60,
+     "share_caught_pct": 100.0,
+     "tick_s": 30,
+     "verified_before_moving_on": 506,
+     "wait_seconds_median_p90_max": [
+      12,
+      24,
+      24
+     ]
+    }
+   },
+   "watch": 0
+  }
+ },
+ "cached_addresses": 1256,
+ "edges": 32690
+}

@@ -1,0 +1,67 @@
+name: coordinator
+# Central coordination. Keeps one pinned issue ("Team board") current and, when main changes a shared interface,
+# has the coordinator agent post who-must-update-what on it. Each person's Claude or GPT reads it via /sync.
+# The board needs no secrets. The agent comment needs ANTHROPIC_API_KEY and is skipped without it.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, closed, ready_for_review]
+  issues:
+    types: [opened, closed, reopened, labeled]
+  schedule:
+    - cron: '0 */2 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: coordinator
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pull-requests: read
+  checks: read
+  statuses: read
+  issues: write
+  id-token: write
+
+jobs:
+  board:
+    # Do not loop on the board issue's own edits.
+    if: github.event_name != 'issues' || !contains(github.event.issue.labels.*.name, 'board')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: node scripts/team/board.mjs --publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - id: iface
+        if: github.event_name == 'push'
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [[ "$BEFORE" =~ ^0+$ ]]; then BEFORE="${{ github.sha }}~1"; fi
+          files=$(git diff --name-only "$BEFORE" "${{ github.sha }}" | grep -E '^(docs/10_interfaces.md|contracts/src/interfaces/|contracts/src/lib/|packages/shared/src/|workflows/common/|supabase/migrations/)' || true)
+          if [ -n "$files" ]; then echo "changed=1" >> "$GITHUB_OUTPUT"; fi
+      - id: key
+        if: steps.iface.outputs.changed
+        env:
+          K: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: if [ -n "$K" ]; then echo "ok=1" >> "$GITHUB_OUTPUT"; else echo "::notice::ANTHROPIC_API_KEY not set, skipping coordinator agent"; fi
+      - if: steps.key.outputs.ok
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            REPO: ${{ github.repository }}
+            Commit range on main: ${{ github.event.before }}..${{ github.sha }}
+
+            Run the `coordinator` subagent on this range. Find the open issue labeled `board`
+            (`gh issue list --label board --state open --json number`) and post the agent's output on it with
+            `gh issue comment <number> --body-file <file>`. If the agent says `无接口变更`, post nothing.
+          claude_args: >-
+            --max-turns 30
+            --allowedTools "Task,Read,Grep,Glob,Write,Bash(git diff:*),Bash(git log:*),Bash(git show:*),Bash(gh issue list:*),Bash(gh issue comment:*)"

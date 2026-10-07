@@ -1,0 +1,75 @@
+{
+  "chain_id": 1,
+  "hops": 4,
+  "tau_fetch_ppm": 500000,
+  "tau_sweep_ppm": [500000, 700000, 900000],
+  "tau_default_ppm": 900000,
+  "max_rows_per_address": 20000,
+  "max_fetch_per_level": 250,
+  "service_min_senders": 50,
+  "attacker_like": {
+    "min_taint_ppm": 900000,
+    "max_clean_senders": 3
+  },
+  "unit": "micro-USD",
+  "min_edge": "100000000",
+  "min_edge_note": "ignore edges below 100 USD (dust, poisoning)",
+  "case": "bitget",
+  "start_block": 26049114,
+  "end_block": 26084928,
+  "window_note": "start = last block before the 18:31 UTC test transfer on 2026-09-24; end = +5 days (Etherscan getblocknobytime)",
+  "attack_ts": 1790274660,
+  "truth_name": "Bitget attacker wallets with >= 2 sources (Bitquery, Etherscan labels, TRM, Decrypt)",
+  "truth_source": "datasets/public/bitget_2026-09.json (attacker_addresses, sources >= 2, seed excluded)",
+  "truth": [
+    "0xa6dd3f218b65e32ccc37be30f74884133c655545",
+    "0x7c96279ec1e888aa56b9b836e0db26ca48573e1c",
+    "0x469ac1406de92f82c0563477240a3627057425dc",
+    "0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+    "0x600cfedc6bd65fa79b604dc44964f419e45784b2",
+    "0xd2c2f029eff5cacc686f24377cfddcfc82d9f899",
+    "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "0xdc2901f741b4003e32b8b752e97b8c4c1891dc63",
+    "0x9fa39d62095302431d7d4167a7e80f8ec6ea4fa0",
+    "0xa6bfd7fcaf4711da1f61d5e91d03a2c7c72db272",
+    "0xfd5ebe912e2061992437767e24e5bcb52a3f9e54",
+    "0xed5a394a7558929112848b7e97b569de6bbe1a51",
+    "0x52f08feb1b0da609a5442514e2bb43c99d25d284"
+  ],
+  "seeds": ["0x770b10b273fc44fe9197d6bf20f145c2e98463ee"],
+  "seed_source": "Bitget Exploiter 1, receives every Ethereum theft tx (6 sources)",
+  "tokens": {
+    "WETH": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+    "USDT": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+    "USDC": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "DAI": "0x6B175474E89094C44Da98b954EedeAC495271d0F"
+  },
+  "prices": {
+    "ETH": {
+      "decimals": 18,
+      "usd_micro": 2682691075
+    },
+    "WETH": {
+      "decimals": 18,
+      "usd_micro": 2682691075
+    },
+    "USDT": {
+      "decimals": 6,
+      "usd_micro": 1000000
+    },
+    "USDC": {
+      "decimals": 6,
+      "usd_micro": 1000000
+    },
+    "DAI": {
+      "decimals": 18,
+      "usd_micro": 1000000
+    }
+  },
+  "prices_note": "ETH/USD = Chainlink feed 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419 latestRoundData at start block (2682.69107541 USD, drpc and mevblocker agree); stablecoins at 1 USD (assumed)",
+  "rank_min_taint_ppm": 100000,
+  "rank_note": "headline metric: candidates = reached within hops, not a breakpoint, at least 10% tainted; ranked by tainted amount (what an analyst reads first)",
+  "max_tx_expand_per_level": 100,
+  "tx_expand_note": "swap-transaction expansion: at most 100 per level, largest tainted outflow first (same cap for every case; trades a few small swaps for run time under the free API limit)"
+}

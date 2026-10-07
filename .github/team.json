@@ -1,0 +1,10 @@
+{
+  "interfaces": [
+    "docs/10_interfaces.md",
+    "contracts/src/interfaces/",
+    "contracts/src/lib/",
+    "packages/shared/src/",
+    "workflows/common/",
+    "supabase/migrations/"
+  ]
+}

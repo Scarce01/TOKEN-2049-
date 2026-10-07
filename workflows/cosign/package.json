@@ -1,0 +1,6 @@
+{
+  "name": "quorum-cosign",
+  "private": true,
+  "type": "module",
+  "main": "main.ts"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@quorum/analysis",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "false-positive": "bun false_positive.ts",
+    "upload": "bun upload.ts"
+  },
+  "dependencies": {
+    "postgres": "^3.4.7",
+    "viem": "^2.37.0"
+  }
+}

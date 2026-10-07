@@ -1,0 +1,70 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Required check for merging into main (branch protection).
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: foundry-rs/foundry-toolchain@v1
+      - uses: oven-sh/setup-bun@v2
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - name: Repo hygiene (no secrets, no decoy list in git)
+        run: bash scripts/team/hygiene.sh
+        env:
+          DECOY_SCAN_LIST: ${{ secrets.DECOY_SCAN_LIST }}
+      - run: cd contracts && forge install OpenZeppelin/openzeppelin-contracts@v5.4.0 foundry-rs/forge-std --no-git
+      - run: cd contracts && forge build && forge test
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - name: ABI in packages/shared matches the contracts
+        run: |
+          pnpm abi
+          pnpm exec biome format --write packages/shared/src/abi.ts
+          git diff --exit-code packages/shared/src/abi.ts || {
+            echo "::error::packages/shared/src/abi.ts is stale. Run: forge build && pnpm abi && biome format --write, then commit."
+            exit 1
+          }
+      - run: cd workflows && bun install && bun test
+      - run: cd packages/shared && bun test
+      - run: cd packages/verify && bun test test/unit
+      - run: cd services/trap-sync && bun test
+      - run: cd services/sim-runner && bun test
+      - name: Tracing and Trek tests (python, no network)
+        run: |
+          python3 -m pip install -q pytest
+          cd analysis/trace_bybit && python3 -m pytest -q
+      # D28 and D29 are database permission checks; they cannot pass without the DB, so skip (loudly) when unset.
+      - name: verify:design (needs SUPABASE_DB_URL)
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [ -z "$SUPABASE_DB_URL" ]; then
+            echo "::warning::SUPABASE_DB_URL not set, verify:design skipped. Run it locally: pnpm verify:design --phase 1"
+          else
+            bun packages/verify/src/cli.ts --phase 1
+          fi
+
+  # Advisory: static analysis of the contracts. Not a required check.
+  slither:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: foundry-rs/foundry-toolchain@v1
+      - run: cd contracts && forge install OpenZeppelin/openzeppelin-contracts@v5.4.0 foundry-rs/forge-std --no-git
+      - uses: crytic/slither-action@v0.4.1
+        with:
+          target: contracts
+          slither-args: --filter-paths "lib/|test/|script/|test-tokens/"
+          fail-on: none

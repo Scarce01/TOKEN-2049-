@@ -1,0 +1,22 @@
+{
+  "name": "@quorum/indexer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "ponder dev --schema ponder_quorum",
+    "start": "ponder start --schema ponder_quorum",
+    "codegen": "ponder codegen",
+    "build": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "@quorum/shared": "workspace:*",
+    "hono": "^4.9.0",
+    "ponder": "0.17.12",
+    "viem": "^2.37.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "typescript": "5.9.3"
+  }
+}

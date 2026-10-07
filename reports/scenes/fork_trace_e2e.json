@@ -1,0 +1,57 @@
+{
+  "ok": true,
+  "summary": "11/11 steps (local anvil fork of Base Sepolia, CRE CLI simulate --broadcast)",
+  "source": "testnet fork (local)",
+  "timings": {
+    "decoyToFreezeS": 15,
+    "lastHopToDerivedThreatS": 14,
+    "trapWallS": 14.8257857,
+    "verifyEdgeWallS": 15.042287100000001
+  },
+  "results": [
+    {
+      "step": "Trap tripped and wrote its report",
+      "ok": true
+    },
+    {
+      "step": "receiver listed as a confirmed (root) suspect",
+      "ok": true
+    },
+    {
+      "step": "Trek proposed hop1 and hop2 as \"delay\", naming the actual laundering transfers",
+      "ok": true
+    },
+    {
+      "step": "verify-edge verified both edges",
+      "ok": true
+    },
+    {
+      "step": "hop1 listed as derived",
+      "ok": true
+    },
+    {
+      "step": "hop2 listed as derived",
+      "ok": true
+    },
+    {
+      "step": "evidence chain on chain: hop1 -> root, hop2 -> hop1",
+      "ok": true
+    },
+    {
+      "step": "forged amount and non-suspect parent rejected; replay re-verified",
+      "ok": true
+    },
+    {
+      "step": "replay does not count twice",
+      "ok": true
+    },
+    {
+      "step": "the clean hot wallet was not listed",
+      "ok": true
+    },
+    {
+      "step": "payout to the traced address is PENDING and refused",
+      "ok": true
+    }
+  ]
+}

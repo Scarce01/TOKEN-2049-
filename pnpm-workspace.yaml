@@ -1,0 +1,10 @@
+packages:
+  - packages/*
+  - apps/*
+  - services/*
+  - datasets
+  - analysis
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
+  - better-sqlite3

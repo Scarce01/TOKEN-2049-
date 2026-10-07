@@ -1,0 +1,39 @@
+{
+  "ok": true,
+  "summary": "8/8 cases, org B (local anvil fork of Base Sepolia, CRE CLI simulate --broadcast)",
+  "source": "testnet fork (local)",
+  "results": [
+    {
+      "case": "A honest: 50 qUSD of a 1,000 deposit, valid signature",
+      "ok": true
+    },
+    {
+      "case": "B forged: backend signs with a key that is not the user key",
+      "ok": true
+    },
+    {
+      "case": "C over deposit: 2,000 qUSD with a 1,000 deposit, valid signature",
+      "ok": true
+    },
+    {
+      "case": "E large to a new address: 6,000 qUSD (L_pub 5,000, R2 in shadow mode)",
+      "ok": true
+    },
+    {
+      "case": "H passkey user: a P-256 WebAuthn key registers, signs 50 qUSD and gets paid (docs/47 3.4)",
+      "ok": true
+    },
+    {
+      "case": "G user cancels their own delayed withdrawal with their key (docs/47 3.3)",
+      "ok": true
+    },
+    {
+      "case": "F officer stops one approved withdrawal: one officer HOLDs, two officers cancel (docs/47 phase 2)",
+      "ok": true
+    },
+    {
+      "case": "D over the hidden cap: 3,000 qUSD (cap range 500 to 2,000) of a 10,000 deposit",
+      "ok": true
+    }
+  ]
+}

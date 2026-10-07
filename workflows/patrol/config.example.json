@@ -1,0 +1,34 @@
+{
+  "chainName": "ethereum-testnet-sepolia-base-1",
+  "chainId": 84532,
+  "orgs": [
+    {
+      "orgId": "0xae4676874fd6398fe5f19869ae4c627651b922a81f7c8cd078dbbb12444b012d",
+      "receiver": "0x0000000000000000000000000000000000000001",
+      "hotVault": "0x0000000000000000000000000000000000000002",
+      "warmVault": "0x0000000000000000000000000000000000000003",
+      "coldVault": "0x0000000000000000000000000000000000000004"
+    }
+  ],
+  "tokens": [
+    {
+      "address": "0x0000000000000000000000000000000000000005",
+      "decimals": 6
+    },
+    {
+      "address": "0x0000000000000000000000000000000000000006",
+      "decimals": 18
+    }
+  ],
+  "reportGasLimit": "1500000",
+  "freezeDuration": 7200,
+  "alertTtlConfirmed": 7200,
+  "coldDelayTight": 259200,
+  "threatTtl": 259200,
+  "schedule": "0 * * * * *",
+  "quorumLens": "0x0000000000000000000000000000000000000008",
+  "anchorLag": 5,
+  "windowBlocks": 90,
+  "enablePing": true,
+  "enableDecoys": true
+}

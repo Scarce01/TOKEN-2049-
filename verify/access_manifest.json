@@ -1,0 +1,116 @@
+{
+  "_doc": "Every non-view external function and who may call it (40_verification.md 4.2). Adding a function without updating this file fails verify:design (D20). Callers: forwarder, self, receiver, vault, timelock, officers(n), deployer-once, submitter, key-holder, anyone, faucet, test-only. OfficerDesk: officer actions for one Receiver (docs/47 3.2); no owner, no config; signatures verified there, state checks in the Receiver.",
+  "QuorumReceiver": {
+    "onReport(bytes,bytes)": "forwarder (+ whitelisted workflow owner/name in PROD, tx.origin == simOperator in SIM)",
+    "applyAction(uint8,bytes,bytes32)": "self",
+    "consumeVerdict(bytes32,bytes32,address)": "vault (registered hot/warm)",
+    "releaseExpired(bytes32)": "anyone (only gives back expired unused approvals)",
+    "setWorkflow(bytes10,uint256)": "timelock",
+    "setWorkflowOwner(address)": "timelock",
+    "initialize(tuple)": "deployer-once (vaults, cold, ThreatRegistry, DecoyCommit, PatrolState, OfficerDesk; locked after first call; D20)",
+    "setLargeNewMin(address,uint256)": "timelock (docs/47 R2 L_pub)",
+    "deskExtendFreeze(address,uint64)": "desk only (OfficerDesk, set once at initialize; officers(2) there), only extends",
+    "deskManualApprove(bytes32)": "desk only, after officers(2) + MANUAL_DELAY on the desk",
+    "deskLowerAlert(uint8)": "desk only, after officers(2) + MANUAL_DELAY on the desk; only lowers",
+    "deskHold(bytes32,uint64)": "desk only (officers(1) there); one unused APPROVE, at most holdMax, expires, cooldown holdMax",
+    "deskCancelVerdict(bytes32)": "desk only (officers(2) there); one unused APPROVE",
+    "userCancelVerdict(bytes32,uint64,bytes)": "anyone relaying a CancelWithdrawal signature from the user's registered key; one unused APPROVE of that user (docs/47 3.3)"
+  },
+  "QuorumVault": {
+    "execute(tuple)": "anyone, but needs a consumed verdict from the receiver",
+    "fund(address,uint256)": "anyone (inflow only)",
+    "sweepToCold(address[])": "receiver (to immutable cold only)",
+    "zeroQuota(address[])": "receiver",
+    "refillQuota(address,uint64,uint256)": "receiver (r_max, epoch, cap; not at CONFIRMED or frozen)",
+    "topUp(address,uint256)": "receiver (warm to immutable sibling hot only)",
+    "setCap(address,uint256)": "timelock",
+    "setWindowCaps(address,uint256,uint256)": "timelock (docs/47 R8)",
+    "setProtectedLane(address,uint256,uint256,uint256,uint256,uint64)": "timelock (docs/47 R7 protected lane; cap 0 = off)"
+  },
+  "ColdVault": {
+    "raiseDelay(uint64)": "receiver (only up)",
+    "queue(address,address,uint256,uint256,uint64,bytes[])": "officers(2)",
+    "executeQueued(bytes32)": "anyone after delay",
+    "queueLowerDelay(uint64,uint256,uint64,bytes[])": "officers(2)",
+    "executeLowerDelay(bytes32)": "anyone after delay",
+    "cancelQueued(bytes32,uint256,uint64,bytes[])": "officers(1)"
+  },
+  "RequestBoard": {
+    "submit(tuple,tuple,bytes)": "submitter (registered for the org; rate limited)",
+    "resubmit(tuple,tuple,bytes)": "submitter (same content hash, after RESUBMIT_AFTER)",
+    "setSubmitter(address,bytes32)": "timelock"
+  },
+  "KeyRegistry": {
+    "register(bytes32,address,uint64,bytes)": "key-holder signature (queued if the account has deposits)",
+    "registerBatch(bytes32[],address[],uint64[],bytes[])": "key-holder signatures",
+    "requestKeyChange(bytes32,address,uint64,bytes)": "new key signature (recovery): queued RECOVERY_DELAY, cancellable by the current key, the second factor or officers(1)",
+    "cancelKeyChange(bytes32,uint64,bytes)": "current key or second factor signature",
+    "finalizeKeyChange(bytes32)": "anyone after the queued delay",
+    "officerCancel(bytes32,uint256,uint64,bytes[])": "officers(1)",
+    "rotateKey(bytes32,address,uint64,bytes,bytes)": "current key and new key co-sign (immediate)",
+    "approveRecovery(bytes32,uint64,bytes)": "second factor signature: shortens a queued recovery to KEY_CHANGE_DELAY",
+    "registerSecondFactor(bytes32,address,uint64,bytes,bytes)": "current key and factor co-sign; queued KEY_CHANGE_DELAY when the account has deposits",
+    "finalizeSecondFactor(bytes32)": "anyone after KEY_CHANGE_DELAY",
+    "cancelSecondFactor(bytes32,uint64,bytes)": "current key signature"
+  },
+  "DepositVault": {
+    "deposit(bytes32,address,uint256)": "anyone (inflow to fixed collector)",
+    "depositBatch(bytes32[],address,uint256[])": "anyone (inflow to fixed collector)"
+  },
+  "ThreatRegistry": {
+    "add(address,uint64,bytes32,bytes32,uint64,bytes32,bytes32,bytes)": "receiver (registered reporter); no remove or block function exists",
+    "initialize(address[],bytes32[],address[])": "deployer-once (locked after first call; D20)",
+    "setReporter(address,bytes32)": "timelock",
+    "setProtected(address,bool)": "timelock"
+  },
+  "ConfigTimelock": {
+    "queue(address,bytes4,bytes,uint256,uint64,bytes[])": "officers(2), registered target only",
+    "execute(bytes32)": "anyone after CONFIG_DELAY",
+    "cancel(bytes32,uint256,uint64,bytes[])": "officers(1)",
+    "initialize(address[])": "deployer-once (locked after first call; D20)",
+    "addTarget(address)": "self (through a queued item)"
+  },
+  "OfficerSet": {
+    "initialize(address)": "deployer-once (binds the timelock; D20)",
+    "setOfficers(address[],uint256)": "timelock"
+  },
+  "QuorumLens": {},
+  "Faucet": {
+    "drip(address,address,uint256)": "anyone, hourly cap (test tokens)"
+  },
+  "MockERC20": {
+    "approve(address,uint256)": "anyone (ERC20)",
+    "transfer(address,uint256)": "anyone (ERC20)",
+    "transferFrom(address,address,uint256)": "anyone (ERC20)",
+    "mint(address,uint256)": "faucet"
+  },
+  "MockV3Aggregator": {
+    "updateAnswer(int256)": "test-only (stands in for a feed)",
+    "updateRoundData(int256,uint256)": "test-only (stale price scene)"
+  },
+  "DecoyCommit": {
+    "initialize(address[],bytes32[])": "deployer-once (binds Receivers; D20)",
+    "setRoot(bytes32,bytes32,uint256)": "timelock",
+    "commitThreshold(bytes32,uint64,address,bytes32)": "receiver of that org (THRESHOLD_COMMIT)",
+    "revealThreshold(bytes32,uint64,address,uint256,bytes32)": "receiver of that org (THRESHOLD_REVEAL, must match commitment)"
+  },
+  "PatrolState": {
+    "initialize(address[])": "deployer-once (binds Receivers; D20)",
+    "writePatrolState(address,address,uint64,uint256,bool,bool)": "receiver (PATROL_STATE, minute increasing)",
+    "writeAssetCheckpoint(bytes32,address,uint64,int256)": "receiver of that org (ASSET_CHECKPOINT, high-water)",
+    "registerPlannedOp(address,address,uint64,uint64,uint256,uint256,uint64,bytes[])": "officers(2), window <= 24h, discounts CUSUM input only",
+    "queueAssetReset(bytes32,address,int256,uint256,uint64,bytes[])": "officers(2), then MANUAL_DELAY",
+    "executeAssetReset(bytes32)": "anyone after MANUAL_DELAY",
+    "cancelQueued(bytes32,uint256,uint64,bytes[])": "officers(1)"
+  },
+  "OfficerDesk": {
+    "extendFreeze(address,uint64,uint256,uint64,bytes[])": "officers(2), only extends",
+    "queueManual(bytes32,uint256,uint64,bytes[])": "officers(2)",
+    "executeManual(bytes32)": "anyone after MANUAL_DELAY",
+    "queueLowerAlert(uint8,uint256,uint64,bytes[])": "officers(2)",
+    "executeLowerAlert(bytes32)": "anyone after MANUAL_DELAY",
+    "cancelQueued(bytes32,uint256,uint64,bytes[])": "officers(1)",
+    "holdVerdict(bytes32,uint64,uint256,uint64,bytes[])": "officers(1), one unused APPROVE, at most holdMax, expires, cooldown holdMax (docs/47)",
+    "cancelVerdict(bytes32,uint256,uint64,bytes[])": "officers(2), one unused APPROVE (docs/47)"
+  }
+}

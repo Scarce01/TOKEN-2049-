@@ -1,0 +1,80 @@
+{
+  "chain_id": 1,
+  "hops": 4,
+  "tau_fetch_ppm": 500000,
+  "tau_sweep_ppm": [500000, 700000, 900000],
+  "tau_default_ppm": 900000,
+  "max_rows_per_address": 20000,
+  "max_fetch_per_level": 250,
+  "service_min_senders": 50,
+  "attacker_like": {
+    "min_taint_ppm": 900000,
+    "max_clean_senders": 3
+  },
+  "unit": "micro-USD",
+  "min_edge": "100000000",
+  "min_edge_note": "ignore edges below 100 USD (dust, poisoning)",
+  "case": "stake",
+  "start_block": 18063173,
+  "end_block": 18098889,
+  "window_note": "start = last block before 12:40 UTC 2023-09-04 (first theft 12:48); end = +5 days",
+  "attack_ts": 1693831200,
+  "truth_name": "FBI-published EVM addresses for the Stake.com theft (Ethereum, BSC, Polygon mixed)",
+  "truth_source": "FBI press release 2023-09-06 via OpenSanctions us_fbi_lazarus_crypto targets.simple.csv (processed 2026-09-30); FBI page itself blocked by Cloudflare for scripts",
+  "truth": [
+    "0x7d84d78bb9b6044a45fa08b7fe109f2c8648ab4e",
+    "0x94f1b9b64e2932f6a2db338f616844400cd58e8a",
+    "0xba36735021a9ccd7582ebc7f70164794154ff30e",
+    "0xbda83686c90314cfbaaeb18db46723d83fdf0c83"
+  ],
+  "seeds": ["0x3130662aece32f05753d00a7b95c0444150bcd3c"],
+  "seed_source": "named in Hacken / Merkle Science write-ups; verified on-chain: received 6,001 ETH, 3.9M USDT, 1.1M USDC, 0.9M DAI from Stake hot wallet 0x974caa59e49682cda0ad2bbe82983419a2ecc400 on 2023-09-04 12:48-13:12 UTC, matching the reported Ethereum loss; not on the FBI list",
+  "victim": "0x974caa59e49682cda0ad2bbe82983419a2ecc400",
+  "tokens": {
+    "WETH": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+    "USDT": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+    "USDC": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "DAI": "0x6B175474E89094C44Da98b954EedeAC495271d0F"
+  },
+  "prices": {
+    "ETH": {
+      "decimals": 18,
+      "usd_micro": 1632910000
+    },
+    "WETH": {
+      "decimals": 18,
+      "usd_micro": 1632910000
+    },
+    "USDT": {
+      "decimals": 6,
+      "usd_micro": 1000000
+    },
+    "USDC": {
+      "decimals": 6,
+      "usd_micro": 1000000
+    },
+    "DAI": {
+      "decimals": 18,
+      "usd_micro": 1000000
+    }
+  },
+  "prices_note": "ETH/USD = Chainlink latestRoundData at start block (1632.91 USD, two RPCs agree); stablecoins at 1 USD (assumed)",
+  "truth_all": [
+    "0x0004a76e39d33edfeac7fc3c8d3994f54428a0be",
+    "0x7d84d78bb9b6044a45fa08b7fe109f2c8648ab4e",
+    "0x94f1b9b64e2932f6a2db338f616844400cd58e8a",
+    "0x95b6656838a1d852dd1313c659581f36b2afb237",
+    "0xa26213638f79f2ed98d474cbcb87551da909685e",
+    "0xa2e898180d0bc3713025d8590615a832397a8032",
+    "0xba36735021a9ccd7582ebc7f70164794154ff30e",
+    "0xbcedc4f3855148df3ea5423ce758bda9f51630aa",
+    "0xbda83686c90314cfbaaeb18db46723d83fdf0c83",
+    "0xe03a1ae400fa54283d5a1c4f8b89d3ca74afbd62",
+    "0xff29a52a538f1591235656f71135c24019bf82e5"
+  ],
+  "truth_rule": "scored against FBI addresses that sent at least one Ethereum mainnet transaction (Etherscan txlist, full history): exactly 4, matching the FBI release (4 Ethereum, 5 BSC, 2 Polygon). The other 7 never sent a transaction on Ethereum; kept in truth_all.",
+  "rank_min_taint_ppm": 100000,
+  "rank_note": "headline metric: candidates = reached within hops, not a breakpoint, at least 10% tainted; ranked by tainted amount (what an analyst reads first)",
+  "max_tx_expand_per_level": 100,
+  "tx_expand_note": "swap-transaction expansion: at most 100 per level, largest tainted outflow first (same cap for every case; trades a few small swaps for run time under the free API limit)"
+}

@@ -1,0 +1,9 @@
+# Demo-only (services/redteam/demo/e2e.ts). No production target: on a PROD Receiver this name is not whitelisted
+# and must never be (audit Low). Works only against a SIM-mode deployment.
+staging-settings:
+  user-workflow:
+    workflow-name: "quorum-demo-approve"
+  workflow-artifacts:
+    workflow-path: "./main.ts"
+    config-path: "./config.staging.json"
+    secrets-path: "../secrets.yaml"

@@ -1,0 +1,19 @@
+# CRE project settings. RPC URLs come from env (never commit keys).
+# Both testnets: Base Sepolia is the primary chain; Ethereum Sepolia carries the NOWNodes qualification run (S7).
+staging-settings:
+  rpcs:
+    - chain-name: ethereum-testnet-sepolia-base-1
+      url: https://sepolia.base.org
+    - chain-name: ethereum-testnet-sepolia
+      url: https://ethereum-sepolia-rpc.publicnode.com
+
+production-settings:
+  rpcs:
+    - chain-name: ethereum-testnet-sepolia-base-1
+      url: https://sepolia.base.org
+
+# Local anvil fork of Base Sepolia (anvil --fork-url https://sepolia.base.org). Free ETH, real Chainlink contracts.
+fork-settings:
+  rpcs:
+    - chain-name: ethereum-testnet-sepolia-base-1
+      url: http://127.0.0.1:8545

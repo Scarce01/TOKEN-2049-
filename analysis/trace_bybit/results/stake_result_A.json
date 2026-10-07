@@ -1,0 +1,446 @@
+{
+ "by_tau": {
+  "500000": {
+   "attacker_like": {
+    "count": 5,
+    "fbi_recall_pct": 75.0,
+    "on_fbi": 3,
+    "precision_lower_bound_pct": 60.0
+   },
+   "breakpoint_addresses": {
+    "dex": 6,
+    "dex/bridge router": 1
+   },
+   "breakpoint_totals": {
+    "dex": 5512675.83,
+    "dex/bridge router": 499881.73
+   },
+   "breakpoint_unit": "USD",
+   "by_hop": {
+    "k1": {
+     "flagged": 4,
+     "found_fbi": [
+      "0x94f1b9b64e2932f6a2db338f616844400cd58e8a"
+     ],
+     "max_hop": 1,
+     "precision_lower_bound_pct": 25.0,
+     "recall": "1/4",
+     "recall_denominator": 4,
+     "recall_pct": 25.0,
+     "tau_ppm": 500000
+    },
+    "k2": {
+     "flagged": 7,
+     "found_fbi": [
+      "0x7d84d78bb9b6044a45fa08b7fe109f2c8648ab4e",
+      "0x94f1b9b64e2932f6a2db338f616844400cd58e8a",
+      "0xba36735021a9ccd7582ebc7f70164794154ff30e",
+      "0xbda83686c90314cfbaaeb18db46723d83fdf0c83"
+     ],
+     "max_hop": 2,
+     "precision_lower_bound_pct": 57.14,
+     "recall": "1",
+     "recall_denominator": 4,
+     "recall_pct": 100.0,
+     "tau_ppm": 500000
+    },
+    "k3": {
+     "flagged": 7,
+     "found_fbi": [
+      "0x7d84d78bb9b6044a45fa08b7fe109f2c8648ab4e",
+      "0x94f1b9b64e2932f6a2db338f616844400cd58e8a",
+      "0xba36735021a9ccd7582ebc7f70164794154ff30e",
+      "0xbda83686c90314cfbaaeb18db46723d83fdf0c83"
+     ],
+     "max_hop": 3,
+     "precision_lower_bound_pct": 57.14,
+     "recall": "1",
+     "recall_denominator": 4,
+     "recall_pct": 100.0,
+     "tau_ppm": 500000
+    },
+    "k4": {
+     "flagged": 7,
+     "found_fbi": [
+      "0x7d84d78bb9b6044a45fa08b7fe109f2c8648ab4e",
+      "0x94f1b9b64e2932f6a2db338f616844400cd58e8a",
+      "0xba36735021a9ccd7582ebc7f70164794154ff30e",
+      "0xbda83686c90314cfbaaeb18db46723d83fdf0c83"
+     ],
+     "max_hop": 4,
+     "precision_lower_bound_pct": 57.14,
+     "recall": "1",
+     "recall_denominator": 4,
+     "recall_pct": 100.0,
+     "tau_ppm": 500000
+    }
+   },
+   "class_counts": {
+    "attacker-like": 5,
+    "seed": 1,
+    "service": 7,
+    "touched": 2
+   },
+   "fbi_missed": [],
+   "minutes_after_attack_to_first_taint": {
+    "0x7d84d78bb9b6044a45fa08b7fe109f2c8648ab4e": 44,
+    "0x94f1b9b64e2932f6a2db338f616844400cd58e8a": 14,
+    "0xba36735021a9ccd7582ebc7f70164794154ff30e": 29,
+    "0xbda83686c90314cfbaaeb18db46723d83fdf0c83": 22
+   },
+   "nodes": null
+  },
+  "700000": {
+   "attacker_like": {
+    "count": 5,
+    "fbi_recall_pct": 75.0,
+    "on_fbi": 3,
+    "precision_lower_bound_pct": 60.0
+   },
+   "breakpoint_addresses": {
+    "dex": 6,
+    "dex/bridge router": 1
+   },
+   "breakpoint_totals": {
+    "dex": 5512675.83,
+    "dex/bridge router": 499881.73
+   },
+   "breakpoint_unit": "USD",
+   "by_hop": {
+    "k1": {
+     "flagged": 4,
+     "found_fbi": [
+      "0x94f1b9b64e2932f6a2db338f616844400cd58e8a"
+     ],
+     "max_hop": 1,
+     "precision_lower_bound_pct": 25.0,
+     "recall": "1/4",
+     "recall_denominator": 4,
+     "recall_pct": 25.0,
+     "tau_ppm": 700000
+    },
+    "k2": {
+     "flagged": 7,
+     "found_fbi": [
+      "0x7d84d78bb9b6044a45fa08b7fe109f2c8648ab4e",
+      "0x94f1b9b64e2932f6a2db338f616844400cd58e8a",
+      "0xba36735021a9ccd7582ebc7f70164794154ff30e",
+      "0xbda83686c90314cfbaaeb18db46723d83fdf0c83"
+     ],
+     "max_hop": 2,
+     "precision_lower_bound_pct": 57.14,
+     "recall": "1",
+     "recall_denominator": 4,
+     "recall_pct": 100.0,
+     "tau_ppm": 700000
+    },
+    "k3": {
+     "flagged": 7,
+     "found_fbi": [
+      "0x7d84d78bb9b6044a45fa08b7fe109f2c8648ab4e",
+      "0x94f1b9b64e2932f6a2db338f616844400cd58e8a",
+      "0xba36735021a9ccd7582ebc7f70164794154ff30e",
+      "0xbda83686c90314cfbaaeb18db46723d83fdf0c83"
+     ],
+     "max_hop": 3,
+     "precision_lower_bound_pct": 57.14,
+     "recall": "1",
+     "recall_denominator": 4,
+     "recall_pct": 100.0,
+     "tau_ppm": 700000
+    },
+    "k4": {
+     "flagged": 7,
+     "found_fbi": [
+      "0x7d84d78bb9b6044a45fa08b7fe109f2c8648ab4e",
+      "0x94f1b9b64e2932f6a2db338f616844400cd58e8a",
+      "0xba36735021a9ccd7582ebc7f70164794154ff30e",
+      "0xbda83686c90314cfbaaeb18db46723d83fdf0c83"
+     ],
+     "max_hop": 4,
+     "precision_lower_bound_pct": 57.14,
+     "recall": "1",
+     "recall_denominator": 4,
+     "recall_pct": 100.0,
+     "tau_ppm": 700000
+    }
+   },
+   "class_counts": {
+    "attacker-like": 5,
+    "seed": 1,
+    "service": 7,
+    "touched": 2
+   },
+   "fbi_missed": [],
+   "minutes_after_attack_to_first_taint": {
+    "0x7d84d78bb9b6044a45fa08b7fe109f2c8648ab4e": 44,
+    "0x94f1b9b64e2932f6a2db338f616844400cd58e8a": 14,
+    "0xba36735021a9ccd7582ebc7f70164794154ff30e": 29,
+    "0xbda83686c90314cfbaaeb18db46723d83fdf0c83": 22
+   },
+   "nodes": null
+  },
+  "900000": {
+   "attacker_like": {
+    "count": 5,
+    "fbi_recall_pct": 75.0,
+    "on_fbi": 3,
+    "precision_lower_bound_pct": 60.0
+   },
+   "breakpoint_addresses": {
+    "dex": 6,
+    "dex/bridge router": 1
+   },
+   "breakpoint_totals": {
+    "dex": 5512675.83,
+    "dex/bridge router": 499881.73
+   },
+   "breakpoint_unit": "USD",
+   "by_hop": {
+    "k1": {
+     "flagged": 3,
+     "found_fbi": [
+      "0x94f1b9b64e2932f6a2db338f616844400cd58e8a"
+     ],
+     "max_hop": 1,
+     "precision_lower_bound_pct": 33.33,
+     "recall": "1/4",
+     "recall_denominator": 4,
+     "recall_pct": 25.0,
+     "tau_ppm": 900000
+    },
+    "k2": {
+     "flagged": 5,
+     "found_fbi": [
+      "0x7d84d78bb9b6044a45fa08b7fe109f2c8648ab4e",
+      "0x94f1b9b64e2932f6a2db338f616844400cd58e8a",
+      "0xba36735021a9ccd7582ebc7f70164794154ff30e"
+     ],
+     "max_hop": 2,
+     "precision_lower_bound_pct": 60.0,
+     "recall": "3/4",
+     "recall_denominator": 4,
+     "recall_pct": 75.0,
+     "tau_ppm": 900000
+    },
+    "k3": {
+     "flagged": 5,
+     "found_fbi": [
+      "0x7d84d78bb9b6044a45fa08b7fe109f2c8648ab4e",
+      "0x94f1b9b64e2932f6a2db338f616844400cd58e8a",
+      "0xba36735021a9ccd7582ebc7f70164794154ff30e"
+     ],
+     "max_hop": 3,
+     "precision_lower_bound_pct": 60.0,
+     "recall": "3/4",
+     "recall_denominator": 4,
+     "recall_pct": 75.0,
+     "tau_ppm": 900000
+    },
+    "k4": {
+     "flagged": 5,
+     "found_fbi": [
+      "0x7d84d78bb9b6044a45fa08b7fe109f2c8648ab4e",
+      "0x94f1b9b64e2932f6a2db338f616844400cd58e8a",
+      "0xba36735021a9ccd7582ebc7f70164794154ff30e"
+     ],
+     "max_hop": 4,
+     "precision_lower_bound_pct": 60.0,
+     "recall": "3/4",
+     "recall_denominator": 4,
+     "recall_pct": 75.0,
+     "tau_ppm": 900000
+    }
+   },
+   "class_counts": {
+    "attacker-like": 5,
+    "seed": 1,
+    "service": 7,
+    "touched": 2
+   },
+   "fbi_missed": [
+    "0xbda83686c90314cfbaaeb18db46723d83fdf0c83"
+   ],
+   "minutes_after_attack_to_first_taint": {
+    "0x7d84d78bb9b6044a45fa08b7fe109f2c8648ab4e": 44,
+    "0x94f1b9b64e2932f6a2db338f616844400cd58e8a": 14,
+    "0xba36735021a9ccd7582ebc7f70164794154ff30e": 29
+   },
+   "nodes": {
+    "0x1154926c6ac4be7a6c979d11ca2921d3e77baaa1": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 18063234,
+     "first_tainted_ts": 1693831931,
+     "hop": 1,
+     "taint_ppm": 886063,
+     "tainted_in": "6914727812097",
+     "total_in": "7803870150819"
+    },
+    "0x11b815efb8f581194ae79006d24e0d814b7697f6": {
+     "breakpoint": "dex",
+     "class": "service",
+     "first_tainted_block": 18063251,
+     "first_tainted_ts": 1693832135,
+     "hop": 2,
+     "taint_ppm": 901982,
+     "tainted_in": "487070504721",
+     "total_in": "540000000000"
+    },
+    "0x3130662aece32f05753d00a7b95c0444150bcd3c": {
+     "breakpoint": null,
+     "class": "seed",
+     "first_tainted_block": null,
+     "first_tainted_ts": null,
+     "hop": 0,
+     "taint_ppm": 1000000,
+     "tainted_in": "0",
+     "total_in": "15699256200999"
+    },
+    "0x33e50b62dd19acadf785d93e82638ecb44abfb45": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 18063360,
+     "first_tainted_ts": 1693833443,
+     "hop": 1,
+     "taint_ppm": 1000000,
+     "tainted_in": "1801412252693",
+     "total_in": "1801412252693"
+    },
+    "0x3416cf6c708da44db2624d63ea0aaef7113527c6": {
+     "breakpoint": "dex",
+     "class": "service",
+     "first_tainted_block": 18063251,
+     "first_tainted_ts": 1693832135,
+     "hop": 2,
+     "taint_ppm": 905265,
+     "tainted_in": "2294848595362",
+     "total_in": "2535000000000"
+    },
+    "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad": {
+     "breakpoint": "dex/bridge router",
+     "class": "service",
+     "first_tainted_block": 18063251,
+     "first_tainted_ts": 1693832135,
+     "hop": 2,
+     "taint_ppm": 31156,
+     "tainted_in": "499881728237",
+     "total_in": "16043977984617"
+    },
+    "0x5777d92f208679db4b9778590fa3cab3ac9e2168": {
+     "breakpoint": "dex",
+     "class": "service",
+     "first_tainted_block": 18063378,
+     "first_tainted_ts": 1693833659,
+     "hop": 2,
+     "taint_ppm": 1000000,
+     "tainted_in": "879999999999",
+     "total_in": "879999999999"
+    },
+    "0x60594a405d53811d3bc4766596efd80fd545a270": {
+     "breakpoint": "dex",
+     "class": "service",
+     "first_tainted_block": 18063378,
+     "first_tainted_ts": 1693833659,
+     "hop": 2,
+     "taint_ppm": 1000000,
+     "tainted_in": "20000000000",
+     "total_in": "20000000000"
+    },
+    "0x7858e59e0c01ea06df3af3d20ac7b0003275d4bf": {
+     "breakpoint": "dex",
+     "class": "service",
+     "first_tainted_block": 18063267,
+     "first_tainted_ts": 1693832327,
+     "hop": 2,
+     "taint_ppm": 886130,
+     "tainted_in": "731057530251",
+     "total_in": "825000000000"
+    },
+    "0x7a3207749fea74ef4fc80317f998d882e87d9177": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 18063275,
+     "first_tainted_ts": 1693832423,
+     "hop": 1,
+     "taint_ppm": 999377,
+     "tainted_in": "2201332110773",
+     "total_in": "2202702612153"
+    },
+    "0x7d84d78bb9b6044a45fa08b7fe109f2c8648ab4e": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 18063398,
+     "first_tainted_ts": 1693833899,
+     "hop": 2,
+     "taint_ppm": 1000000,
+     "tainted_in": "901397671872",
+     "total_in": "901397671872"
+    },
+    "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640": {
+     "breakpoint": "dex",
+     "class": "service",
+     "first_tainted_block": 18063290,
+     "first_tainted_ts": 1693832603,
+     "hop": 2,
+     "taint_ppm": 206020,
+     "tainted_in": "1099699200773",
+     "total_in": "5337805413290"
+    },
+    "0x94f1b9b64e2932f6a2db338f616844400cd58e8a": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 18063244,
+     "first_tainted_ts": 1693832051,
+     "hop": 1,
+     "taint_ppm": 999966,
+     "tainted_in": "9794188646399",
+     "total_in": "9794515228399"
+    },
+    "0xba36735021a9ccd7582ebc7f70164794154ff30e": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 18063320,
+     "first_tainted_ts": 1693832963,
+     "hop": 2,
+     "taint_ppm": 999042,
+     "tainted_in": "1101632910000",
+     "total_in": "1102689214755"
+    },
+    "0xbda83686c90314cfbaaeb18db46723d83fdf0c83": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 18063285,
+     "first_tainted_ts": 1693832543,
+     "hop": 2,
+     "taint_ppm": 871390,
+     "tainted_in": "3401751181763",
+     "total_in": "3903820528959"
+    }
+   }
+  }
+ },
+ "edges": 121,
+ "fetched_addresses": 8,
+ "ranking": {
+  "candidates": 7,
+  "found_anywhere": 4,
+  "hits_in_top_100": 4,
+  "hits_in_top_4": 2,
+  "hits_in_top_8": 4,
+  "min_taint_ppm": 100000,
+  "missed": [],
+  "precision_at_truth_size_pct": 50.0,
+  "recall_pct": 100.0,
+  "truth_size": 4
+ },
+ "seeds": [
+  "0x3130662aece32f05753d00a7b95c0444150bcd3c"
+ ],
+ "seeds_on_fbi": [],
+ "seeds_set": "A",
+ "window": [
+  18063173,
+  18098889
+ ]
+}

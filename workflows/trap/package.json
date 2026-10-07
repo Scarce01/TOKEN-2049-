@@ -1,0 +1,6 @@
+{
+  "name": "quorum-trap",
+  "private": true,
+  "type": "module",
+  "main": "main.ts"
+}

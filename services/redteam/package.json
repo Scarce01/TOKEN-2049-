@@ -1,0 +1,22 @@
+{
+  "name": "@quorum/redteam",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "scan": "bun --env-file=.env src/cli.ts scan",
+    "attack": "bun --env-file=.env src/cli.ts attack",
+    "demo:e2e": "bun demo/e2e.ts",
+    "build": "tsc --noEmit -p .",
+    "test": "bun test",
+    "demo:trace": "bun demo/trace-fork.ts"
+  },
+  "dependencies": {
+    "@quorum/shared": "workspace:*",
+    "viem": "^2.37.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "5.9.3"
+  }
+}
