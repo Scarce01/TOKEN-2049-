@@ -198,10 +198,19 @@ ponder.on(
         calls.push({ address: t, abi: erc20Abi, functionName: 'balanceOf', args: [o.coldVault] })
     }
     // allowFailure: one reverting view (cold balanceOf on some deployments) must not drop the snapshot
-    const res: { status: string; result?: unknown }[] = await context.client.multicall({
-      contracts: calls,
-      multicallAddress: MULTICALL3,
-    })
+    let res: { status: string; result?: unknown }[]
+    try {
+      res = await context.client.multicall({
+        contracts: calls,
+        multicallAddress: MULTICALL3,
+        retryEmptyResponse: false,
+      })
+    } catch (e) {
+      // a node without state at this block (a fork loaded from a state dump, or a pruned public node) cannot
+      // answer: skip this block's snapshot instead of retrying forever; events are still indexed
+      if (/BlockOutOfRange|missing trie node|header not found|state.*not available/i.test(String(e))) return
+      throw e
+    }
     let i = 0
     const next = () => {
       const r = res[i++]!

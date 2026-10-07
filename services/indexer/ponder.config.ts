@@ -96,6 +96,11 @@ export default createConfig({
   },
   // vault balance, quota, cap, alert and freeze per org every N blocks (state that has no event of its own)
   blocks: {
-    Snapshot: { chain: 'chain', startBlock: resetStart, interval: Number(process.env.PONDER_SNAPSHOT_EVERY ?? 30) },
+    // PONDER_SNAPSHOT_FROM: a fork loaded from a state dump has no state before its head (infra/fork/start.py)
+    Snapshot: {
+      chain: 'chain',
+      startBlock: Number(process.env.PONDER_SNAPSHOT_FROM ?? resetStart),
+      interval: Number(process.env.PONDER_SNAPSHOT_EVERY ?? 30),
+    },
   },
 })

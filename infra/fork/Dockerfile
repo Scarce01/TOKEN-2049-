@@ -27,6 +27,7 @@ RUN pnpm install --frozen-lockfile \
     && cd apps/observatory && pnpm install --ignore-workspace --frozen-lockfile
 RUN chown -R node:node /app
 USER node
-ENV NODE_ENV=production PORT=3001 DEPLOY_NAME=base-sepolia-fork
-EXPOSE 3001
+# no PORT here: exchange-api and the indexer read PORT too; serve.ts listens on its default 8443
+ENV NODE_ENV=production DEPLOY_NAME=base-sepolia-fork
+EXPOSE 8443
 ENTRYPOINT ["python3", "/app/infra/fork/start.py"]

@@ -5,7 +5,7 @@
    saladbkp/quorum-2049 infra/runtime/bootstrap.py: mode api-key or session)
 2. start anvil on the exported fork state, take the bridge's reset snapshot
 3. start the exchange DB and seed the hot wallets from the fork-demo state (as setup.ts does)
-4. build the UI against this fork's deployment, then exec apps/observatory/serve.ts on $PORT, which starts
+4. build the UI against this fork's deployment, then run apps/observatory/serve.ts on 8443, which starts
    exchange-api, decoygen, the bridge and the indexer and proxies them on one origin
 Env: BUNDLE_S3 (s3://bucket/key) or BUNDLE_FILE (local test), AWS_REGION, CRE_AUTH_SECRET_ARN, FORK_RPC (default https://sepolia.base.org).
 """
@@ -71,7 +71,8 @@ def main():
         log(f'CRE auth: {auth.get("mode")}')
 
     state = APP / '.tmp' / 'fork-state.json'
-    anvil = subprocess.Popen(['anvil', '--fork-url', os.environ.get('FORK_RPC', 'https://sepolia.base.org'),
+    fork_block = (APP / '.tmp' / 'fork-block').read_text().strip()  # same fork point as the exported state
+    anvil = subprocess.Popen(['anvil', '--fork-url', os.environ.get('FORK_RPC', 'https://sepolia.base.org'), '--fork-block-number', fork_block,
                               '--load-state', str(state), '--gas-limit', '100000000', '--port', '8545', '--host', '127.0.0.1', '--silent'])
     for _ in range(120):
         try:
@@ -81,6 +82,13 @@ def main():
             time.sleep(1)
     else:
         raise RuntimeError('anvil did not start')
+    # a loaded fork has no state for blocks before its head; Patrol anchors 5 blocks back and reads FINALIZED,
+    # so mine past the loaded head first (empty blocks)
+    loaded_head = int(rpc('eth_blockNumber'), 16)
+    rpc('anvil_mine', ['0x50', '0x1'])
+    os.environ['PONDER_SNAPSHOT_FROM'] = str(loaded_head + 1)  # inherited by serve.ts and the indexer it starts
+    # every boot is a fresh chain: never reuse an indexer database built against another one
+    shutil.rmtree(APP / 'services' / 'indexer' / '.ponder', ignore_errors=True)
     # the bridge's Reset reverts to this snapshot (snapshots do not survive an anvil restart)
     private(APP / '.tmp' / 'fork-snapshot.json', json.dumps({'id': rpc('evm_snapshot')}))
 

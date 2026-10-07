@@ -30,6 +30,9 @@ def main():
     req = urllib.request.Request('http://127.0.0.1:8545', json.dumps({'jsonrpc': '2.0', 'id': 1, 'method': 'anvil_dumpState', 'params': []}).encode(), {'content-type': 'application/json'})
     with urllib.request.urlopen(req, timeout=120) as r:
         raw = bytes.fromhex(json.load(r)['result'][2:])
+    req = urllib.request.Request('http://127.0.0.1:8545', json.dumps({'jsonrpc': '2.0', 'id': 1, 'method': 'anvil_nodeInfo', 'params': []}).encode(), {'content-type': 'application/json'})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        fork_block = str(json.load(r)['result']['forkConfig']['forkBlockNumber']).encode()
     state = gzip.decompress(raw) if raw[:2] == b'\x1f\x8b' else raw
     json.loads(state)  # must be the JSON anvil --load-state reads
     OUT.parent.mkdir(exist_ok=True)
@@ -38,6 +41,9 @@ def main():
         info.size = len(state)
         info.mode = 0o600
         tar.addfile(info, io.BytesIO(state))
+        info = tarfile.TarInfo('.tmp/fork-block')  # the state only loads cleanly on the same fork point
+        info.size = len(fork_block)
+        tar.addfile(info, io.BytesIO(fork_block))
         for f in FILES:
             tar.add(ROOT / f, arcname=f)
     OUT.chmod(0o600)
