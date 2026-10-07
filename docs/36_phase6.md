@@ -71,6 +71,7 @@ QuorumVault 没有裁决就执行不了，所以「每笔流出都对上 APPROVE
   - 停摆更久：没被 outRing 覆盖到的分钟不计入，写检查点时 gap = true，Console 显示「CUSUM gap」。这段时间的损失上界仍由额度桶保证
   - PATROL_STATE 和 QUOTA_REFILL 放同一份报告，不另发交易。省下的是存储写入：每个 org 每种代币每天约 150 次，不是 1,440 次；报告数量由额度补充决定（有流量时每分钟一份）。这是对 proposal §6 F「每分钟写一次」的偏离，记进 STATUS（D58）
 - 报警只把 QUOTA_REFILL 减半，不封锁
+- **尖峰规则（Shewhart，补 CUSUM 的盲点）：** CUSUM 抓「慢慢抬高」，抓不到「几笔巨额」（Bitget 回测，STATUS）。某一分钟 x_t > spikeMax（每种代币一个，代币数量；建议取 H0 每个活跃分钟 p99 的 10 倍）时，S 直接设为 h_alarm + spikeHold（默认 20 × 1000），报警立刻成立，之后照常随 z − k 衰减（空闲分钟约十分钟内回落）。只改 S，所以检查点格式和 D58 都不变；动作和 CUSUM 报警一样只减半补充量，升 L1 仍要第二个独立信号（D55）。config 没有 spikeMax 或为 "0" 时不启用。Bitget 回测（analysis/bitget_spike.py，公开链上数据；误报只按事发前 3.8 天算）：10 倍 p99 时 USDT 在 18:58（第一笔大额那一分钟）、ETH 在 19:01 报警，早于 Bitget 19:05 发现；误报每天 0.53（USDT）、0.27（ETH）
 - 参数先用默认值，6.6 用公开数据重调
 
 ### 6.4 一跳溯源（P2）

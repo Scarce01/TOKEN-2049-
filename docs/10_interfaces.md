@@ -298,6 +298,7 @@ packages/shared 提供 `encodeReport` / `decodeReport` / `seal` / `unseal`，wor
 | T_min / T_max（qETH） | 2 / 8 qETH | 隐藏门槛范围（假门槛写 50） |
 | QUOTA 补充间隔 / r_max | 60 秒 / 1,000 qUSD | 阶段 6 用公开数据重定 |
 | CUSUM k / h | 0.5 / 5 | 阶段 6 用数据重调 |
+| CUSUM spikeMax / spikeHold | 每种代币一个（"0" = 不启用）/ 20 | spikeMax 建议 = H0 每个活跃分钟 p99 的 10 倍（36_phase6.md 6.3 尖峰规则） |
 
 ## 8. 阶段 4 到 6 新增的接口
 
