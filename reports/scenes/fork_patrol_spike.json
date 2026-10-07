@@ -1,0 +1,31 @@
+{
+  "ok": true,
+  "summary": "CUSUM spike rule on the local fork: a real 3,000 qUSD payout alarms with spikeMax set, not without",
+  "source": "testnet fork (local)",
+  "setup": "anvil fork of Base Sepolia, contracts via scripts/deploy.sh base-sepolia-fork, CRE CLI v1.37.0 simulate --broadcast, Patrol trigger 3 (quota + CUSUM)",
+  "outflow": "hot vault org A, qUSD: 50 at minute 29856079, 50 at 29856091, 3,000 at 29856152 (keeper payout from the prevention E2E, case D)",
+  "checkpoint_before": {
+    "minute": 29856151,
+    "S": 0,
+    "alarm": false
+  },
+  "results": [
+    {
+      "case": "spike rule off (control, same recompute function, same config and ring)",
+      "minute": 29856155,
+      "S": 0,
+      "alarm": false,
+      "ok": true
+    },
+    {
+      "case": "spikeMax 1,000 qUSD, CRE report on chain",
+      "minute": 29856155,
+      "S": 7045,
+      "alarm": true,
+      "h": 5000,
+      "patrol_state_tx": "0xf76f69aacbc3040e77a12a081a74f4d28daa514b7002e4529b61af01bdfa1dd4",
+      "ok": true
+    }
+  ],
+  "note": "The control was computed off chain with workflows/patrol/src/logic/cusum.ts recompute() because Patrol writes a checkpoint only every 10 minutes or when the alarm flips; the spike-on value computed the same way equals the on-chain checkpoint (S 7045). Action on alarm stays soft (refill halved, D25)."
+}
