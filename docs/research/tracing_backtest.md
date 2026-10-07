@@ -33,6 +33,32 @@
 
 每个案例离线评分重算一次，输出逐字节相同（sha256 一致）。
 
+### 跨链：Across 与 Stargate（2026-10-07）
+
+单链时 Bitget 只找到 8/14：漏掉的钱包是攻击者在 Arbitrum、Optimism、Base、BSC 上偷到后，跨桥转回以太坊的。这些钱进以太坊时看起来是「干净的」，还把中枢钱包 Exploiter 3 的污染比例冲淡到 34%（低于 50% 就不往下追），所以它下游的钱包也一起漏掉。
+
+做法（`bridges.py`、`xchain.py`，配置在 `cases/bitget.json` 的 `xchain`）：
+- 同一个种子地址在每条源链上往前追（攻击者在各 EVM 链用同一把钥匙）。数据来自 NOWNodes 的 JSON-RPC：把地址的 nonce 二分，就能找出它发出的每一笔交易，原生币转账也看得到，不需要索引器
+- 每笔交易的收据里解出代币转账和桥存款：Across `FundsDeposited`（目标链 1）、Stargate `OFTSent`（目标 eid 30101）
+- 存款只有在以太坊上找到同一编号的到账才算：Across 用 (originChainId, depositId) 对 SpokePool 的 `FilledRelay`；Stargate 用 guid 对 `OFTReceived`。到账付给中转合约（AcrossAdapter）时，取同一笔交易里它再付出去的钱包
+- 每个配对变成一条跨链边（以太坊到账交易 + log 序号，和 CRE verify-edge 读的格式相同），再跑原来的以太坊追踪与评分。标准答案不参与任何判断
+
+| | 单链 | 跨链 |
+| --- | --- | --- |
+| 找到 | 8/14 | **12/14** |
+| 前 28 名命中 | 8 | **12** |
+| 源链 | | Arbitrum 4 个地址、5 笔存款；Optimism 3、8（配对 7）；Base 2、4；BSC 3、49；共 65 条跨链边 |
+| 新找到的首次触及 | | Exploiter 21 攻击后 80 分钟，Exploiter 8 192 分钟，Exploiter 12 209 分钟 |
+| NOWNodes 读取 | | 2,671 次不重复的 JSON-RPC（全部缓存；免费方案每月 10 万次） |
+
+还漏 2 个（Exploiter 13、14），都在中枢钱包下游。中枢现在 40%，仍低于 50%，原因是还有没解码的入金：
+- 意图型桥（Relay、deBridge 一类）由解决者从自己的钱包直接付款，目标链上没有可配对的桥事件。Exploiter 6 的 3,472 万美元入金里约 2,680 万来自这类普通钱包
+- 从零地址铸造的入金（Exploiter 7 633 万、Exploiter 6 103 万），很可能是 USDC 经 CCTP 跨链，还没解码
+- Mayan（3 笔，可能来自 Solana）没有解码
+- Avalanche 跳过：NOWNodes 的 Avalanche 节点只保留约 1,000 个区块的状态，nonce 二分做不了
+
+重跑：`cd analysis/trace_bybit && python3 xchain.py --case bitget`（要 `NOWNODES_KEY` 与 `ETHERSCAN_API_KEY`；读过的都缓存），结果 `results/bitget_xchain_result.json`，两次运行 sha256 相同。
+
 ### 每项改进的作用
 
 | 改进 | 证据 |

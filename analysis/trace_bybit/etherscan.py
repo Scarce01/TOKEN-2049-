@@ -16,10 +16,19 @@ API = "https://api.etherscan.io/v2/api"
 _last = [0.0]
 
 
+def env(name):
+    """A key from the environment, else from analysis/trace_bybit/.env (NAME=value lines)."""
+    v = os.environ.get(name)
+    if not v and (HERE / ".env").exists():
+        for line in (HERE / ".env").read_text().splitlines():
+            k, sep, val = line.partition("=")
+            if sep and k.strip() == name:
+                v = val.strip()
+    return v
+
+
 def _key():
-    k = os.environ.get("ETHERSCAN_API_KEY")
-    if not k and (HERE / ".env").exists():
-        k = (HERE / ".env").read_text().split("=", 1)[1].strip()
+    k = env("ETHERSCAN_API_KEY")
     if not k:
         raise SystemExit("ETHERSCAN_API_KEY missing (analysis/trace_bybit/.env)")
     return k

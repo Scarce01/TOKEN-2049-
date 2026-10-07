@@ -71,5 +71,68 @@
   "rank_min_taint_ppm": 100000,
   "rank_note": "headline metric: candidates = reached within hops, not a breakpoint, at least 10% tainted; ranked by tainted amount (what an analyst reads first)",
   "max_tx_expand_per_level": 100,
-  "tx_expand_note": "swap-transaction expansion: at most 100 per level, largest tainted outflow first (same cap for every case; trades a few small swaps for run time under the free API limit)"
+  "tx_expand_note": "swap-transaction expansion: at most 100 per level, largest tainted outflow first (same cap for every case; trades a few small swaps for run time under the free API limit)",
+  "xchain": {
+    "note": "Origin chains for cross-chain tracing (bridges.py, xchain.py). Same seed address on every chain. An address is reached when a reached address itself sent it at least native_min (wei) or an allowlisted token at least min_units; symbols and decimals are read on-chain at run time. Thresholds are assumed values.",
+    "window_s": 432000,
+    "hops": 2,
+    "rpc": "NOWNodes (NOWNODES_KEY in analysis/trace_bybit/.env)",
+    "chains": {
+      "arbitrum": {
+        "chain_id": 42161,
+        "url": "https://arbitrum.nownodes.io/{key}",
+        "lookback": 6000000,
+        "native_min": "1000000000000000000",
+        "tokens": {
+          "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9": 2000,
+          "0xaf88d065e77c8cC2239327C5EDb3A432268e5831": 2000,
+          "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": 1
+        }
+      },
+      "optimism": {
+        "chain_id": 10,
+        "url": "https://optimism.nownodes.io/{key}",
+        "lookback": 1500000,
+        "native_min": "1000000000000000000",
+        "tokens": {
+          "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58": 2000,
+          "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85": 2000,
+          "0x4200000000000000000000000000000000000006": 1
+        }
+      },
+      "base": {
+        "chain_id": 8453,
+        "url": "https://base.nownodes.io/{key}",
+        "lookback": 1500000,
+        "native_min": "1000000000000000000",
+        "tokens": {
+          "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913": 2000,
+          "0x4200000000000000000000000000000000000006": 1
+        }
+      },
+      "bsc": {
+        "chain_id": 56,
+        "url": "https://bsc.nownodes.io/{key}",
+        "lookback": 4000000,
+        "native_min": "4000000000000000000",
+        "tokens": {
+          "0x55d398326f99059fF775485246999027B3197955": 2000,
+          "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d": 2000,
+          "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c": 4,
+          "0x2170Ed0880ac9A755fd29B2688956BD959F933F8": 1
+        }
+      },
+      "avalanche": {
+        "chain_id": 43114,
+        "url": "https://avax.nownodes.io/{key}/ext/bc/C/rpc",
+        "lookback": 1500000,
+        "native_min": "100000000000000000000",
+        "tokens": {
+          "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7": 2000,
+          "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E": 2000,
+          "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB": 1
+        }
+      }
+    }
+  }
 }
