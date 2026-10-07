@@ -58,17 +58,17 @@ export function Logo({ compact }: { compact?: boolean }) {
           points="15,1 27,8 27,22 15,29 3,22 3,8"
           fill="none"
           stroke="#D6A61F"
-          strokeWidth="1.6"
+          strokeWidth="1.3"
+          opacity="0.5"
         />
-        <polygon
-          points="15,8 21,11.5 21,18.5 15,22 9,18.5 9,11.5"
-          fill="#D6A61F"
-        />
-        <path d="M15 22v7" stroke="#D6A61F" strokeWidth="1.6" />
+        {/* isometric gold cube (QU3EE mark) */}
+        <polygon points="15,6.5 22,10.5 15,14.5 8,10.5" fill="#F5B21F" />
+        <polygon points="8,10.5 15,14.5 15,22.5 8,18.5" fill="#E09A17" />
+        <polygon points="22,10.5 15,14.5 15,22.5 22,18.5" fill="#9E6E0E" />
       </svg>
       {!compact && (
         <span className="text-[16px] font-semibold tracking-tight text-cream">
-          Quorum
+          QU<span className="text-[#E2B52E]">B</span>EE
         </span>
       )}
     </div>
@@ -80,24 +80,36 @@ export function Sidebar() {
     () => localStorage.getItem("q.nav") === "open",
   )
   useEffect(() => localStorage.setItem("q.nav", open ? "open" : "min"), [open])
+  // hovering the collapsed rail opens it over the page (names visible) without pushing the layout
+  const [hover, setHover] = useState(false)
+  const wide = open || hover
   const { pathname } = useLocation()
   return (
-    <aside
+    <div
       className={`${
         open ? "w-[208px]" : "w-[60px]"
-      } shrink-0 border-r border-white/[0.05] bg-[#0F1115] flex flex-col py-4 transition-[width] duration-200 ease-out`}
+      } shrink-0 relative transition-[width] duration-200 ease-out`}
+    >
+    <aside
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      className={`absolute inset-y-0 left-0 z-40 ${
+        wide ? "w-[208px]" : "w-[60px]"
+      } ${
+        hover && !open ? "shadow-[8px_0_30px_rgba(0,0,0,.5)]" : ""
+      } overflow-hidden whitespace-nowrap border-r border-white/[0.05] bg-[#0F1115] flex flex-col py-4 transition-[width,box-shadow] duration-200 ease-out`}
     >
       <div
         className={`h-8 mb-6 flex items-center ${
-          open ? "px-4" : "justify-center"
+          wide ? "px-4" : "justify-center"
         }`}
       >
-        <Logo compact={!open} />
+        <Logo compact={!wide} />
       </div>
-      <nav className={`flex flex-col gap-4 ${open ? "px-2.5" : "px-2"}`}>
+      <nav className={`flex flex-col gap-4 ${wide ? "px-2.5" : "px-2"}`}>
         {NAV.map((g) => (
           <div key={g.group}>
-            {open ? (
+            {wide ? (
               <div className="px-2.5 mb-1 font-mono text-[9.5px] tracking-[0.16em] uppercase text-mute">
                 {g.group}
               </div>
@@ -115,7 +127,7 @@ export function Sidebar() {
                   to={to}
                   aria-label={label}
                   className={`group relative flex items-center gap-3 h-9 rounded-md text-[13px] transition-colors ${
-                    open ? "px-2.5" : "justify-center"
+                    wide ? "px-2.5" : "justify-center"
                   } ${
                     active
                       ? "bg-[#D6A61F]/10 text-[#E2B52E]"
@@ -126,16 +138,16 @@ export function Sidebar() {
                     <span className="absolute left-0 top-2 bottom-2 w-0.5 bg-[#D6A61F] rounded" />
                   )}
                   <Icon name={icon} size={17} solid />
-                  {open && <span>{label}</span>}
+                  {wide && <span>{label}</span>}
                   {count &&
-                    (open ? (
+                    (wide ? (
                       <span className="ml-auto font-mono text-[10.5px] px-1.5 rounded bg-[#E5484D]/15 text-[#ff8a8d]">
                         {count}
                       </span>
                     ) : (
                       <span className="absolute top-1.5 right-2 w-1.5 h-1.5 rounded-full bg-[#E5484D]" />
                     ))}
-                  {!open && (
+                  {!wide && (
                     <span
                       role="tooltip"
                       className="pointer-events-none absolute left-full ml-3 px-2 py-1 rounded bg-[#191B20] border border-white/[0.08] text-[12px] text-cream whitespace-nowrap opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all z-50"
@@ -154,7 +166,7 @@ export function Sidebar() {
         aria-label={open ? "Collapse navigation" : "Expand navigation"}
         aria-expanded={open}
         className={`mt-auto mx-2 h-9 flex items-center gap-2.5 rounded-md text-mute hover:text-cream hover:bg-white/[0.03] ${
-          open ? "px-2.5" : "justify-center"
+          wide ? "px-2.5" : "justify-center"
         }`}
       >
         <Icon
@@ -162,9 +174,10 @@ export function Sidebar() {
           size={15}
           className={`transition-transform ${open ? "rotate-180" : ""}`}
         />
-        {open && <span className="text-[12px]">Collapse</span>}
+        {wide && <span className="text-[12px]">{open ? "Collapse" : "Keep open"}</span>}
       </button>
     </aside>
+    </div>
   )
 }
 

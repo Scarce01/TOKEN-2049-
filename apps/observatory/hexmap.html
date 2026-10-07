@@ -515,7 +515,7 @@ function groundAt(x,z,k=1){
   return h;
 }
 // debug / test hook (no secrets): obstacle model, planner and the per-frame bee step
-window.hexmapBees={get obstacles(){if(!obstacles)buildObstacles();return obstacles;},bees,blockerOf,planPath,keepOut,step:beeStep,patrol:patrolEvent,setGlow:v=>{glowOn=v;},get time(){return time;},stateAt,beatTo,selectBee,deselectBee,get selectedBee(){return selectedBee;},probeHornet:(t)=>{time=t;animateHornet(performance.now());return {time,visible:hornet.g.visible,scale:+hornet.g.scale.x.toFixed(1),op:+hornet.bodyMat.opacity.toFixed(2)};},probeFx:(t,vi)=>{time=t;if(vi!==undefined)verifyInfo=vi;drawVerify();drawSky();drawTrace();return {t:time,card:!verifyCard.hidden,sky:skyRings.filter(r=>r.visible).length,ribbon:traceTube.visible,ribbonOp:+traceTube.material.opacity.toFixed(2)};},cam:{focusBox,cellBox,step:stepCam,get anim(){return camAnim;},camera,controls,cells,exchanges}};
+window.hexmapBees={get obstacles(){if(!obstacles)buildObstacles();return obstacles;},bees,blockerOf,planPath,keepOut,step:beeStep,patrol:patrolEvent,setGlow:v=>{glowOn=v;},get time(){return time;},stateAt,beatTo,selectBee,deselectBee,get selectedBee(){return selectedBee;},probeHornet:(t)=>{time=t;animateHornet(performance.now());return {time,visible:hornet.g.visible,scale:+hornet.g.scale.x.toFixed(1),op:+hornet.bodyMat.opacity.toFixed(2)};},probeFx:(t,vi)=>{time=t;if(vi!==undefined)verifyInfo=vi;drawVerify();drawSky();drawTrace();return {t:time,card:!verifyCard.hidden,sky:skyRings.filter(r=>r.visible).length,ribbon:traceTube.visible,ribbonOp:+traceTube.material.opacity.toFixed(2)};},probeVerify:(el)=>{if(el===0){verifyFx={t0:performance.now(),org:'A',from:{tgt:controls.target.clone(),off:camera.position.clone().sub(controls.target),zoom:camera.zoom}};}if(verifyFx)verifyFx.t0=performance.now()-el*1000;drawVerifyFx();const t=controls.target;return{el,active:!!verifyFx,tgt:[Math.round(t.x),Math.round(t.z)],zoom:+camera.zoom.toFixed(2)};},probeFund:(el)=>{if(el===0){fundG.position.set(fundCenter.x,fundCenter.h,fundCenter.z);fundG.visible=true;fundFx={t0:performance.now(),from:{tgt:controls.target.clone(),off:camera.position.clone().sub(controls.target),zoom:camera.zoom}};}if(fundFx)fundFx.t0=performance.now()-el*1000;drawFundFx();return{el,active:!!fundFx,slabOp:+fundSlab.material.opacity.toFixed(2),coreOp:+fundCore.material.opacity.toFixed(2),coreY:+fundCore.position.y.toFixed(1),coreCol:fundCore.material.color.getHexString(),coinOp:+fundCoin.material.opacity.toFixed(2),bits:fundBits.filter(b=>b.m.visible).length};},probeHeight:(key)=>{const c=cells.find(x=>x.key===key);return c?+heightAt(c).toFixed(1):null;},cam:{focusBox,cellBox,step:stepCam,get anim(){return camAnim;},camera,controls,cells,exchanges}};
 // Patrol trace on the ground: the hex columns under a patrolling bee light up light blue (the shader's
 // vFx.w channel) and fade out over GLOW_TAU seconds after it moves on; a new spot lights up again.
 const GLOW_TAU=1,patrolGlow=new Map(),baseBlue=new Float32Array(cells.length);let glowOn=true;
@@ -799,10 +799,120 @@ function skyEmit(base,n,cx,cy,cz,t0,dur,period,maxR,rise,color){
 }
 function drawSky(){
   for(const r of skyRings)r.visible=false;
-  skyEmit(0,3,coreCell.x,coreCell.height+320,coreCell.y,3.5,3.2,1.0,540,140,'#ffd27a');
-  const tw=nodeTowers[(verifyInfo&&verifyInfo.exchange)||'A'];
-  if(tw)skyEmit(3,3,tw.g.position.x,tw.top,tw.g.position.z,1.5,3.0,.9,320,110,'#9b7bff');
+  // The CRE + NOWNodes verify ripples (rings 0-5) are driven in real time by drawVerifyFx(), not the replay
+  // clock, so they always spread smoothly. Here only the tracking phase keeps its clock-driven node ripples.
   if(time>=10.6&&time<=14){let b=6;for(const id in nodeTowers){const t=nodeTowers[id];if(b>12)break;skyEmit(b,2,t.g.position.x,t.top,t.g.position.z,10.6,3.4,.85,280,95,'#7aa2ff');b+=2;}}
+}
+// Verify choreography (real time, decoupled from the replay clock), triggered when the decoy is touched. ONE
+// consistent viewing angle and zoom throughout, panning between targets (no per-target zoomed focus):
+//   0-3.0s  watch the hornet attack the decoy
+//   3.0s    pan to the CRE/DON tower; transparent gold hex blocks ripple OUTWARD from the tip (the crest travels)
+//   5.5s    pan to the NOWNodes tower; its surrounding ground blocks bob in a short yellow ripple
+//   ~9.7s   2s after that ripple, pan back to the hornet; then the attack's own finale continues
+let verifyFx=null; // {t0, org, from:{tgt,off,zoom}}
+const ATK_OFF=new THREE.Vector3(230,1150,850); // viewing direction for the attack camera, raised higher than home for a more top-down look
+const ATK_ZOOM=1.05;
+const easeC=u=>{u=clamp(u,0,1);return u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2;};
+const VFX={creRipAt:4.3,creRipDur:3.0,nnRipAt:9.3,nnRipDur:1.6,end:13.5};
+// Frame the decoy directly (used by the 'focus' message; cellBox would snap to a nearby building).
+const decoyBox=()=>new THREE.Box3(new THREE.Vector3(threat.x-150,0,threat.y-150),new THREE.Vector3(threat.x+150,threat.height+160,threat.y+150));
+function startVerifyFx(org){
+  verifyFx={t0:performance.now(),org:org||'A',from:{tgt:controls.target.clone(),off:camera.position.clone().sub(controls.target),zoom:camera.zoom}};
+  camAnim=null;follow=false;dirty=true;invalidate();
+}
+// CRE and NOWNodes verification ripples act on the REAL ground (the foundation): during each tower's phase a crest
+// travels outward through the actual terrain hexes, lifting them and lighting them gold as it passes - not separate
+// floating blocks. verifyWaveAt() returns the height a column gains and sets verifyGlow for its colour (read in draw).
+let verifyGlow=0,verifyWaving=false;
+function verifyWaveAt(c){
+  verifyGlow=0;
+  if(!verifyFx||reduceMotion.matches)return 0;
+  if(!(c.kind==='terrain'||c.kind==='account'||c.tier==='Hot'))return 0;
+  const el=(performance.now()-verifyFx.t0)/1000,tw=nodeTowers[verifyFx.org]||nodeTowers.A;
+  let cx,cz,t0,dur,spread,amp;
+  if(el>=VFX.creRipAt&&el<=VFX.creRipAt+VFX.creRipDur){cx=coreCell.x;cz=coreCell.y;t0=VFX.creRipAt;dur=VFX.creRipDur;spread=190;amp=30;}
+  else if(tw&&el>=VFX.nnRipAt&&el<=VFX.nnRipAt+VFX.nnRipDur){cx=tw.g.position.x;cz=tw.g.position.z;t0=VFX.nnRipAt;dur=VFX.nnRipDur;spread=95;amp=18;}
+  else return 0;
+  const d=Math.hypot(c.x-cx,c.y-cz);
+  if(d>spread+30)return 0;
+  const u=(el-t0)/dur,front=spread*u,dd=d-front,crest=Math.exp(-(dd*dd)/1152),fade=Math.sin(Math.PI*clamp(u,0,1));
+  verifyGlow=fade*crest*0.9;
+  return fade*amp*crest;
+}
+function drawVerifyFx(){
+  if(!verifyFx)return;
+  const el=(performance.now()-verifyFx.t0)/1000;
+  // the ground ripple only drives the terrain rebuild during its own windows; restore the ground once it ends
+  const waving=(el>=VFX.creRipAt&&el<=VFX.creRipAt+VFX.creRipDur)||(el>=VFX.nnRipAt&&el<=VFX.nnRipAt+VFX.nnRipDur);
+  if(verifyWaving&&!waving)terrainTime=-1;verifyWaving=waving;
+  // hold until the chain confirms: run the intro to el 13.3, then hold on the hornet until the 'verified' step lands
+  if((verifyFx.verified&&el>=13.3)||el>45){verifyFx=null;verifyWaving=false;follow=true;terrainTime=-1;invalidate();return;}
+  const tw=nodeTowers[verifyFx.org]||nodeTowers.A;
+  const decoy={x:threat.x,z:threat.y},core={x:coreCell.x,z:coreCell.y},node=tw?{x:tw.g.position.x,z:tw.g.position.z}:decoy;
+  // same viewing angle throughout; each waypoint carries its own zoom - the tower checks sit at ATK_ZOOM and the
+  // return to the hornet pulls the camera back a bit (Zback) so the attack reads in its wider surroundings.
+  const Zt=ATK_ZOOM,Zback=0.85;
+  const wp=[[0,decoy,Zt],[3.0,decoy,Zt],[4.0,core,Zt],[8.0,core,Zt],[9.0,node,Zt],[12.5,node,Zt],[13.3,decoy,Zback]];
+  let L=wp[wp.length-1],tx=L[1].x,tz=L[1].z,tzoom=L[2];
+  for(let i=0;i<wp.length-1;i++){const a=wp[i],b=wp[i+1];if(el<=b[0]){const k=easeC((el-a[0])/(b[0]-a[0]));tx=a[1].x+(b[1].x-a[1].x)*k;tz=a[1].z+(b[1].z-a[1].z)*k;tzoom=a[2]+(b[2]-a[2])*k;break;}}
+  const ie=easeC(el/0.8),f=verifyFx.from; // ease target, angle and zoom from wherever the camera was into the attack view
+  const off=f.off.clone().lerp(ATK_OFF,ie);
+  controls.target.set(f.tgt.x+(tx-f.tgt.x)*ie,0,f.tgt.z+(tz-f.tgt.z)*ie);
+  camera.position.copy(controls.target).add(off);
+  camera.zoom=f.zoom+(tzoom-f.zoom)*ie;camera.updateProjectionMatrix();controls.update();
+  // the CRE / NOWNodes ground ripples are applied to the real terrain in verifyWaveAt() during the rebuild below
+  dirty=true;
+}
+// Recovery monument: once the funds are secured and the blue trail is back at the decoy, the ground there goes flat
+// (frozen funds) and a "temporary lane fund" rises - several hex blocks merging into one, turning gold, a coin above
+// it. Real time, started by the host's 'fund' message; it holds briefly then fades on its own (the fund is temporary).
+function makeCoinTexture(){
+  const cv=document.createElement('canvas');cv.width=cv.height=128;const x=cv.getContext('2d');
+  const g=x.createRadialGradient(64,52,8,64,64,60);g.addColorStop(0,'#ffe9a8');g.addColorStop(.6,'#f5b21f');g.addColorStop(1,'#c7890f');
+  x.fillStyle=g;x.beginPath();x.arc(64,64,58,0,7);x.fill();
+  x.strokeStyle='#8a5e0a';x.lineWidth=6;x.beginPath();x.arc(64,64,57,0,7);x.stroke();
+  x.fillStyle='#7a520a';x.font='bold 78px Arial';x.textAlign='center';x.textBaseline='middle';x.fillText('$',64,70);
+  const t=new THREE.CanvasTexture(cv);t.colorSpace=THREE.SRGBColorSpace;return t;
+}
+// The vault stands on open ground to the LEFT of the decoy, clear of the towers (not on the decoy itself).
+const fundCell=(()=>{const tx=threat.x-90,tz=threat.y-26;let best=threat,bd=1e9;for(const c of cells){if((c.kind==='terrain'||c.kind==='account')&&c.tier===undefined){const d=Math.hypot(c.x-tx,c.y-tz);if(d<bd){bd=d;best=c;}}}return best;})();
+const fundCenter={x:fundCell.x,z:fundCell.y,h:fundCell.height};
+const fundG=new THREE.Group();fundG.visible=false;scene.add(fundG);
+const FGREY=new THREE.Color('#c3c8d1'),FGOLD=new THREE.Color('#f5b21f');
+const fundSlab=new THREE.Mesh(new THREE.CylinderGeometry(90,90,5,6),new THREE.MeshStandardMaterial({color:'#bfe0f5',metalness:.35,roughness:.5,transparent:true,opacity:0}));fundSlab.rotation.y=Math.PI/6;fundG.add(fundSlab);
+const fundCore=new THREE.Mesh(new THREE.CylinderGeometry(40,40,90,6),new THREE.MeshStandardMaterial({color:FGREY.clone(),metalness:.45,roughness:.45,transparent:true,opacity:0}));fundCore.rotation.y=Math.PI/6;fundG.add(fundCore);
+const fundBits=Array.from({length:6},(_,i)=>{const m=new THREE.Mesh(new THREE.CylinderGeometry(14,14,30,6),new THREE.MeshStandardMaterial({color:FGREY.clone(),metalness:.45,roughness:.45,transparent:true,opacity:0}));m.rotation.y=Math.PI/6;fundG.add(m);return {m,a:i/6*Math.PI*2};});
+const fundCoin=new THREE.Sprite(new THREE.SpriteMaterial({map:makeCoinTexture(),transparent:true,opacity:0,depthWrite:false,toneMapped:false}));fundCoin.scale.set(60,60,1);fundG.add(fundCoin);
+let fundFx=null; // {t0, from:{tgt,off,zoom}}
+const FUND={slabAt:1.2,riseAt:1.0,riseEnd:2.8,goldAt:2.6,goldEnd:3.6,coinAt:3.2,coinEnd:4.3,hold:7.0,end:9.0};
+const FUND_ZOOM=2.0; // zoom in for the recovery monument (kept moderate to match the wider attack camera)
+function startFundFx(){
+  fundFx={t0:performance.now(),from:{tgt:controls.target.clone(),off:camera.position.clone().sub(controls.target),zoom:camera.zoom}};
+  fundG.position.set(fundCenter.x,fundCenter.h,fundCenter.z);fundG.visible=true;camAnim=null;follow=false;dirty=true;invalidate();
+}
+function drawFundFx(){
+  if(!fundFx)return;
+  const el=(performance.now()-fundFx.t0)/1000;
+  if(el>FUND.end){fundFx=null;fundG.visible=false;follow=true;terrainTime=-1;invalidate();return;} // restore the flattened plaza
+  const out=el>FUND.hold?clamp(1-(el-FUND.hold)/(FUND.end-FUND.hold),0,1):1; // fade out (temporary)
+  // frozen funds: an icy slab caps the raised flat platform (foundation at local y = LIFT = 24)
+  const sU=easeC(clamp(el/FUND.slabAt,0,1));fundSlab.material.opacity=.78*sU*out;fundSlab.position.y=26;
+  // the vault is built up from the foundation: hex blocks rise from the platform and merge into one tall column
+  const rU=easeC(clamp((el-FUND.riseAt)/(FUND.riseEnd-FUND.riseAt),0,1));
+  fundCore.position.y=-25+rU*94;fundCore.material.opacity=rU*out;
+  for(const b of fundBits){const rad=58*(1-rU);b.m.position.set(Math.cos(b.a)*rad,24+rU*12,Math.sin(b.a)*rad);b.m.material.opacity=(1-rU*.85)*out;b.m.visible=rU<0.96&&b.m.material.opacity>0.02;}
+  // turns gold
+  const yU=clamp((el-FUND.goldAt)/(FUND.goldEnd-FUND.goldAt),0,1),col=FGREY.clone().lerp(FGOLD,yU);
+  fundCore.material.color.copy(col);for(const b of fundBits)b.m.material.color.copy(col);
+  // a coin rises above the vault
+  const cU=easeC(clamp((el-FUND.coinAt)/(FUND.coinEnd-FUND.coinAt),0,1));
+  fundCoin.material.opacity=cU*out;fundCoin.position.set(0,124+Math.sin(el*2.4)*3,0);const cs=60*(0.5+0.5*cU);fundCoin.scale.set(cs,cs,1);
+  // camera looks a bit right of the vault so the vault sits on the LEFT of the frame, with the decoy to its right
+  const ie=easeC(el/0.8),f=fundFx.from,off=f.off.clone().lerp(ATK_OFF,ie);
+  const camTx=fundCenter.x+75,camTz=fundCenter.z+15;
+  controls.target.set(f.tgt.x+(camTx-f.tgt.x)*ie,0,f.tgt.z+(camTz-f.tgt.z)*ie);
+  camera.position.copy(controls.target).add(off);camera.zoom=f.zoom+(FUND_ZOOM-f.zoom)*ie;camera.updateProjectionMatrix();controls.update();
+  dirty=true;
 }
 function drawVerify(){
   if(verifyInfo&&time<.5)verifyInfo=null;
@@ -947,12 +1057,24 @@ function followTrail(){
   if(Math.hypot(dx,dz)<.5)return;
   const step=new THREE.Vector3(dx*.08,0,dz*.08);camera.position.add(step);controls.target.add(step);controls.update();
 }
-function heightAt(c){return Math.max(2,c.height+waveAt(c)+trackAt(c));}
+// Frozen funds: during the recovery fund, the plaza columns around the decoy ease down to a common flat level,
+// so the ground visibly goes flat. They ease back as the fund fades (it is temporary).
+const FLAT_R=85,LIFT=24;
+function fundFlat(c){
+  if(!fundFx)return 0;
+  const d=Math.hypot(c.x-fundCenter.x,c.y-fundCenter.z);
+  if(d>FLAT_R)return 0;
+  const el=(performance.now()-fundFx.t0)/1000;
+  const inK=easeC(clamp((el-0.3)/1.3,0,1)),outK=1-clamp((el-FUND.hold)/(FUND.end-FUND.hold),0,1);
+  const edge=clamp((FLAT_R-d)/26,0,1); // flat across the top, ramp down over the last 26 units so it meets the terrain
+  return inK*outK*edge*((fundCell.height+LIFT)-c.height); // raise this ground into a flat frozen platform (the vault's foundation)
+}
+function heightAt(c){return Math.max(2,c.height+waveAt(c)+trackAt(c)+fundFlat(c)+verifyWaveAt(c));}
 let terrainTime=-1;
 function draw(){
   dirty=false;const state=stateAt(time);renderer.shadowMap.needsUpdate=true;
-  if(terrainTime!==time){
-  for(const c of cells){const h=heightAt(c),i=(c.index-1)*4;dummy.position.set(c.x,0,c.y);dummy.scale.set(1,h,1);dummy.updateMatrix();columns.setMatrixAt(c.index-1,dummy.matrix);fxAttr.array[i]=Math.max(waveGlow,fxYellow);fxAttr.array[i+1]=fxHeat;fxAttr.array[i+2]=fxRed;baseBlue[c.index-1]=fxBlue;fxAttr.array[i+3]=Math.max(fxBlue,glowOf(c.index-1,performance.now()/1000));}
+  if(terrainTime!==time||fundFx||verifyWaving){
+  for(const c of cells){const h=heightAt(c),i=(c.index-1)*4;dummy.position.set(c.x,0,c.y);dummy.scale.set(1,h,1);dummy.updateMatrix();columns.setMatrixAt(c.index-1,dummy.matrix);fxAttr.array[i]=Math.max(waveGlow,fxYellow,verifyGlow);fxAttr.array[i+1]=fxHeat;fxAttr.array[i+2]=fxRed;baseBlue[c.index-1]=fxBlue;fxAttr.array[i+3]=Math.max(fxBlue,glowOf(c.index-1,performance.now()/1000));}
   fxAttr.needsUpdate=true;
   columns.instanceMatrix.needsUpdate=true;terrainTime=time;
   }
@@ -971,7 +1093,7 @@ function draw(){
   projectLabel(marker,threat.x,heightAt(threat)+18,threat.y,state.hit);
   projectLabel(shareLabel,networkTarget.x,heightAt(networkTarget)+24,networkTarget.y,state.shared);
   projectLabel(cashLabel,cashOut.x,cashOut.height+CAGE.wall+30,cashOut.y,time>=CAGE.end-.4);
-  drawVerify();drawSky();drawTrace();
+  drawVerify();drawSky();drawVerifyFx();drawFundFx();drawTrace();
 }
 function options(){
   const list=[...cells.filter(c=>c.kind==='decoy'),...cells.filter(c=>c.kind==='vault'),...cells.filter(c=>c.kind==='account')];
@@ -1066,7 +1188,7 @@ function homeView(){
 }
 function beatTo(t){playing=false;camAnim=null;beatFrom=time;beatTarget=clamp(t,0,duration);beatT0=performance.now();follow=true;invalidate();}
 function stepBeat(now){const u=clamp((now-beatT0)/BEAT_DUR,0,1),e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;time=beatFrom+(beatTarget-beatFrom)*e;updateUI();dirty=true;if(u>=1)beatTarget=null;}
-function frame(now){request=0;if(beatTarget!=null)stepBeat(now);if(camAnim)stepCam(now);else followTrail();if(flowing()){honey.uniforms.uTime.value=now/1000;animateBeacons(now);}if(playing){time=Math.min(duration,time+Math.min((now-lastFrame)/1000,.1)*Number($('speed').value));lastFrame=now;if(time>=duration)playing=false;updateUI();dirty=true;}if(dirty)draw();else if(flowing())renderer.render(scene,camera);if((playing||flowing()||camAnim||beatTarget!=null)&&!request)request=requestAnimationFrame(frame);}
+function frame(now){request=0;if(beatTarget!=null)stepBeat(now);if(camAnim)stepCam(now);else followTrail();if(flowing()){honey.uniforms.uTime.value=now/1000;animateBeacons(now);}if(playing){time=Math.min(duration,time+Math.min((now-lastFrame)/1000,.1)*Number($('speed').value));lastFrame=now;if(time>=duration)playing=false;updateUI();dirty=true;}if(verifyFx||fundFx)dirty=true;if(dirty)draw();else if(flowing())renderer.render(scene,camera);if((playing||flowing()||camAnim||beatTarget!=null||verifyFx||fundFx)&&!request)request=requestAnimationFrame(frame);}
 function invalidate(){dirty=true;if(!request)request=requestAnimationFrame(frame);}
 function setTime(value){time=clamp(value,0,duration);updateUI();invalidate();}
 function togglePlay(){if(!playing&&time>=duration)time=0;playing=!playing;lastFrame=performance.now();updateUI();invalidate();}
@@ -1118,10 +1240,11 @@ if(embed){
     if(m.type==='time'){playing=false;setTime(m.t);}
     else if(m.type==='beat')beatTo(m.t);
     else if(m.type==='home')homeView();
-    else if(m.type==='verify'){verifyInfo=m;invalidate();}
+    else if(m.type==='verify'){verifyInfo=m;if(m.phase==='run')startVerifyFx(m.exchange);else if(m.phase==='done'&&verifyFx)verifyFx.verified=true;invalidate();}
+    else if(m.type==='fund')startFundFx();
     else if(m.type==='patrol')patrolEvent(m);
     else if(m.type==='live'){liveInfo=m;invalidate();}
-    else if(m.type==='focus'){const e=exchanges.find(e=>e.id===m.exchange),c=e&&cells.find(c=>c.q===e.q&&c.r===e.r);if(c)focusBox(cellBox(c));}
+    else if(m.type==='focus'){if(m.target==='decoy'){focusBox(decoyBox());}else{const e=exchanges.find(e=>e.id===m.exchange),c=e&&cells.find(c=>c.q===e.q&&c.r===e.r);if(c)focusBox(cellBox(c));}}
     else if(m.type==='view')({in:()=>zoomBy(1.2),out:()=>zoomBy(1/1.2),left:()=>panBy(-60,0),right:()=>panBy(60,0),top:()=>$('top-view').click(),reset:resetView,all:()=>{resetView();zoomBy(.48);}})[m.kind]?.();});
   parent.postMessage({type:'ready'},'*');
 }

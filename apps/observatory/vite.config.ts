@@ -42,6 +42,7 @@ react(),
         '/rpc': { target: 'http://127.0.0.1:8545', changeOrigin: true, rewrite: (p) => p.replace(/^\/rpc/, '') || '/' },
         '/bridge': { target: 'http://127.0.0.1:8790', changeOrigin: true, rewrite: (p) => p.replace(/^\/bridge/, '') || '/' },
         '/decoygen': { target: 'http://127.0.0.1:8791', changeOrigin: true },
+        '/history': { target: 'http://127.0.0.1:42069', changeOrigin: true },
       },
       watch: {
         ignored: [

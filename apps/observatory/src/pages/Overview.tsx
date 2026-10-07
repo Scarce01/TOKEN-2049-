@@ -6,6 +6,7 @@ import { DetailPanel } from '../components/WorldDetail'
 import { DECOYS, DISTRICTS, STEPS, T, TR, stepAt, traceCaption, type WorldMode } from '../components/worldData'
 import { useReplay } from '../components/replay'
 import SecurityPanel from '../components/SecurityPanel'
+import AttackTimeline from '../components/AttackTimeline'
 import { ORGS, readLive, useLive } from '../live/chain'
 import { runAttack, toMap } from '../live/bridge'
 
@@ -142,13 +143,14 @@ export default function Overview() {
     try {
       await runAttack((e) => {
         if (e.type === 'error') { setAtk((a) => ({ ...a, busy: false, err: e.message })); return }
-        if (e.type === 'start') { atkOrg.current = e.org; toMap({ type: 'focus', exchange: e.org }); return }
+        if (e.type === 'start') { atkOrg.current = e.org; toMap({ type: 'home' }); return } // overview angle; the verify step runs the attack -> CRE -> NOWNodes -> hornet choreography at one consistent angle
         if (e.type === 'done') {
-          // attacker trapped -> finale: trace the funds to the off-ramp, hold, then the attacker fades away
+          // attacker trapped -> finale: blue trail settles back to the decoy, then the temporary vault rises there
           toMap({ type: 'beat', t: BEAT.done }) // 10: caged, cash-out held
-          setTimeout(() => toMap({ type: 'beat', t: 13.6 }), 2200) // trace to the (illustrative cross-chain) off-ramp
+          setTimeout(() => toMap({ type: 'beat', t: 13.6 }), 2200) // blue trail settles back to the decoy
           setTimeout(() => toMap({ type: 'beat', t: 16 }), 5200) // settle: attacker neutralised, deposit held
-          setAtk({ busy: false, done: true, status: 'Attacker trapped · funds traced to the off-ramp and held (illustrative cross-chain)' })
+          setTimeout(() => toMap({ type: 'fund' }), 4200) // money back at the decoy -> frozen-funds slab + temporary vault rises
+          setAtk({ busy: false, done: true, status: 'Attacker trapped · funds secured in a temporary vault at the decoy' })
           return
         }
         const key = e.type === 'response' ? e.event : e.phase
@@ -168,19 +170,12 @@ export default function Overview() {
   useEffect(() => {
     if (atk.done && atkRecovered && !recovering.current) {
       recovering.current = true
-      toMap({ type: 'beat', t: 13.5 }) // money traced back to source (blue release)
-      setAtk((a) => ({ ...a, status: 'Funds traced and secured · exchange standing down' }))
-      setTimeout(() => { toMap({ type: 'beat', t: 0 }); atkOrg.current = null; recovering.current = false; setAtk({ busy: false, status: '' }) }, 3800)
+      toMap({ type: 'beat', t: 0 }) // alert cleared -> the map returns to calm, bees resume patrol (the temporary vault played on 'done')
+      setAtk((a) => ({ ...a, status: 'Exchange standing down · patrol resumed' }))
+      setTimeout(() => { atkOrg.current = null; recovering.current = false; setAtk({ busy: false, status: '' }) }, 1500)
     }
   }, [atk.done, atkRecovered])
 
-  const chip = atk.err
-    ? { key: 'err', tag: 'ERROR', tone: 'text-[#ff8a8d]', text: atk.err }
-    : atk.busy || atk.done
-      ? { key: atk.status, tag: atk.done ? 'CONTAINED' : 'LIVE ATTACK', tone: atk.done ? 'text-[#5fd38d]' : 'text-cream', text: atk.status }
-      : tracing
-        ? { key: caption, tag: 'TRACE', tone: tr >= TR.found ? 'text-[#ff8a8d]' : 'text-cream', text: caption }
-        : { key: caption, tag: mode.toUpperCase(), tone: alerted.length ? 'text-[#e9c46a]' : 'text-dim', text: caption }
   const done = tracing ? tr >= TR.end : t >= T.end
 
   return (
@@ -230,15 +225,11 @@ export default function Overview() {
         </div>
       </div>
 
+      {/* left pop-out: one card per stage of the real attack (bridge /attack/status) */}
+      <AttackTimeline />
+
       {/* attack control: no scrubber. The button runs the real backend flow; the map plays each response. */}
       <div className="absolute -translate-x-1/2 bottom-6 z-20 flex flex-col items-center transition-[left] duration-500" style={{ left: selected ? `${(1 - PANEL_SHARE) * 50}%` : '50%' }}>
-        <div className="mb-2.5 flex justify-center max-w-[min(70vw,620px)]">
-          <div key={chip.key} className="tag-in flex items-center gap-2.5 h-7 px-3 rounded-md bg-[#0B0D10]/85 backdrop-blur">
-            <span className="font-mono text-[10px] text-mute shrink-0">{chip.tag}</span>
-            <span className={`font-mono text-[11px] uppercase tracking-[0.12em] truncate ${chip.tone}`}>{chip.text}</span>
-            {atk.tx && <span className="font-mono text-[10px] text-mute shrink-0">\u00b7 {atk.tx.slice(0, 6)}\u2026{atk.tx.slice(-4)}{atk.block ? ` \u00b7 blk ${atk.block.toLocaleString('en-US')}` : ''}</span>}
-          </div>
-        </div>
         {tracing ? (
           <button onClick={() => (done ? changeMode('trace') : setPlaying(!playing))}
             className="flex items-center gap-2 h-11 px-6 rounded-xl bg-[#D6A61F] text-ink text-[13px] font-semibold hover:bg-[#E2B52E] shadow-[0_8px_30px_rgba(214,166,31,.35)]">

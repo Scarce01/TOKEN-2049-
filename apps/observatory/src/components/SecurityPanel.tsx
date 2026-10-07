@@ -7,7 +7,7 @@ import { HANDLERS, readPatrol, toMap, type HandlerState, type PatrolStatus } fro
 // threats, activity. Exchange view: reserves, vault policy, protected-asset and CUSUM plots, activity.
 // Every value is read from the fork (contracts, events) or from the Patrol scheduler's status.
 
-const TIER = { hot: '#B98C1A', warm: '#9A4A2C', cold: '#4A8BE0' } as const // validated: dark surface, CVD-safe
+const TIER = { hot: '#F5CF63', warm: '#E2B52E', cold: '#A9770F' } as const // honey shades (light->dark), distinguishable by lightness
 const KIND_NAME = Object.fromEntries(Object.entries(Kind).map(([k, v]) => [v, k.toLowerCase().replace(/_/g, ' ')]))
 const DECISION_NAME = Object.fromEntries(Object.entries(Decision).map(([k, v]) => [v, k]))
 const DAY = 86400
@@ -27,7 +27,7 @@ function left(sec: number) {
 const ago = (ms: number) => (ms < 60e3 ? `${Math.max(0, Math.round(ms / 1e3))}s ago` : `${Math.round(ms / 60e3)}m ago`)
 
 type Tone = 'good' | 'warn' | 'crit' | 'idle'
-const TONE: Record<Tone, string> = { good: 'bg-[#5fd38d]', warn: 'bg-[#e9c46a]', crit: 'bg-[#ff6b5a]', idle: 'bg-white/25' }
+const TONE: Record<Tone, string> = { good: 'bg-[#E2B52E]', warn: 'bg-[#E2B52E]', crit: 'bg-[#ff6b5a]', idle: 'bg-white/25' } // honey for everything but red
 function orgTone(o: LiveOrg, now: number): Tone {
   if (o.alert >= 4 && o.alertExpiresAt > now) return 'crit'
   if (o.alert > 0 && o.alertExpiresAt > now) return 'warn'
@@ -91,7 +91,7 @@ export default function SecurityPanel({ selected, onSelect, hidden }: { selected
     return (
       <button onClick={() => setCollapsed(false)} aria-label="Open network panel"
         className="absolute top-4 right-4 z-30 flex items-center gap-2 h-9 pl-3 pr-3.5 rounded-full bg-[#0D0F12]/92 backdrop-blur border border-white/[0.1] shadow-[0_8px_30px_rgba(0,0,0,.5)] text-[12.5px] text-cream hover:border-white/25 transition-colors">
-        <span className={`w-1.5 h-1.5 rounded-full ${alerts ? 'bg-[#ff6b5a] animate-pulse' : 'bg-[#5fd38d]'}`} />
+        <span className={`w-1.5 h-1.5 rounded-full ${alerts ? 'bg-[#ff6b5a] animate-pulse' : 'bg-[#E2B52E]'}`} />
         Network{alerts ? ` · ${alerts} alert${alerts > 1 ? 's' : ''}` : ''}
       </button>
     )
@@ -143,6 +143,18 @@ function NetworkView({ live, error, events, patrol, patrolDown, onSelect, onClos
   const now = live?.chainTime ?? 0
   const alerts = live?.orgs.filter((o) => orgTone(o, now) !== 'good').length ?? 0
   const threats = events.filter((e) => e.name === 'ThreatAdded').reverse()
+  // accumulate a live hot-quota time series per org, for the expandable bar plot (updates each live poll)
+  const seriesRef = useRef<Record<string, { t: number; v: number }[]>>({})
+  useEffect(() => {
+    if (!live) return
+    const t = Date.now() / 1000
+    for (const o of live.orgs) {
+      const arr = seriesRef.current[o.letter] ?? (seriesRef.current[o.letter] = [])
+      const v = o.vaults[0].quota?.qUSD ?? 0
+      const last = arr[arr.length - 1]
+      if (!last || last.v !== v || t - last.t > 20) { arr.push({ t, v }); if (arr.length > 90) arr.shift() }
+    }
+  }, [live])
   return (
     <>
       <PopupHead eyebrow="Exchanges" title="Network" onClose={onClose} />
@@ -157,7 +169,7 @@ function NetworkView({ live, error, events, patrol, patrolDown, onSelect, onClos
         {tab === 'overview' && (
           <ul className="space-y-2">
             {(live?.orgs ?? ORGS.map(() => undefined)).map((o, i) =>
-              o ? <ExchangeRow key={o.letter} o={o} live={live!} onClick={() => { onSelect(o.letter); toMap({ type: 'focus', exchange: o.letter }) }} /> : <li key={i} className="h-[82px] rounded-lg bg-white/[0.02]" />,
+              o ? <ExchangeRow key={o.letter} o={o} live={live!} series={seriesRef.current[o.letter] ?? []} onClick={() => { onSelect(o.letter); toMap({ type: 'focus', exchange: o.letter }) }} /> : <li key={i} className="h-[82px] rounded-lg bg-white/[0.02]" />,
             )}
           </ul>
         )}
@@ -188,27 +200,46 @@ function NetworkView({ live, error, events, patrol, patrolDown, onSelect, onClos
   )
 }
 
-function ExchangeRow({ o, live, onClick }: { o: LiveOrg; live: Live; onClick: () => void }) {
+function ExchangeRow({ o, live, series, onClick }: { o: LiveOrg; live: Live; series: { t: number; v: number }[]; onClick: () => void }) {
   const tone = orgTone(o, live.chainTime)
   const parts = o.vaults.map((v) => usdOf(v.balance, live.ethUsd))
   const total = parts.reduce((a, b) => a + b, 0)
   const hot = o.vaults[0]
+  const alerted = tone !== 'good'
+  const [expanded, setExpanded] = useState(false)
   return (
-    <li>
-      <button onClick={onClick} className="w-full text-left rounded-lg px-3.5 py-3 bg-white/[0.025] hover:bg-white/[0.05] border border-white/[0.05] transition-colors">
+    <li className="rounded-lg bg-white/[0.025] border border-white/[0.05] overflow-hidden">
+      <button onClick={onClick} className="w-full text-left px-3.5 pt-3 pb-2 hover:bg-white/[0.035] transition-colors">
         <div className="flex items-center gap-2">
           <span className="text-[14px] font-semibold text-cream">{o.name}</span>
           <span className={`ml-1 w-1.5 h-1.5 rounded-full ${TONE[tone]}`} />
-          <span className={`text-[11.5px] ${tone === 'crit' ? 'text-[#ff8a7a]' : tone === 'warn' ? 'text-[#e9c46a]' : 'text-dim'}`}>{orgStatus(o, live.chainTime)}</span>
+          <span className={`text-[11.5px] ${tone === 'crit' ? 'text-[#ff8a7a]' : 'text-[#E2B52E]'}`}>{orgStatus(o, live.chainTime)}</span>
           <span className="ml-auto text-[13px] font-semibold text-cream tabular-nums">{usd(total)}</span>
         </div>
         <div className="mt-2"><ReserveBar parts={parts} thin /></div>
-        <div className="mt-2 flex items-center gap-2 text-[11px] text-dim">
+      </button>
+      <button onClick={() => setExpanded((e) => !e)} aria-expanded={expanded} title="Show the hot quota over time"
+        className="w-full text-left px-3.5 pb-2.5 pt-0.5 hover:bg-white/[0.035] transition-colors">
+        <div className="flex items-center gap-2 text-[11px] text-dim">
           <span className="w-[86px]">Hot quota</span>
           <Meter value={hot.quota?.qUSD ?? 0} max={hot.cap?.qUSD ?? 0} thin />
-          <span className="w-[92px] text-right font-mono text-[10.5px] text-cream">{num(hot.quota?.qUSD ?? 0)} / {num(hot.cap?.qUSD ?? 0)}</span>
+          <span className="w-[86px] text-right font-mono text-[10.5px] text-cream">{num(hot.quota?.qUSD ?? 0)} / {num(hot.cap?.qUSD ?? 0)}</span>
+          <svg width="11" height="11" viewBox="0 0 12 12" className={`shrink-0 text-mute transition-transform ${expanded ? 'rotate-180' : ''}`}><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </div>
+        {alerted && (
+          <div className="mt-1.5 flex items-center gap-2 text-[11px]">
+            <span className="w-[86px] text-dim">Temp vault</span>
+            <span className="font-mono text-[11.5px] text-[#E2B52E]">{usd(total)}</span>
+            <span className="ml-auto font-mono text-[10px] text-mute">funds secured</span>
+          </div>
+        )}
       </button>
+      {expanded && (
+        <div className="px-3.5 pb-3">
+          <div className="mb-1 font-mono text-[10px] text-dim">Hot quota (qUSD) over time {'·'} live</div>
+          <Spark points={series} format={num} empty="Watching the hot quota (builds up live)" />
+        </div>
+      )}
     </li>
   )
 }
@@ -226,8 +257,8 @@ function PatrolTable({ patrol }: { patrol?: PatrolStatus }) {
             <span className={`w-1.5 h-1.5 rounded-full ${TONE[tone]} ${s.status === 'run' ? 'animate-pulse' : ''}`} />
             <span className="text-cream capitalize">{h}</span>
             <span className="flex gap-[3px] items-center" title="last runs, oldest first">
-              {runs.map((r, i) => <span key={i} className={`w-[5px] h-[12px] rounded-[2px] ${r.status === 'ok' ? 'bg-[#5fd38d]/70' : 'bg-[#ff6b5a]/80'}`} />)}
-              {s.status === 'run' && <span className="w-[5px] h-[12px] rounded-[2px] bg-[#e9c46a] animate-pulse" />}
+              {runs.map((r, i) => <span key={i} className={`w-[5px] h-[12px] rounded-[2px] ${r.status === 'ok' ? 'bg-[#E2B52E]/70' : 'bg-[#ff6b5a]/80'}`} />)}
+              {s.status === 'run' && <span className="w-[5px] h-[12px] rounded-[2px] bg-[#E2B52E] animate-pulse" />}
             </span>
             <span className="font-mono text-[10.5px] text-mute text-right" title={s.result}>
               {s.status === 'run' ? 'running' : s.finishedAt ? `${s.result && s.result.length < 22 ? s.result : s.status} · ${ago(patrol.now - s.finishedAt)}` : 'not run yet'}
@@ -274,7 +305,7 @@ function ExchangeView({ org, live, events, updatedAt, onBack, onClose }: { org: 
       <div className="shrink-0 px-5 pt-1.5 flex items-center gap-2">
         <h2 className="text-[24px] leading-tight font-semibold text-cream tracking-tight">{org.name}</h2>
         <span className={`w-2 h-2 rounded-full ${TONE[tone]}`} />
-        <span className={`text-[12px] ${tone === 'crit' ? 'text-[#ff8a7a]' : tone === 'warn' ? 'text-[#e9c46a]' : 'text-dim'}`}>{orgStatus(org, now)}</span>
+        <span className={`text-[12px] ${tone === 'crit' ? 'text-[#ff8a7a]' : 'text-[#E2B52E]'}`}>{orgStatus(org, now)}</span>
         <span className="ml-auto text-[11px] text-mute">{org.mode}{updatedAt ? ` \u00b7 ${ago(Date.now() - updatedAt)}` : ''}</span>
       </div>
       <div className="shrink-0 mx-5 mt-3 grid grid-cols-3 border-y border-white/[0.06] py-3">
@@ -349,7 +380,7 @@ function CusumChart({ events }: { events: ChainEvent[] }) {
     () => events.filter((e) => e.name === 'PatrolStateUpdated' && e.tier !== 'warm').map((e) => ({ t: e.time, v: Number(e.args.S), alarm: !!e.args.alarm })),
     [events],
   )
-  return <Spark points={pts} format={(v) => `S ${num(v)}`} empty="No CUSUM checkpoints yet (written every 10 min of outflow)" line="#9fb7d9" />
+  return <Spark points={pts} format={(v) => `S ${num(v)}`} empty="No CUSUM checkpoints yet (written every 10 min of outflow)" />
 }
 
 type Pt = { t: number; v: number; alarm?: boolean }
@@ -450,7 +481,7 @@ function Activity({ events, ethUsd, limit, showOrg }: { events: ChainEvent[]; et
 function Kpi({ value, label, tone }: { value: React.ReactNode; label: string; tone?: Tone }) {
   return (
     <div className="px-3 first:pl-0 border-l first:border-l-0 border-white/[0.06]">
-      <div className={`text-[26px] leading-none font-semibold tabular-nums ${tone === 'crit' ? 'text-[#ff8a7a]' : tone === 'warn' ? 'text-[#e9c46a]' : 'text-cream'}`}>{value}</div>
+      <div className={`text-[26px] leading-none font-semibold tabular-nums ${tone === 'crit' ? 'text-[#ff8a7a]' : tone === 'warn' ? 'text-[#E2B52E]' : 'text-cream'}`}>{value}</div>
       <div className="mt-1.5 text-[12px] text-dim">{label}</div>
     </div>
   )
@@ -480,7 +511,7 @@ function PolicyRow({ name, sub, children }: { name: string; sub: string; childre
 function Value({ main, sub, tone }: { main: string; sub?: string; tone?: Tone }) {
   return (
     <div className="text-right">
-      <div className={`text-[15px] font-semibold tabular-nums ${tone === 'warn' ? 'text-[#e9c46a]' : 'text-cream'}`}>{main}</div>
+      <div className={`text-[15px] font-semibold tabular-nums ${tone === 'warn' ? 'text-[#E2B52E]' : 'text-cream'}`}>{main}</div>
       {sub && <div className="text-[11.5px] text-dim">{sub}</div>}
     </div>
   )
