@@ -1,0 +1,25 @@
+{
+  "source": "testnet measured (public Base Sepolia, Chainlink DON, cosign workflow 00e143e0)",
+  "org": "A",
+  "activeConfirmedThreats": 2,
+  "runs": [
+    {
+      "submitTx": "0x1043a21886eb2e165bb345901e65cff0b613ce5e08c96af71e94d76ca4f1ac43",
+      "submitBlock": 47804171,
+      "wallSeconds": 22.725,
+      "decision": "APPROVE",
+      "verdictTx": "0x1f1317273a0e10ffba22d2b5af1a44d7f351cd785098bef5d2ab5f4b81d78b52",
+      "verdictBlock": 47804180,
+      "blocks": 9,
+      "chainSeconds": 18,
+      "notBefore": 1791377230,
+      "paid": true,
+      "payTx": "0x23cbf5deb4a0b8fab17db4316633c954dd956136b2f1ac5aa0056460b6da924f",
+      "paidTo": "0xac1da5aed2359003e2c5d23d861dc954080f91d3",
+      "paidNote": "50 qUSD Transfer from hot vault A in payTx (checked from the receipt; the script first read the balance before the public RPC caught up)"
+    }
+  ],
+  "medianChainSeconds": 18,
+  "medianBlocks": 9,
+  "allApprovedAndPaid": true
+}

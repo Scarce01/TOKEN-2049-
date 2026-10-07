@@ -163,7 +163,7 @@ from block 47801000 (after the Receivers' owner was set):
 | Workflow execution time | 16 s median, 24 s p90 (71 successful runs) | testnet (DON) |
 | Actions written | 26 PING, 52 ASSET_CHECKPOINT, 52 TOPUP, 8 PATROL_STATE (CUSUM checkpoint) | testnet (DON) |
 | Gas per report | about 218,000 (paid by the DON transmitters) | testnet (DON) |
-| Failed runs | 26, all the native-decoy handler: the `PATROL_DECOYS` secret is not uploaded yet | testnet (DON) |
+| Failed runs | 26, all the native-decoy handler, before the `PATROL_DECOYS` secret was uploaded (none since 12:26 UTC) | testnet (DON) |
 
 **Trap on the DON: decoy touch to on-chain freeze in 10 s** (one run, org B, testnet DON). The probe
 `0x236778f2…` (block 47802229) moved 1 qUSD out of a test decoy wallet; 5 blocks later the DON report `0x32ab0635…`
@@ -177,7 +177,17 @@ took 9 s. A first probe 2 minutes after the Trap deploy did not trigger: the DON
 | Local fork, single-node simulate, prebuilt WASM | 3.1 s median (2.9 to 3.5, 3 runs) | testnet fork (local) |
 | Local fork, simulate with compile | 11.2 s (the build alone takes 11.6 s) | testnet fork (local) |
 
-Cosign is not on the DON yet.
+**Cosign on the DON: withdrawal request to on-chain verdict in 18 s** (one run, org A, testnet DON). Script
+`packages/offchain/scripts/e2e-cosign-public.ts`, result `reports/don/cosign_public.json`. A new test user (key on
+KeyRegistry, 1,000 qUSD deposit) signed a 50 qUSD withdrawal; submitter A posted it (`0x1043a218…`, block 47804171).
+The DON's log trigger picked it up and wrote APPROVE through the KeystoneForwarder (`0x1f131727…`, block 47804180).
+No simulate and no person involved.
+
+| Step | Result | Source |
+| --- | --- | --- |
+| Request to verdict on chain | **18 s, 9 blocks** (22.7 s as seen by the client) | testnet (DON) |
+| Verdict | APPROVE with a 578 s delay: network follow, 2 confirmed threats from the Trap run were active | testnet (DON) |
+| Payment after the delay | `vault.execute` `0x23cbf5de…` paid 50 qUSD from hot vault A | testnet (DON) |
 
 ## 7. Limits
 
@@ -189,7 +199,8 @@ Cosign is not on the DON yet.
   tracing firms take over.
 - **Bitget's truth set is analyst labels**, weaker than the FBI lists used for Bybit and Stake.
 - **Trek's replay classifies with hindsight**; live it classifies as money arrives.
-- **Patrol and Trap run on the DON; Cosign does not yet**: prevention-layer results still come from the local fork. The DON Trap figure is a single run.
+- **Patrol, Trap and Cosign all run on the DON**, but the DON Trap and Cosign figures are single runs. The other
+  prevention cases (forged signature, cap, officer hold) were run on the local fork only.
 - **Bitget's 18:31 test transfer came from a real hot wallet, not a decoy.** Any "what if it hit a decoy" is a
   hypothetical replay.
 
@@ -204,8 +215,8 @@ Now, for the demo:
 2. Set the spike cap: each token's p99 per active minute from the exchange hot wallet's history (same BigQuery query as
    the Bitget baseline), times 10, in the Patrol config under `phase6.cusum.spikeMax`. Check with
    `cre workflow simulate ./patrol -T fork-settings`, then redeploy Patrol.
-3. Public Base Sepolia: decide the CRE mode (DON or sim-runner), fund the deployer, run `pnpm deploy:base-sepolia`,
-   commit the decoy root through the timelock ([TODO.md](TODO.md) section 1).
+3. Public Base Sepolia: done 2026-10-07, mode A (DON); Patrol, Trap and Cosign are live
+   ([DEPLOY_BASE_SEPOLIA.md](DEPLOY_BASE_SEPOLIA.md)).
 4. AWS: [38_phase8_aws.md](38_phase8_aws.md).
 
 Next, cross-chain tracing in real time (about 3 to 4 days):
