@@ -1,0 +1,190 @@
+<title>Qu3ee Chainlink Proof</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one evidence column. Measured flows first, then the three workflows with the tx that carries each id, then every DON report. */
+:root {
+  --bg: #f3f5fa; --surface: #ffffff; --ink: #141c33; --muted: #566079; --line: #d8deea;
+  --accent: #2a5ada; --ok: #1f7a4d; --ok-bg: #e3f3ea; --bad: #b42318; --bad-bg: #fbe7e5;
+  --display: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  --body: 'Source Sans 3', 'Segoe UI', Arial, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1220; --surface: #151b2e; --ink: #e5e9f4; --muted: #98a2bd; --line: #283150;
+  --accent: #7ea2ff; --ok: #5fd39a; --ok-bg: #15342a; --bad: #ff8a80; --bad-bg: #3a1c1b; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0e1220; --surface: #151b2e; --ink: #e5e9f4; --muted: #98a2bd; --line: #283150;
+  --accent: #7ea2ff; --ok: #5fd39a; --ok-bg: #15342a; --bad: #ff8a80; --bad-bg: #3a1c1b; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font: 16px/1.55 var(--body); padding: 0 16px; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-block: 40px 56px; display: grid; gap: 40px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font: 600 13px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); display: flex; gap: 12px; flex-wrap: wrap; }
+h1 { font: 700 clamp(40px, 7vw, 64px)/1 var(--display); margin: 0; text-wrap: balance; }
+.lede { max-width: 66ch; color: var(--muted); margin: 0; font-size: 17px; }
+h2 { font: 700 26px/1.1 var(--display); letter-spacing: .02em; margin: 0 0 6px; text-transform: uppercase; }
+.sub { margin: 0 0 14px; color: var(--muted); max-width: 70ch; }
+a { color: inherit; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+a:hover { color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mono { font: 400 13px/1.45 var(--mono); word-break: break-all; }
+
+.totals { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--line); background: var(--surface); }
+.total { padding: 16px 18px; display: grid; gap: 4px; min-width: 0; }
+.total + .total { border-left: 1px solid var(--line); }
+.total b { font: 700 34px/1 var(--display); font-variant-numeric: tabular-nums; }
+.total span { color: var(--muted); font-size: 14px; }
+
+.flows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.flow { background: var(--surface); border: 1px solid var(--line); padding: 20px 22px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.flow h3 { margin: 0; font: 700 22px/1.1 var(--display); text-transform: uppercase; letter-spacing: .02em; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.flow h3 em { font-style: normal; color: var(--accent); }
+.flow ol { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
+.flow li { padding-left: 4px; }
+.flow li span { display: block; color: var(--muted); font-size: 14px; }
+
+.wf { overflow-x: auto; border: 1px solid var(--line); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+.wf table { min-width: 760px; }
+.ledger table { min-width: 900px; }
+th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 600 12px/1 var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+tr.key td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+td.num { font: 13px/1.45 var(--mono); font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
+.ledger { overflow-x: auto; border: 1px solid var(--line); background: var(--surface); }
+.pill { display: inline-block; font: 600 12px/1 var(--body); letter-spacing: .06em; text-transform: uppercase; padding: 5px 9px; border-radius: 999px; white-space: nowrap; }
+.pill.ok { color: var(--ok); background: var(--ok-bg); }
+.pill.bad { color: var(--bad); background: var(--bad-bg); }
+.acts { color: var(--muted); font-size: 14px; }
+
+.facts { display: grid; grid-template-columns: minmax(160px, 240px) minmax(0, 1fr); border-top: 1px solid var(--line); }
+.facts dt, .facts dd { margin: 0; padding: 11px 0; border-bottom: 1px solid var(--line); }
+.facts dt { color: var(--muted); font-size: 14px; padding-right: 16px; }
+.facts dd { min-width: 0; }
+.how { margin: 0; padding-left: 20px; display: grid; gap: 8px; max-width: 76ch; }
+footer { color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); padding-top: 18px; display: grid; gap: 6px; }
+
+@media (max-width: 760px) {
+  .totals { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .total:nth-child(3) { border-left: 0; }
+  .total:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .flows { grid-template-columns: 1fr; }
+  .facts { grid-template-columns: 1fr; }
+  .facts dt { border-bottom: 0; padding-bottom: 0; }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><span>Qu3ee · Chainlink CRE · Base Sepolia</span><span id="gen"></span></div>
+    <h1>Qu3ee Chainlink Proof</h1>
+    <p class="lede">Three Qu3ee workflows run on the Chainlink DON. Every report they write reaches Base Sepolia through the KeystoneForwarder, signed by the DON's nodes, and carries the workflow id inside the transaction. Each item below links to the transaction or address where you can check it.</p>
+  </header>
+
+  <section aria-label="Totals"><div class="totals" id="totals"></div></section>
+
+  <section aria-labelledby="flows-h">
+    <h2 id="flows-h">Measured on the DON</h2>
+    <p class="sub">One run each, on public Base Sepolia. Times are block timestamps of the linked transactions.</p>
+    <div class="flows" id="flows"></div>
+  </section>
+
+  <section aria-labelledby="wf-h">
+    <h2 id="wf-h">The three workflows</h2>
+    <p class="sub">Each workflow id links to a DON report transaction that carries it. Open the transaction, view its input data, and find the id in the report metadata (bytes 46 to 77 of <code>rawReport</code>).</p>
+    <div class="wf"><table>
+      <thead><tr><th>Workflow</th><th>Trigger</th><th>Workflow id (proof tx)</th><th>Reports</th><th>Writes</th></tr></thead>
+      <tbody id="wf"></tbody>
+    </table></div>
+  </section>
+
+  <section aria-labelledby="ledger-h">
+    <h2 id="ledger-h">DON reports</h2>
+    <p class="sub" id="ledger-sub"></p>
+    <div class="ledger"><table>
+      <thead><tr><th>Time (UTC)</th><th>Workflow</th><th>Exchange</th><th>Actions</th><th>Signers</th><th>Sent by (DON node)</th><th>Transaction</th><th>Result</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table></div>
+  </section>
+
+  <section aria-labelledby="addr-h">
+    <h2 id="addr-h">Addresses</h2>
+    <dl class="facts" id="facts"></dl>
+  </section>
+
+  <section aria-labelledby="how-h">
+    <h2 id="how-h">Check it yourself</h2>
+    <ol class="how">
+      <li>Open any transaction in the table on Basescan. It was sent by a DON node, not by us, and its target is the KeystoneForwarder.</li>
+      <li>In the logs, the forwarder's <code>ReportProcessed</code> names our Receiver and ends with result <code>true</code>: the Receiver accepted it.</li>
+      <li>In the input data (<code>report(address,bytes,bytes,bytes[])</code>), <code>rawReport</code> starts with the workflow metadata: the workflow id, the workflow owner <span class="mono" id="owner-inline"></span>, then the DON signatures in the last argument.</li>
+      <li>The Receiver accepts only whitelisted workflow names from that owner, set through a two-officer timelock. A report from anyone else is refused.</li>
+    </ol>
+  </section>
+
+  <footer>
+    <span>Generated from chain data by <code>proof/chainlink/build.ts</code> in <a href="https://github.com/Scarce01/TOKEN-2049-" target="_blank" rel="noopener">github.com/Scarce01/TOKEN-2049-</a>. Measured figures: <code>reports/don/</code>.</span>
+  </footer>
+</div>
+
+<script type="application/json" id="data">__DATA__</script>
+<script>
+(() => {
+  const d = JSON.parse(document.getElementById('data').textContent);
+  const scan = (kind, v) => `https://sepolia.basescan.org/${kind}/${v}`;
+  const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const short = (s, n = 6) => s && s.length > 2 * n + 5 ? `${s.slice(0, n + 2)}...${s.slice(-n)}` : s;
+  const link = (href, text, cls = '') => `<a class="${cls}" href="${esc(href)}" target="_blank" rel="noopener">${esc(text)}</a>`;
+  const tx = (h, n) => link(scan('tx', h), short(h, n), 'mono');
+  const addr = (a, n) => link(scan('address', a), short(a, n), 'mono');
+  const t = (s) => (s ? new Date(s * 1000).toISOString().slice(0, 19).replace('T', ' ') : '');
+
+  document.getElementById('gen').textContent = `blocks ${d.chain.fromBlock} to ${d.chain.toBlock} · built ${d.generatedAt.slice(0, 16).replace('T', ' ')} UTC`;
+  document.getElementById('owner-inline').innerHTML = esc(short(d.workflowOwner, 4));
+
+  const totals = [
+    [d.totals.accepted, 'DON reports accepted'],
+    [d.workflows.length, 'workflows live on the DON'],
+    [d.totals.transmittersSeen, 'DON nodes seen sending'],
+    [d.totals.rejectedBeforeOwnerSet, 'refused before the owner was set (expected)'],
+  ];
+  document.getElementById('totals').innerHTML = totals.map(([v, l]) => `<div class="total"><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join('');
+
+  const m = d.measured;
+  document.getElementById('flows').innerHTML = `
+    <div class="flow"><h3><span>Trap</span><em>${m.trap.seconds} s · ${m.trap.blocks} blocks</em></h3>
+      <ol><li>Decoy touched ${tx(m.trap.triggerTx)}<span>a transfer out of a test decoy wallet</span></li>
+      <li>DON writes the freeze ${tx(m.trap.freezeTx)}<span>freeze, quota zero, sweep, alert, cold delay, threat listed</span></li></ol></div>
+    <div class="flow"><h3><span>Cosign</span><em>${m.cosign.seconds} s · ${m.cosign.blocks} blocks</em></h3>
+      <ol><li>Withdrawal request ${tx(m.cosign.submitTx)}<span>user-signed intent, posted by the exchange</span></li>
+      <li>DON writes APPROVE ${tx(m.cosign.verdictTx)}<span>delayed by network follow while a threat is active</span></li>
+      <li>Vault pays after the delay ${tx(m.cosign.payTx)}<span>50 qUSD to the user's address</span></li></ol></div>`;
+
+  document.getElementById('wf').innerHTML = d.workflows.map((w) => `
+    <tr><td><b>${esc(w.name)}</b></td><td>${esc(w.trigger)}</td>
+    <td>${w.proofTx ? link(scan('tx', w.proofTx), w.id, 'mono') : `<span class="mono">${esc(w.id)}</span>`}</td>
+    <td class="num">${w.reports}</td><td class="acts">${esc(w.writes)}</td></tr>`).join('');
+
+  document.getElementById('ledger-sub').textContent = `The ${d.rows.length} most recent accepted reports and the measured runs (marked on the left), out of ${d.totals.reports} forwarder reports to the Qu3ee Receivers since deployment. Workflow is read from the report itself.`;
+  document.getElementById('rows').innerHTML = d.rows.map((r) => `
+    <tr class="${r.key ? 'key' : ''}">
+      <td class="num">${esc(t(r.time))}</td>
+      <td>${r.meta && r.meta.workflowId ? link(scan('tx', r.tx), r.workflow) : esc(r.workflow)}</td>
+      <td>${link(scan('address', d.receivers[r.org] || ''), `Exchange ${r.org}`)}</td>
+      <td class="acts">${esc(r.kinds.join(', '))}</td>
+      <td class="num">${r.meta ? r.meta.signatures : ''}</td>
+      <td>${r.from ? addr(r.from, 4) : ''}</td>
+      <td>${tx(r.tx, 6)}</td>
+      <td><span class="pill ${r.accepted ? 'ok' : 'bad'}">${r.accepted ? 'Accepted' : 'Refused'}</span></td>
+    </tr>`).join('');
+
+  const facts = [
+    ['KeystoneForwarder (Chainlink)', addr(d.forwarder, 20)],
+    ['Exchange A Receiver', addr(d.receivers.A, 20)],
+    ['Exchange B Receiver', addr(d.receivers.B, 20)],
+    ['Workflow owner (in every report)', `<span class="mono">${esc(d.workflowOwner)}</span> · seen in ${tx(d.measured.trap.freezeTx)}`],
+  ];
+  document.getElementById('facts').innerHTML = facts.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${v}</dd>`).join('');
+})();
+</script>
