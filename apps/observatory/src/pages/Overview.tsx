@@ -145,12 +145,11 @@ export default function Overview() {
         if (e.type === 'error') { setAtk((a) => ({ ...a, busy: false, err: e.message })); return }
         if (e.type === 'start') { atkOrg.current = e.org; toMap({ type: 'home' }); return } // overview angle; the verify step runs the attack -> CRE -> NOWNodes -> hornet choreography at one consistent angle
         if (e.type === 'done') {
-          // attacker trapped -> finale: blue trail settles back to the decoy, then the temporary vault rises there
+          // attacker trapped -> finale: blue trail settles back to the decoy
           toMap({ type: 'beat', t: BEAT.done }) // 10: caged, cash-out held
           setTimeout(() => toMap({ type: 'beat', t: 13.6 }), 2200) // blue trail settles back to the decoy
           setTimeout(() => toMap({ type: 'beat', t: 16 }), 5200) // settle: attacker neutralised, deposit held
-          setTimeout(() => toMap({ type: 'fund' }), 4200) // money back at the decoy -> frozen-funds slab + temporary vault rises
-          setAtk({ busy: false, done: true, status: 'Attacker trapped · funds secured in a temporary vault at the decoy' })
+          setAtk({ busy: false, done: true, status: 'Attacker trapped · defence tightened' })
           return
         }
         const key = e.type === 'response' ? e.event : e.phase
@@ -170,7 +169,7 @@ export default function Overview() {
   useEffect(() => {
     if (atk.done && atkRecovered && !recovering.current) {
       recovering.current = true
-      toMap({ type: 'beat', t: 0 }) // alert cleared -> the map returns to calm, bees resume patrol (the temporary vault played on 'done')
+      toMap({ type: 'beat', t: 0 }) // alert cleared -> the map returns to calm, bees resume patrol
       setAtk((a) => ({ ...a, status: 'Exchange standing down · patrol resumed' }))
       setTimeout(() => { atkOrg.current = null; recovering.current = false; setAtk({ busy: false, status: '' }) }, 1500)
     }
