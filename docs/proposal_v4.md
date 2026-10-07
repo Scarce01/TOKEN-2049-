@@ -1,403 +1,403 @@
-# Quorum 提案 v4：陷阱 + CRE 收紧
+# Quorum Proposal v4: Traps + CRE Tightening
 
 Oct 4, 2026 · @Xu Zi Yu
 
-主轴是两件事：在交易所里埋陷阱；攻击者一碰，由 CRE 节点网络自动收紧出金，后台关不掉。用户意图核对、只会转账的金库、隐藏参数、对账都是预防层，让整体完整，但不是卖点。这一版取代之前所有版本；赛规不允许开赛前写代码，这里只是讨论稿。诱饵、收紧和溯源的算法规格在第 6 节。
+The core is two things: plant traps inside the exchange; the moment an attacker touches one, the CRE node network automatically tightens withdrawals, and the backend cannot switch it off. User intent checks, a transfer-only vault, hidden parameters and reconciliation are the prevention layer. They make the whole system complete, but they are not the selling point. This version replaces all previous versions. The competition rules do not allow writing code before the start, so this is only a discussion draft. The algorithm specs for decoys, tightening and tracing are in Section 6.
 
-## 1. 一句话与定位
+## 1. One-line pitch and positioning
 
 > Every exchange is a hive. Quorum hides decoy honeypots inside. Touch one, and the guards seal the exits and mark you. Every hive in the network knows your scent.
 
-每家交易所都是一个蜂巢。Quorum 在里面藏了假蜜罐。入侵者一碰，守卫蜂（CRE 节点）立刻封住出口，并在他身上留下气味；整个蜂群网络都认得他。就算后台已被攻陷，也关不掉这个警报。
+Every exchange is a hive. Quorum hides fake honeypots inside it. The moment an intruder touches one, the guard bees (CRE nodes) seal the exits at once and leave a scent on him; the whole hive network then recognises him. Even if the backend is already compromised, it cannot switch off this alarm.
 
-|  | 内容 |
+|  | Content |
 | --- | --- |
-| **主轴** | 陷阱（诱饵钱包、诱饵账户、诱饵门槛等）+ CRE 自动收紧 |
-| **预防层** | 用户意图核对、只会转账的金库、隐藏且轮换的参数、多链对账 |
-| **给谁** | 中小型交易所、托管商、DAO 金库、AI agent 钱包 |
-| **赛道** | 主攻 Chainlink CRE；次要 NOWNodes（多链监控诱饵钱包、历史回放） |
+| **Core** | Traps (decoy wallets, decoy accounts, decoy thresholds, etc.) + automatic CRE tightening |
+| **Prevention layer** | User intent checks, transfer-only vault, hidden and rotating parameters, multi-chain reconciliation |
+| **For whom** | Small and mid-sized exchanges, custodians, DAO treasuries, AI agent wallets |
+| **Tracks** | Main: Chainlink CRE; secondary: NOWNodes (multi-chain monitoring of decoy wallets, historical replay) |
 
-**比喻（只用在视频开场 15 秒和结尾；产品画面保持专业控制台）**
+**Metaphor (used only in the first 15 seconds and the ending of the video; product screens stay a professional console)**
 
-「蜜罐」本来就是安全术语，蜂巢的比喻是顺着行业的词长出来的；蜂群选巢靠的也正是 quorum sensing。
+"Honeypot" is already a security term, and the hive metaphor grows naturally out of the industry's own vocabulary. A swarm also chooses its new nest by exactly this mechanism: quorum sensing.
 
-| 蜂巢 | Quorum |
+| Hive | Quorum |
 | --- | --- |
-| 蜂蜜 | 资金 |
-| 巢口的蜜格 | 热钱包：随取随用，量少 |
-| 中层储蜜 | 温钱包：负责补给巢口 |
-| 蜂蜡封盖的蜜 | 冷钱包：封存，轻易不动 |
-| 假蜜罐 | 诱饵（陷阱） |
-| 守卫蜂 | CRE 节点：独立检查每一笔流出 |
-| 警报信息素 | 链上共享名单：从一个蜂巢传到整个网络 |
-| 胡蜂 | 攻击者 |
+| Honey | Funds |
+| Honey cells at the hive entrance | Hot wallet: drawn on demand, small amounts |
+| Mid-level honey stores | Warm wallet: refills the entrance |
+| Wax-capped honey | Cold wallet: sealed, rarely touched |
+| Fake honeypot | Decoy (trap) |
+| Guard bees | CRE nodes: independently check every outflow |
+| Alarm pheromone | On-chain shared list: spreads from one hive to the whole network |
+| Hornet | Attacker |
 
-**「气味」到底是什么：** 攻击者的收款地址 + 摸底行为的指纹 + 碰到陷阱那笔交易的证据，由 CRE 节点核实后写进链上共享名单。
+**What the "scent" actually is:** the attacker's receiving address + a fingerprint of the probing behaviour + evidence from the transaction that touched the trap. CRE nodes verify it and then write it to the on-chain shared list.
 
-**名字：** 保留 Quorum；但 JPMorgan 做过、后来交给 ConsenSys 的企业以太坊也叫 Quorum，圈内人会联想。备选 Propolis（蜂胶，蜜蜂用来封堵蜂巢缝隙）。不用 Hive：它是现有区块链的名字，也是一个出名的勒索软件团伙。
+**Name:** keep Quorum. However, the enterprise Ethereum that JPMorgan built and later handed to ConsenSys is also called Quorum, and insiders will make the connection. Alternative: Propolis (bee glue, which bees use to seal gaps in the hive). Not Hive: it is the name of an existing blockchain, and also of a well-known ransomware gang.
 
-## 2. 问题：每一起大案都先踩点
+## 2. Problem: every major heist starts with reconnaissance
 
-2024 到 2026 年五起交易所和平台被盗，合计约 24 亿美元，私钥都没被偷；攻击者都先花时间摸清「怎样的交易会被放行」，再一次动手。
+In five thefts from exchanges and platforms between 2024 and 2026, about $2.4 billion was taken in total, and in none of them were private keys stolen. In each case the attackers first spent time working out "what kind of transaction gets approved", then struck in one go.
 
-| 事件 | 金额 | 踩点与试探 | 动手 |
+| Incident | Amount | Reconnaissance and probing | Strike |
 | --- | --- | --- | --- |
-| Bitget，2026 年 9 月 | 约 3.88 亿美元 | 先发两笔低于风控门槛的测试转账（0.84 ETH、93 TRX）；伪造的提款「看起来合法」，说明审批规则已被摸清；有报道称潜伏 24 天（未经官方证实） | 27 分钟后开始大额流出，对账系统 34 分钟才发现 |
-| Bybit，2025 年 2 月 | 约 14.6 亿美元 | 2 月 4 日入侵 Safe 开发者电脑，潜伏观察；18 日先部署合约；恶意代码只对 Bybit 的地址启动 | 2 月 21 日，等到例行的冷转温 |
-| Radiant，2024 年 10 月 | 约 5,300 万美元 | 先在签名人电脑植入恶意软件 | 等例行签名时调包 |
-| WazirX，2024 年 7 月 | 约 2.35 亿美元 | 摸清多签界面和实际交易的落差 | 签下恶意合约升级 |
-| DMM Bitcoin，2024 年 5 月 | 约 3.05 亿美元 | 在 LinkedIn 上伪装招聘方，接近钱包软件供应商的员工 | 篡改一笔正常的交易请求 |
+| Bitget, September 2026 | About $388 million | First sent two test transfers below the risk-control threshold (0.84 ETH, 93 TRX); the forged withdrawals "looked legitimate", which shows the approval rules had already been mapped; reports say the attackers lay in wait for 24 days (not officially confirmed) | Large outflows began 27 minutes later; the reconciliation system took 34 minutes to notice |
+| Bybit, February 2025 | About $1.46 billion | On February 4, compromised a Safe developer's computer and watched quietly; on the 18th, deployed the contract in advance; the malicious code activated only for Bybit's addresses | February 21, waiting for a routine cold-to-warm transfer |
+| Radiant, October 2024 | About $53 million | First planted malware on signers' computers | Swapped the transaction during a routine signing |
+| WazirX, July 2024 | About $235 million | Mapped the gap between what the multisig interface showed and the actual transaction | Signers approved a malicious contract upgrade |
+| DMM Bitcoin, May 2024 | About $305 million | Posed as a recruiter on LinkedIn to approach an employee of the wallet software vendor | Tampered with a normal transaction request |
 
-事后几乎追不回：Bybit 冻结约 3%，Bitget 约 0.2%。数字以来源原文为准，用进视频前逐一核对。
+Almost nothing is recovered afterwards: Bybit froze about 3%, Bitget about 0.2%. The source texts are authoritative for these figures; check each one before using it in the video.
 
-## 3. 洞察
+## 3. Insights
 
-1. **踩点一定会碰东西。** 读配置、试账户、发测试转账。Bitget 的攻击者先从热钱包发了两笔测试转账，27 分钟后才大额动手。只要他碰到的东西里有陷阱，他就提前暴露了。
-2. **被攻陷的系统里的告警会被关掉。** Bitget 的攻击者事后删除了伪造指令留下的记录；对账系统 34 分钟才发现，封的还是用户提款，攻击者的指令一直流出到 21:23。在被攻陷的系统里放告警，等于让小偷自己报警。
-3. **所以陷阱要同时做到两件事：** 后台不知道哪个是陷阱；触发和反应都不经过后台。这正好是 CRE：名单存在 CRE secret，检测直接读链上事实，反应写成链上报告。
+1. **Reconnaissance always touches something.** Reading config, trying accounts, sending test transfers. The Bitget attackers first sent two test transfers from a hot wallet and only struck at scale 27 minutes later. If anything they touch is a trap, they expose themselves early.
+2. **Alerts inside a compromised system get switched off.** The Bitget attackers afterwards deleted the records left by their forged instructions. The reconciliation system took 34 minutes to notice, and what it blocked was user withdrawals; the attackers' instructions kept draining funds until 21:23. Putting alerts inside a compromised system is like asking the thief to call the police on himself.
+3. **So a trap has to do two things at once:** the backend does not know which item is a trap, and neither triggering nor response passes through the backend. This is exactly CRE: the list lives in a CRE secret, detection reads on-chain facts directly, and the response is written as an on-chain report.
 
-## 4. 主轴一：陷阱
+## 4. Core part one: traps
 
-陷阱越多、越像真的越有效。每一种都对应攻击者踩点时很自然会做的事。
+The more traps there are and the more real they look, the more effective they are. Each one matches something an attacker naturally does during reconnaissance.
 
-| 陷阱 | 放在哪 | 攻击者为什么会碰 | 谁检测 | 可靠度 |
+| Trap | Where it sits | Why the attacker touches it | Who detects it | Reliability |
 | --- | --- | --- | --- | --- |
-| **诱饵钱包** | 后台配置里一个看起来正常的「旧热钱包」，有少量真钱，签名权限跟其他热钱包一样 | 发测试转账、或批量转出时顺手拿走 | CRE 直接读链上：这个钱包任何流出都算 | 高：链上事实，后台删不掉 |
-| **诱饵账户** | 后台数据库里有余额的假用户 | 伪造提款、刷余额时会挑余额大的账户 | Cosign 第 4 关；名单以 hash 存在 CRE secret | 高 |
-| **诱饵门槛** | 后台风控配置里写一个假门槛，例如 50 ETH；真门槛在 CRE | 读过配置的攻击者，金额会刻意贴着 50 ETH 以下 | Cosign 摸底指纹：一般用户不知道这个数字 | 中：强信号，不是证明 |
-| **诱饵收款地址** | 后台白名单里几个我们控制的地址 | 想借用白名单地址测试或转账 | 任何转入都代表有人动了白名单 | 中 |
-| **诱饵凭证** | 后台里放假 API key、假签名服务凭证 | 横向移动时会试用 | 被使用时外部服务回调，转给 CRE | 中：经过链下中转 |
+| **Decoy wallet** | A normal-looking "old hot wallet" in the backend config, holding a small amount of real money, with the same signing permissions as the other hot wallets | Used for a test transfer, or swept up along the way during a batch drain | CRE reads the chain directly: any outflow from this wallet counts | High: an on-chain fact the backend cannot delete |
+| **Decoy account** | A fake user with a balance in the backend database | When forging withdrawals or inflating balances, attackers pick accounts with large balances | Cosign gate 4; the list is stored as hashes in a CRE secret | High |
+| **Decoy threshold** | A fake threshold written into the backend risk-control config, for example 50 ETH; the real threshold lives in CRE | An attacker who has read the config deliberately keeps amounts just below 50 ETH | Cosign probing fingerprint: ordinary users do not know this number | Medium: a strong signal, not proof |
+| **Decoy receiving address** | A few addresses we control in the backend allowlist | The attacker wants to use an allowlisted address to test or to transfer | Any incoming transfer means someone has touched the allowlist | Medium |
+| **Decoy credential** | Fake API keys and fake signing-service credentials placed in the backend | The attacker tries them during lateral movement | When one is used, the external service sends a callback, which is forwarded to CRE | Medium: passes through an off-chain relay |
 
-- **诱饵钱包是核心。** 它的触发是链上事实，后台删日志也没用；也能放在任何链上，包括 XRP（NOWNodes 读取）。
-- **诱饵门槛是来自 YT 的 Veil 的部分。** 攻击者从配置里「推断」出的规则是假的，他为了避开它所做的行为，反而成为指纹。
-- **不保证每个攻击者都会碰。** 很小心的攻击者可能避开；所以需要第 7 节的预防层。
+- **The decoy wallet is the core.** Its trigger is an on-chain fact, so deleting backend logs does not help; it can also be placed on any chain, including XRP (read through NOWNodes).
+- **The decoy threshold is the part that comes from YT's Veil.** The rule the attacker "infers" from the config is fake, and the behaviour he adopts to avoid it becomes his fingerprint.
+- **There is no guarantee every attacker will touch one.** A very careful attacker may avoid them, which is why the prevention layer in Section 7 is needed.
 
-## 5. 主轴二：CRE 收紧
+## 5. Core part two: CRE tightening
 
-陷阱触发后，由 CRE 节点网络核实证据（链上交易或请求内容），共识后写报告到链上，由合约直接执行收紧。整条路径不经过交易所后台，所以后台被攻陷也关不掉。
+After a trap fires, the CRE node network verifies the evidence (the on-chain transaction or the request content), reaches consensus and writes a report on-chain; the contracts then execute the tightening directly. The whole path bypasses the exchange backend, so a compromised backend cannot switch it off.
 
-| 等级 | 怎么进入 | 收紧动作 | 攻击者看得到吗 |
+| Level | How it is entered | Tightening action | Can the attacker see it? |
 | --- | --- | --- | --- |
-| **确认** | 碰到诱饵：诱饵钱包有流出、诱饵账户发提款。正常用户几乎不可能碰，似然比趋近无穷 | 热金库额度清零并把余额撤回冷钱包；温金库冻结（有期限，例如 2 小时，延长要两位人员签名）；冷钱包时间锁拉长；攻击者收款地址 + 交易证据 + 诱饵承诺证明写进共享名单 | 看得到：确认级以止血为先 |
-| **L3** | 账户分数 Λ ≥ ln 900 ≈ 6.80（Wald 阈值） | 这个账户全部出金转人工 | 看不到：回应仍是「处理中 + 编号」 |
-| **L2** | Λ ≥ ln 100 ≈ 4.61。金额贴着诱饵门槛，单这一个信号就到 | 新收款地址冷却、大额转人工；地址标「可疑」 | 看不到 |
-| **L1** | Λ ≥ ln 10 ≈ 2.30。例如新账户多次落在处理中 | 这个账户的隐藏上限变低、延迟拉长 | 看不到 |
-| **池级** | 热金库流速 CUSUM 报警 | 降低额度桶的补充速度，不封锁 | 看不到 |
+| **Confirmed** | A decoy is touched: an outflow from a decoy wallet, or a withdrawal from a decoy account. Normal users almost never touch one, so the likelihood ratio tends to infinity | Hot vault quota set to zero and its balance swept back to the cold wallet; warm vault frozen (time-limited, for example 2 hours; extending needs two officers' signatures); cold wallet timelock lengthened; attacker's receiving address + transaction evidence + decoy commitment proof written to the shared list | Yes: at the Confirmed level, stopping the bleeding comes first |
+| **L3** | Account score Λ ≥ ln 900 ≈ 6.80 (Wald threshold) | All withdrawals from this account go to manual review | No: the response is still "processing + reference number" |
+| **L2** | Λ ≥ ln 100 ≈ 4.61. An amount just under the decoy threshold reaches this level on that one signal alone | Cooldown on new receiving addresses, large amounts go to manual review; the address is marked "suspicious" | No |
+| **L1** | Λ ≥ ln 10 ≈ 2.30. For example, a new account repeatedly lands in "processing" | This account's hidden limit drops and its delay lengthens | No |
+| **Pool level** | CUSUM alarm on the hot vault outflow rate | Slow the quota bucket refill rate; no blocking | No |
 
-只有确认级自动封锁，L1 到 L3 只延迟和转人工。这是从基率算出来的，见第 6 节 E。
+Only the Confirmed level blocks automatically; L1 to L3 only delay and route to manual review. This follows from the base rate; see Section 6 E.
 
-**时间线（以 Bitget 的节奏做对照）：**
+**Timeline (compared against the Bitget pace):**
 
-1. 攻击者从诱饵钱包发出一笔测试转账。
-2. 诱饵钱包放 ERC-20，转出会产生 Transfer 事件，CRE 的 log trigger 立刻触发；原生币诱饵靠 Patrol 每 60 秒巡逻。
-3. 节点各自读链上核实（收紧用 LATEST 区块就行动，不等 FINALIZED），共识后写报告：额度清零、撤资、冻结、标地址。目标是一分钟内完成，要实测；还要读合约状态确认真的变了，不只看报告交易成功。
-4. Bitget 当天，测试转账和大额流出之间有 27 分钟。如果测试碰到的是诱饵，这 27 分钟就是我们的窗口；前提是他们碰到的是诱饵，这点不能保证。
+1. The attacker sends a test transfer from the decoy wallet.
+2. The decoy wallet holds ERC-20 tokens, so a transfer out emits a Transfer event and the CRE log trigger fires immediately; native-coin decoys rely on Patrol, which patrols every 60 seconds.
+3. Each node reads the chain independently to verify (tightening acts on the LATEST block and does not wait for FINALIZED), and after consensus writes the report: zero the quota, sweep funds, freeze, mark the address. The target is to finish within one minute; this must be measured. We must also read contract state to confirm it really changed, not just check that the report transaction succeeded.
+4. On the day of the Bitget incident, there were 27 minutes between the test transfers and the large outflows. If the test had touched a decoy, those 27 minutes would have been our window. That assumes they touched a decoy, which cannot be guaranteed.
 
-**警报传播（蜂群网络）**
+**Alarm propagation (the hive network)**
 
-- 确认级事件的证据（收款地址、交易 hash、行为指纹 hash、诱饵的 Merkle 证明）由 DON 核实后写进链上 ThreatRegistry；合约写入时先验证证明。条目有有效期（例如 72 小时），续期要新证据。
-- 网络里其他交易所的 Cosign 每次判定都读同一份名单：同一收款地址转人工；行为指纹相同就在账户分数上加分。警戒等级可以选择跟随上调，默认只跟到 L1（第 6 节 H）。
-- **棘轮：** 自动上调只能来自 CRE 报告；下调只有到期，或两位人员签名 + 时间锁。后台被攻陷也解除不了。
-- 每多一次攻击，网络里每一家都多认得一个攻击者：**越被攻击越强**。这也是商业上的网络效应：加入的交易所越多，每一家越安全。
-- 边界：名单只标「可疑」，对别家是建议；换全新地址和手法的攻击者认不出来；要有多家采用才有效果；稳定币发行方不会因为名单自动冻结。
+- Evidence from a Confirmed event (receiving address, transaction hash, behaviour fingerprint hash, the decoy's Merkle proof) is verified by the DON and written to the on-chain ThreatRegistry; the contract verifies the proof before writing. Entries have a validity period (for example 72 hours), and renewal needs new evidence.
+- The Cosign of every other exchange in the network reads the same list on every decision: the same receiving address goes to manual review, and a matching behaviour fingerprint adds to the account score. An exchange can choose to follow the alert level upward; by default it only follows up to L1 (Section 6 H).
+- **Ratchet:** automatic raises can only come from CRE reports; lowering happens only on expiry, or with two officers' signatures + a timelock. A compromised backend cannot lift it.
+- Every additional attack teaches every member of the network to recognise one more attacker: **the more it is attacked, the stronger it gets**. This is also a commercial network effect: the more exchanges join, the safer each one is.
+- Limits: the list only marks "suspicious" and is advisory for other exchanges; an attacker who switches to brand-new addresses and techniques will not be recognised; it only works once several exchanges adopt it; stablecoin issuers will not freeze automatically because of the list.
 
-## 6. 算法规格（每个都落到模块）
+## 6. Algorithm specs (each mapped to a module)
 
-这一节把诱饵、收紧和溯源写成可以实现、可以测的规格。CRE 要共识，所以跑在 workflow 里的部分全部是确定性整数运算：不用本地随机数，不用浮点。
+This section writes decoys, tightening and tracing as specs that can be implemented and tested. CRE needs consensus, so everything that runs in a workflow is deterministic integer arithmetic: no local random numbers, no floating point.
 
-| # | 算法 | 跑在哪 | 输入 | 输出 | 优先级 |
+| # | Algorithm | Runs where | Input | Output | Priority |
 | --- | --- | --- | --- | --- | --- |
-| A | 诱饵布置与命中概率 | 离线规划 | 账户数、诱饵数、攻击者试探数 | 放多少、放哪；命中概率曲线 | P1（只出图） |
-| B | 诱饵不可区分性 | 离线 | 真账户与诱饵的特征 | 分类器 AUC，接近 0.5 才合格 | P2 |
-| C | 加盐 Merkle 承诺与揭示 | DecoyCommit 合约 + Trap | 诱饵清单、每个诱饵的盐 | 链上根；触发时只揭示一片叶子 | P1 |
-| D | HMAC 派生盐值和隐藏门槛 | CRE secrets | 共享密钥 K、期数 e | 盐值、本期门槛、门槛承诺 | P1 |
-| E | SPRT 账户分数 + 衰减 | Cosign | 每个信号的对数似然比 | 账户分数 Λ → L1 / L2 / L3 | P1 |
-| F | CUSUM 流速突变 | Patrol | 每分钟、每种资产的流出量 | 池级报警 → 降低补充速度 | P2 |
-| G | 额度桶 + 最坏损失上界 | QuorumVault + Patrol | 额度 B、上限 C、补充速度 r | 放行或转核验车道；可算的损失上界 | P0 |
-| H | 警戒棘轮与网络传播 | QuorumReceiver + ThreatRegistry | 本地等级、名单条目 | 生效等级，自动控制下只升不降 | P0 本地 / P1 网络 |
-| I | 一跳污点溯源 | Patrol（触发后跟踪） | 攻击者地址 | 下一跳地址与污点比例 | P2 |
-| J | 收紧与放宽用不同确认等级 | 三个 workflow | 区块确认等级 | 收紧用 LATEST，放宽用 FINALIZED | P0 |
+| A | Decoy placement and hit probability | Offline planning | Number of accounts, number of decoys, number of attacker probes | How many to place and where; hit probability curve | P1 (chart only) |
+| B | Decoy indistinguishability | Offline | Features of real accounts and decoys | Classifier AUC; passes only near 0.5 | P2 |
+| C | Salted Merkle commitment and reveal | DecoyCommit contract + Trap | Decoy list, salt for each decoy | On-chain root; only one leaf revealed on trigger | P1 |
+| D | HMAC-derived salts and hidden thresholds | CRE secrets | Shared key K, epoch e | Salts, this epoch's threshold, threshold commitment | P1 |
+| E | SPRT account score + decay | Cosign | Log-likelihood ratio of each signal | Account score Λ → L1 / L2 / L3 | P1 |
+| F | CUSUM outflow rate change | Patrol | Outflow per minute, per asset | Pool-level alarm → lower refill rate | P2 |
+| G | Quota bucket + worst-case loss bound | QuorumVault + Patrol | Quota B, cap C, refill rate r | Approve or route to the verification lane; a computable loss bound | P0 |
+| H | Alert ratchet and network propagation | QuorumReceiver + ThreatRegistry | Local level, list entries | Effective level; under automatic control it only rises, never falls | P0 local / P1 network |
+| I | One-hop taint tracing | Patrol (follows after trigger) | Attacker address | Next-hop addresses and taint ratios | P2 |
+| J | Different confirmation levels for tightening and loosening | All three workflows | Block confirmation level | Tighten on LATEST, loosen on FINALIZED | P0 |
 
-### A. 诱饵放多少、放哪
+### A. How many decoys, and where
 
-攻击者在余额前 m 名里挑 k 个账户试探，我们把 d 个诱饵账户随机插进前 m 名：
+The attacker picks k accounts to probe from the top m by balance. We insert d decoy accounts at random into the top m:
 
 ```latex
 P_{hit} = 1 - \frac{\binom{m-d}{k}}{\binom{m}{k}}
 ```
 
-- m = 200、d = 10、k = 20 时，P\_hit ≈ 66%（已算过）。
-- 攻击者按余额加权挑时，单次挑中诱饵的概率 p = W\_D / (W\_R + W\_D)，P\_hit ≈ 1 − (1 − p)^k。诱饵账户的余额只在后台数据库里，可以放在头部，让 p 远大于 d/N。
-- 上限由 B 决定：余额不能离谱。
-- 理论线：ARMOR（随机化布置，2007 年起在洛杉矶机场使用）和贝叶斯 Stackelberg 蜜罐布置。36 小时不写求解器，pitch 里放一张命中概率曲线。
+- With m = 200, d = 10, k = 20, P\_hit ≈ 66% (computed).
+- When the attacker picks weighted by balance, the probability of picking a decoy in one draw is p = W\_D / (W\_R + W\_D), and P\_hit ≈ 1 − (1 − p)^k. Decoy account balances exist only in the backend database, so they can be placed at the top, making p much larger than d/N.
+- The ceiling is set by B: balances must not look implausible.
+- Theory: ARMOR (randomised placement, used at Los Angeles airport since 2007) and Bayesian Stackelberg honeypot allocation. In 36 hours we do not write a solver; the pitch shows one hit probability curve.
 
-### B. 诱饵要和真的分不出来
+### B. Decoys must be indistinguishable from real ones
 
-- **标准来自 Honeywords 的 flatness。** 拿注册天数、活跃度、充提频率、KYC 等级、余额分位训练一个分类器区分诱饵和真账户，AUC 接近 0.5 才合格。诱饵从真实头部账户的特征分布里抽样生成，不手工编。离线做，可以用 AI，因为不进 CRE 的放行共识。
-- **诱饵账户也要有真实的链上充值记录。** DepositVault 是公开的，攻击者拿后台的 userId 一查，就能看出「余额很大、链上从没充过钱」的账户是假的。做法：交易所用自己的钱给诱饵账户真的充值，钱进了热金库，绕一圈不损失。这是这次合并时发现的漏洞。
-- **诱饵钱包要能真实收发。** 以太坊蜜罐研究发现，小心的攻击者会先转一小笔、检查交易 hash 来识破假蜜罐；Bitget 的两笔测试转账就是这个动作。诱饵钱包由安全负责人的脚本定期做小额调拨，留下「生活痕迹」。CRE 不能替普通钱包签名，所以这件事不由 workflow 做。
+- **The standard comes from Honeywords' flatness.** Train a classifier to separate decoys from real accounts using days since registration, activity, deposit and withdrawal frequency, KYC tier and balance percentile; it passes only if AUC is close to 0.5. Decoys are generated by sampling from the feature distribution of real top accounts, not made up by hand. This is done offline and may use AI, because it does not enter CRE's approval consensus.
+- **Decoy accounts also need real on-chain deposit history.** DepositVault is public. An attacker who looks up a backend userId can tell that an account with "a large balance but no on-chain deposit ever" is fake. Approach: the exchange really deposits its own money into decoy accounts; the money ends up in the hot vault, so the round trip costs nothing. This is a gap found during this merge.
+- **Decoy wallets must really send and receive.** Research on Ethereum honeypots found that careful attackers first send a small amount and check the transaction hash to expose a fake honeypot; Bitget's two test transfers were exactly this move. A script run by the security lead makes regular small transfers from the decoy wallets to leave "signs of life". CRE cannot sign for an ordinary wallet, so this is not done by a workflow.
 
-### C. 证明诱饵是事先埋好的（加盐 Merkle 承诺）
+### C. Proving the decoys were planted in advance (salted Merkle commitment)
 
-- 叶子：leaf\_i = H(H(chainId ‖ 诱饵标识\_i ‖ salt\_i))，双重哈希防第二原像攻击。诱饵标识对钱包是地址，对账户是 userIdHash。
-- 树补齐到固定的 2^k 片叶子（空位放假叶子），只把根写进 DecoyCommit 合约，外人看不出有几个诱饵。
-- 触发后 Trap 只揭示那一片叶子的 salt 和证明路径（log₂ n 个哈希），合约在链上验证后才接受名单条目。
-- 为什么必须加盐：不加盐，攻击者拿怀疑的地址自己算叶子去比对，就能反查出全部诱饵。
-- 作用：别家看到的不是「Quorum 说他可疑」，而是「这个地址碰了一个事先承诺过的诱饵」；也证明我们没有事后编造诱饵去冻结正常用户。
+- Leaf: leaf\_i = H(H(chainId ‖ decoyId\_i ‖ salt\_i)); the double hash prevents second-preimage attacks. For a wallet, decoyId is its address; for an account, it is userIdHash.
+- The tree is padded to a fixed 2^k leaves (empty slots get dummy leaves), and only the root is written to the DecoyCommit contract, so outsiders cannot tell how many decoys there are.
+- After a trigger, Trap reveals only that one leaf's salt and proof path (log₂ n hashes); the contract verifies it on-chain before accepting the list entry.
+- Why salt is required: without salt, an attacker can compute leaves for suspected addresses himself and compare them, and so recover every decoy.
+- Purpose: other exchanges see not "Quorum says he is suspicious" but "this address touched a decoy that was committed in advance". It also proves we did not invent decoys after the fact to freeze normal users.
 
-### D. 节点间一致、外人算不出来（HMAC）
+### D. Consistent across nodes, impossible for outsiders to compute (HMAC)
 
-CRE 节点各自用本地随机数会对不上，无法共识。用放在 CRE secret 里的共享密钥 K 做确定性伪随机：
+If CRE nodes each use local random numbers, their results will not match and consensus fails. Use a shared key K stored in a CRE secret for deterministic pseudo-randomness:
 
-- 诱饵盐值：salt\_i = HMAC(K, "decoy" ‖ i)
-- 第 e 期真门槛：T\_e = T\_min + (HMAC(K, "thr" ‖ e) mod (T\_max − T\_min))
-- 每期开始上链承诺 c\_e = H(T\_e ‖ nonce\_e)，期满揭示，证明我们没在期中改规则。
+- Decoy salt: salt\_i = HMAC(K, "decoy" ‖ i)
+- Real threshold for epoch e: T\_e = T\_min + (HMAC(K, "thr" ‖ e) mod (T\_max − T\_min))
+- At the start of each epoch, commit c\_e = H(T\_e ‖ nonce\_e) on-chain and reveal it when the epoch ends, proving we did not change the rules mid-epoch.
 
-K 对节点运营方是明文；K 泄露，这一层就全部失效。
+K is plaintext to node operators; if K leaks, this whole layer fails.
 
-### E. 账户分数（SPRT），以及为什么弱信号不能封锁
+### E. Account score (SPRT), and why weak signals cannot block
 
 ```latex
 \lambda(s) = \ln \frac{P(s \mid H_1)}{P(s \mid H_0)}, \qquad \Lambda = \sum \lambda(s)
 ```
 
-H1 是攻击者，H0 是正常用户。
+H1 is an attacker, H0 is a normal user.
 
-- **阈值有统计含义：** L1 = ln 10 ≈ 2.30（似然比 10:1）；L2 = ln 100 ≈ 4.61；L3 = ln 900 ≈ 6.80（Wald 阈值，误报率 0.001、漏报率 0.1）；确认 = 碰到诱饵，似然比趋近无穷。
-- **例子：** 正常提款落在假门槛下方 10% 区间的比例约 0.5%，读过配置的攻击者约 50%，λ = ln(0.5 / 0.005) = ln 100，单这一个信号就到 L2。两个比例都是假设值，比赛中明说。
-- **为什么只有诱饵能自动封锁：** 假设攻击者在账户里的先验比例是十万分之一，就算似然比到 900，后验概率也只有约 0.9%（已算过）。所以 L1 到 L3 只能是低成本的延迟和转人工。分级是从基率算出来的（Axelsson 2000 讨论的基率谬误）。
-- **实现：** λ 用千分之一 nat 存整数；衰减 Λ(t) = Λ(t₀)·γ^(t−t₀)，γ = 0.9 每小时，读取时查预先算好的整数表，不用定时任务；同类信号（新账户、新地址）合计设上限，避免重复计分。
-- **分数不能明文放链上。** 链上状态谁都能读，攻击者查自己账户的等级，「静默」就不成立。做法：分数加密后存在 QuorumReceiver（密钥由 K 派生，nonce = HMAC(K, requestId)，各节点算出同一份密文）；每次裁决都重写一次密文，不论分数变没变，外人看不出变化。等级只在 Cosign 里执行（关 7），金库不读等级。这也是这次合并时发现的漏洞。
+- **The thresholds have statistical meaning:** L1 = ln 10 ≈ 2.30 (likelihood ratio 10:1); L2 = ln 100 ≈ 4.61; L3 = ln 900 ≈ 6.80 (Wald threshold, false positive rate 0.001, false negative rate 0.1); Confirmed = a decoy was touched, likelihood ratio tends to infinity.
+- **Example:** about 0.5% of normal withdrawals fall in the band within 10% below the fake threshold, versus about 50% for an attacker who has read the config. λ = ln(0.5 / 0.005) = ln 100, so this one signal alone reaches L2. Both proportions are assumed values, and we say so openly during the competition.
+- **Why only decoys can block automatically:** assume the prior share of attackers among accounts is 1 in 100,000. Even with a likelihood ratio of 900, the posterior probability is only about 0.9% (computed). So L1 to L3 can only be low-cost delays and manual review. The levels are derived from the base rate (the base-rate fallacy discussed in Axelsson 2000).
+- **Implementation:** λ is stored as an integer in thousandths of a nat; decay is Λ(t) = Λ(t₀)·γ^(t−t₀) with γ = 0.9 per hour, applied at read time by looking up a precomputed integer table, with no scheduled job; signals of the same kind (new account, new address) share a combined cap to avoid double counting.
+- **The score cannot be stored on-chain in plaintext.** Anyone can read on-chain state; if attackers can look up their own account's level, "silent" no longer holds. Approach: the score is encrypted and stored in QuorumReceiver (key derived from K, nonce = HMAC(K, requestId), so every node computes the same ciphertext); every verdict rewrites the ciphertext whether or not the score changed, so outsiders cannot see changes. Levels are enforced only in Cosign (gate 7); the vault does not read levels. This is also a gap found during this merge.
 
-### F. 热钱包流速突变（CUSUM）
+### F. Hot wallet outflow rate change (CUSUM)
 
 ```latex
 S_t = \max(0,\; S_{t-1} + z_t - k), \qquad z_t = \frac{x_t - \mu}{\sigma}, \qquad \text{alarm if } S_t > h
 ```
 
-- Patrol 每 60 秒，对每个热金库、每种资产算一次。x\_t 是这一分钟的流出量，按代币数量算，不换算美元，免得依赖价格。
-- 基线 μ 用指数加权平均（移位实现整数运算），离散度 σ 用加权平均绝对偏差。
-- 参数：k = 0.5；h = 4 时平均约 168 个样本误报一次，h = 5 约 465 个（ARL 表，待核对）。每分钟一个样本，h = 5 约 7.75 小时误报一次，所以 **CUSUM 只能触发软动作**：降低额度桶的补充速度，不封锁。h 要用历史数据调到一个月误报不到一次。
-- 金额是重尾分布，先取对数，或改用中位数和 MAD。
-- 报警期间冻结基线，并限制 μ 每天最多上升多少，防攻击者慢慢把基线抬高。
-- 状态（μ、σ、S）存在链上，每分钟写一次；测试网没问题，正式环境要算 gas。
-- 没找到把 CUSUM 用在交易所出金监控的论文，没有现成基准，要用 Bitget 时间线自己验证。
+- Patrol computes it every 60 seconds for each hot vault and each asset. x\_t is the outflow in that minute, counted in token units, not converted to USD, to avoid depending on prices.
+- The baseline μ is an exponentially weighted average (implemented with bit shifts for integer arithmetic); the dispersion σ is a weighted mean absolute deviation.
+- Parameters: k = 0.5; with h = 4 there is on average one false alarm about every 168 samples, with h = 5 about every 465 (ARL table, to be verified). At one sample per minute, h = 5 gives a false alarm about every 7.75 hours, so **CUSUM can only trigger soft actions**: lower the quota bucket refill rate, no blocking. h must be tuned on historical data to fewer than one false alarm per month.
+- Amounts are heavy-tailed, so take logs first, or use the median and MAD instead.
+- Freeze the baseline during an alarm, and cap how much μ can rise per day, so an attacker cannot slowly push the baseline up.
+- State (μ, σ, S) is stored on-chain and written once a minute; this is fine on testnet, but production needs a gas estimate.
+- We found no paper applying CUSUM to exchange withdrawal monitoring, so there is no ready-made benchmark; we must validate it ourselves against the Bitget timeline.
 
-### G. 额度桶与最坏损失上界
+### G. Quota bucket and worst-case loss bound
 
-- 热金库多一组状态：额度 B（上限 C）和上次补充的期号 e\_last。
-- **补充**只接受 Patrol 的 QUOTA(e, r\_e)：e 必须等于 e\_last + 1（防重放）；对账干净才补；r\_e ≤ r\_max，CUSUM 报警时自动下调。
-- **消费**：execute 除了查裁决，还要 B ≥ a，然后 B ← B − a。额度不够的提款转到核验车道（两位人员签名 + 时间锁），不是拒绝。
-- 确认级触发时 B 直接清零。
+- The hot vault gets extra state: quota B (cap C) and the epoch of the last refill, e\_last.
+- **Refill** accepts only Patrol's QUOTA(e, r\_e): e must equal e\_last + 1 (replay protection); refill only when reconciliation is clean; r\_e ≤ r\_max, lowered automatically on a CUSUM alarm.
+- **Spend**: besides checking the verdict, execute also requires B ≥ a, then B ← B − a. A withdrawal without enough quota goes to the verification lane (two officers' signatures + timelock); it is not rejected.
+- When the Confirmed level fires, B is set to zero immediately.
 
 ```latex
 L(T) \le C + r_{max} \cdot \lceil T / \Delta \rceil, \qquad \Delta = 1\ \text{min}
 ```
 
-- 例：C = 50 万美元、r\_max = 每分钟 10 万美元，Bitget 那 27 分钟里快车道最多流出 320 万美元；对照 Bitget 头 18 分钟流出约 2.28 亿美元（待核对）。
-- 诚实前提：快车道本来就要用户签名，所以这个上界保护的是「签名验证本身被绕过」，例如 KeyRegistry 被改，是纵深防御的最后一层。
-- 参数：C 取每分钟流出 p99 的倍数，r\_max 取每分钟 p99；用「有多少比例的分钟要转核验车道」衡量对正常用户的影响。
-- 同类做法是 ERC-7265 断路器；差别是我们的额度只能由 CRE 在对账干净时补，而且会被诱饵证据直接清零。
+- Example: with C = $500,000 and r\_max = $100,000 per minute, at most $3.2 million could leave through the fast lane during Bitget's 27 minutes; compare with about $228 million that left Bitget in the first 18 minutes (to be verified).
+- Honest premise: the fast lane already requires the user's signature, so this bound protects against "signature verification itself being bypassed", for example a tampered KeyRegistry. It is the last layer of defence in depth.
+- Parameters: C is a multiple of the per-minute outflow p99, and r\_max is the per-minute p99; measure the impact on normal users as "the share of minutes that need the verification lane".
+- A similar approach is the ERC-7265 circuit breaker; the difference is that our quota can only be refilled by CRE when reconciliation is clean, and decoy evidence zeroes it directly.
 
-### H. 警戒棘轮与网络传播
+### H. Alert ratchet and network propagation
 
-- 本地等级 L\_local ∈ {0, 1, 2, 3}；网络等级 G = 名单里仍在有效期内的确认级条目对应的最高等级；生效等级 L\_eff = max(L\_local, 跟随等级)。
-- **棘轮：** 自动上调只能来自 CRE 报告；下调只有两条路：到期，或两位人员签名 + 时间锁。有效期内自动控制下的等级只升不降。
-- 名单条目附 C 的 Merkle 证明、触发交易引用、有效期（例如 72 小时），续期要新证据。
-- 别家怎么用：地址完全匹配 → 转人工；行为指纹匹配（假门槛金额区间 + 新地址 + 链，离散化后取哈希）→ 在账户分数上加 λ。
-- **跟随等级的默认值：** 补充材料建议 G − 1。我的判断是太激进：网络上任何一家被攻击，全网都升到 L2 持续 72 小时，正常用户会被大面积拖慢。默认只跟到 L1，让每家自己配置。
+- Local level L\_local ∈ {0, 1, 2, 3}; network level G = the highest level among Confirmed entries in the list that are still within their validity period; effective level L\_eff = max(L\_local, follow level).
+- **Ratchet:** automatic raises can only come from CRE reports; there are only two ways down: expiry, or two officers' signatures + a timelock. Within the validity period, a level under automatic control only rises, never falls.
+- A list entry carries the Merkle proof from C, a reference to the triggering transaction and a validity period (for example 72 hours); renewal needs new evidence.
+- How other exchanges use it: exact address match → manual review; behaviour fingerprint match (fake-threshold amount band + new address + chain, discretised and hashed) → add λ to the account score.
+- **Default follow level:** the supplementary material suggests G − 1. My judgement is that this is too aggressive: if any exchange in the network is attacked, the whole network rises to L2 for 72 hours, and normal users are slowed down across the board. By default, follow only up to L1, and let each exchange configure its own.
 
-### I. 一跳污点溯源（P2）
+### I. One-hop taint tracing (P2)
 
-- 以诱饵触发得到的攻击者地址为起点，跟它把钱转去哪。触发时钱通常还没动，所以由 Patrol 在触发后的一段时间里持续跟踪。
-- 按比例分配（haircut）：下一跳地址 j 的污点 = j 从攻击者收到的金额 / j 的总流入。只做一跳时，个性化 PageRank 会退化成这个比例，不必上。
-- 确定性：固定区块范围，边按交易 hash 排序，整数运算。
-- 下一跳地址只作「衍生可疑」写入，权重低于原始地址；交易所充值地址、DEX 路由、跨链桥合约要排除，否则会误伤一大片正常用户。
-- 已知上限：钱一进跨链桥，传统追踪就断了（ConneX 讨论的就是这个）。下游交给专业追踪公司；归因越早越准，所以我们的价值在「第一跳、第一时间」。
+- Start from the attacker address obtained from the decoy trigger and follow where it sends money. At trigger time the money usually has not moved yet, so Patrol keeps tracking for a period after the trigger.
+- Proportional allocation (haircut): taint of next-hop address j = amount j received from the attacker / j's total inflow. With only one hop, personalised PageRank reduces to this ratio, so it is not needed.
+- Determinism: fixed block range, edges sorted by transaction hash, integer arithmetic.
+- Next-hop addresses are written only as "derived suspicious", with lower weight than the original address; exchange deposit addresses, DEX routers and cross-chain bridge contracts must be excluded, or large numbers of normal users will be hit by mistake.
+- Known limit: once money enters a cross-chain bridge, traditional tracing breaks (this is exactly what ConneX discusses). Downstream is left to professional tracing firms; attribution is more accurate the earlier it happens, so our value is in "the first hop, at the first moment".
 
-### J. 宁可错收紧，不可错放宽
+### J. Better to tighten wrongly than to loosen wrongly
 
-收紧用 LATEST 区块的数据就行动，就算之后区块重组造成误判，代价也只是一次有期限的冻结；放宽（解冻、补额度、降等级）必须用 FINALIZED 的数据。这和 H 的棘轮是同一个原则。
+Tightening acts on data from the LATEST block. Even if a later reorg causes a misjudgement, the cost is only one time-limited freeze. Loosening (unfreezing, refilling quota, lowering a level) must use FINALIZED data. This is the same principle as the ratchet in H.
 
-## 7. 预防层：让整体完整
+## 7. Prevention layer: making the whole complete
 
-陷阱不保证被碰，所以需要预防层兜底。它们不是卖点，但让「没碰到陷阱的攻击者」也很难得手。
+Traps are not guaranteed to be touched, so a prevention layer is needed as a backstop. These are not the selling point, but they make it hard to succeed even for "an attacker who never touches a trap".
 
-| 预防层 | 做什么 | 为什么需要 |
+| Prevention layer | What it does | Why it is needed |
 | --- | --- | --- |
-| 用户意图核对（七关） | 每笔出金对照用户本人的签名和链上记录 | 攻击者没碰陷阱，也伪造不了用户签名 |
-| 只会转账的金库 QuorumVault | 不能升级、不能 delegatecall | 挡 Bybit、WazirX 那一类 |
-| 隐藏且轮换的参数 | 真门槛由密钥 K 按期派生（HMAC），每期上链承诺、期满揭示；回应一律「处理中 + 编号」 | 让摸底更难，也让诱饵门槛成立：真门槛不在后台 |
-| 多链对账 | 每笔流出 60 秒内对上裁决 | 非 EVM 链的补位 |
-| 配置漂移检查、逃生口 | 合约配置被改就冻结；配置变更走公开时间锁 | 防攻击者先拆掉防线 |
-| 额度桶 | 热金库每笔都扣额度；额度只能由 Patrol 按期补，对账干净才补；不够就转核验车道（第 6 节 G） | 就算检测全部失灵，损失也有可算的上界 |
+| User intent check (seven gates) | Checks every withdrawal against the user's own signature and on-chain records | Even an attacker who never touches a trap cannot forge a user's signature |
+| Transfer-only vault QuorumVault | Not upgradeable, no delegatecall | Blocks the Bybit and WazirX class of attack |
+| Hidden and rotating parameters | The real threshold is derived per epoch from key K (HMAC), committed on-chain each epoch and revealed when it ends; every response is "processing + reference number" | Makes probing harder, and makes the decoy threshold work: the real threshold is not in the backend |
+| Multi-chain reconciliation | Matches every outflow to a verdict within 60 seconds | Fills the gap on non-EVM chains |
+| Config drift check, escape hatch | Freezes if contract config is changed; config changes go through a public timelock | Stops attackers from dismantling the defences first |
+| Quota bucket | Every hot vault withdrawal spends quota; quota can only be refilled by Patrol each epoch, and only when reconciliation is clean; if it runs short, the withdrawal goes to the verification lane (Section 6 G) | Even if all detection fails, losses have a computable upper bound |
 
-陷阱和隐藏参数都靠保密；就算都被识破，地基仍是用户签名和链上事实，这一点回应懂安全的评审会想到的 Kerckhoffs 原则。
+Traps and hidden parameters both depend on secrecy. Even if both are seen through, the foundation is still user signatures and on-chain facts. This answers Kerckhoffs's principle, which security-minded judges will think of.
 
-## 8. 系统模块与为什么是 CRE
+## 8. System modules and why CRE
 
-| 模块 | 在哪 | 做什么 |
+| Module | Where | What it does |
 | --- | --- | --- |
-| Trap workflow | CRE，log trigger | 监听诱饵钱包的 Transfer 事件；核实后写确认级收紧报告，附诱饵的 Merkle 揭示 |
-| Cosign workflow | CRE，log trigger | 七关判定（含诱饵账户、诱饵门槛指纹）；SPRT 账户分数与静默收紧 |
-| Patrol workflow | CRE，cron 60 秒 | 原生币与多链诱饵巡逻；对账；CUSUM；按期补额度；触发后跟踪攻击者的下一跳。原名 Sentinel，改名是因为已有一个同名的 CRE 黑客松项目 |
-| QuorumReceiver | 链上 | 只收指定 workflow ID 和 owner 的报告；存裁决、警戒等级（棘轮）、加密的账户分数、冻结期限 |
-| QuorumVault | 链上 | 只会转账的金库；额度桶；撤资只能到冷钱包 |
-| DecoyCommit | 链上 | 存诱饵清单的 Merkle 根和每期门槛承诺；验证揭示 |
-| 诱饵资产 | 链上 + 后台 | 诱饵钱包（多条链）、诱饵账户（有真实充值记录）、诱饵门槛、诱饵地址、诱饵凭证 |
-| KeyRegistry / DepositVault / ThreatRegistry | 链上 | 公钥、充值记录、共享可疑名单（写入时验证诱饵证明） |
-| NOWNodes | 外部 | 读非 EVM 链上的诱饵钱包（例如 XRP）、主网历史回放、第二数据来源 |
-| Quorum Console | 前端 | Traps、Cases、Network、Timeline、Control status 等页面 |
+| Trap workflow | CRE, log trigger | Listens for Transfer events from decoy wallets; after verification, writes a Confirmed-level tightening report with the decoy's Merkle reveal |
+| Cosign workflow | CRE, log trigger | Seven-gate decision (including decoy accounts and the decoy threshold fingerprint); SPRT account score and silent tightening |
+| Patrol workflow | CRE, cron 60 seconds | Native-coin and multi-chain decoy patrol; reconciliation; CUSUM; per-epoch quota refill; after a trigger, follows the attacker's next hop. Originally named Sentinel; renamed because a CRE hackathon project with the same name already exists |
+| QuorumReceiver | On-chain | Accepts reports only from the specified workflow ID and owner; stores verdicts, alert level (ratchet), encrypted account scores, freeze deadlines |
+| QuorumVault | On-chain | Transfer-only vault; quota bucket; funds can only be swept to the cold wallet |
+| DecoyCommit | On-chain | Stores the Merkle root of the decoy list and each epoch's threshold commitment; verifies reveals |
+| Decoy assets | On-chain + backend | Decoy wallets (multiple chains), decoy accounts (with real deposit history), decoy thresholds, decoy addresses, decoy credentials |
+| KeyRegistry / DepositVault / ThreatRegistry | On-chain | Public keys, deposit records, shared suspicious list (verifies decoy proofs on write) |
+| NOWNodes | External | Reads decoy wallets on non-EVM chains (for example XRP), mainnet historical replay, second data source |
+| Quorum Console | Frontend | Pages such as Traps, Cases, Network, Timeline, Control status |
 
-**为什么是 CRE：**
+**Why CRE:**
 
-1. **陷阱名单不能在后台。** 后台知道哪个是诱饵，攻击者就会避开；名单以 hash 存在 CRE secret。
-2. **告警不能经过后台。** 检测直接读链上事实，后台删日志、关告警都没用。
-3. **反应不能靠人。** 收紧由报告在链上自动执行，不等人半夜起来关机器。
-4. **证据可信。** 由多个独立节点核实，写进共享名单的地址附链上证据和诱饵承诺证明，别家交易所才敢据此转人工。对稳定币发行方，它只能缩短法律和人工流程的准备时间：Circle 的公开立场是 USDC 只在法律命令下冻结（原话待核对），不会因为名单自动冻结。
+1. **The trap list cannot live in the backend.** If the backend knows which item is a decoy, the attacker will avoid it; the list is stored as hashes in a CRE secret.
+2. **Alerts cannot pass through the backend.** Detection reads on-chain facts directly, so deleting backend logs or switching off alerts does nothing.
+3. **The response cannot depend on people.** Tightening is executed automatically on-chain by the report, without waiting for someone to get up in the middle of the night and shut machines down.
+4. **The evidence is credible.** It is verified by multiple independent nodes, and every address written to the shared list carries on-chain evidence and a decoy commitment proof; only then will other exchanges dare to route to manual review on that basis. For stablecoin issuers, it can only shorten the preparation time for legal and manual processes: Circle's public position is that USDC is frozen only under a legal order (exact wording to be verified), and it will not freeze automatically because of the list.
 
-## 9. 跟现有方案的差别
+## 9. How this differs from existing solutions
 
-蜜罐本身不新；新的是触发之后由一群独立节点直接收紧链上的钱，而且后台关不掉。
+Honeypots themselves are not new. What is new is that after a trigger, a set of independent nodes directly tightens the money on-chain, and the backend cannot switch it off.
 
-|  | 传统蜜罐 / canary token | 链上监控告警 | 托管商副签与规则引擎 | Quorum |
+|  | Traditional honeypot / canary token | On-chain monitoring alerts | Custodian co-signing and rule engines | Quorum |
 | --- | --- | --- | --- | --- |
-| 谁知道哪个是陷阱 | 公司自己的系统 | 不适用 | 不适用 | 只有 CRE，后台不知道 |
-| 触发之后 | 告警发给人，经过公司自己的系统 | 告警发给人 | 不适用 | 自动收紧链上出金 |
-| 后台被攻陷时 | 告警可能被关掉或删掉 | 告警还在，但没人动手就不会停 | 伪造的交易合规则就放行 | 警报和收紧都不经过后台 |
-| 什么时候出手 | 踩点时 | 钱已经开始流出之后 | 动手时 | 踩点和试探时，大额动手之前 |
+| Who knows which item is a trap | The company's own systems | N/A | N/A | Only CRE; the backend does not know |
+| After a trigger | Alert sent to people, through the company's own systems | Alert sent to people | N/A | Automatically tightens on-chain withdrawals |
+| When the backend is compromised | Alerts may be switched off or deleted | Alerts remain, but nothing stops unless someone acts | A forged transaction that satisfies the rules is approved | Neither alarm nor tightening passes through the backend |
+| When it acts | During reconnaissance | After money has started flowing out | At the moment of the strike | During reconnaissance and probing, before the large strike |
 
-**具体竞品与相近方案（引用前逐条核对）**
+**Specific competitors and similar approaches (verify each one before citing)**
 
-| 方案 | 做什么 | 跟我们的差别 |
+| Solution | What it does | How it differs from us |
 | --- | --- | --- |
-| [Safenet](https://docs.safefoundation.org/safenet/overview/introduction)（Safe Foundation，2026 年 4 月 2 日 Beta） | 验证者独立评估交易，Safe Guard 在链上验证证明才放行；Beta 只做静态交易检查 | 最接近的对手。它查交易结构；我们查诱饵和用户本人授权，而且有跨交易所名单 |
-| Blockaid Cosigner、Hypernative Guardian | 链下检查后副签，没有签名就不能执行；Guardian 移除要 24 小时时间锁 | 规则引擎，看的是交易本身；伪造得合规则就放行 |
-| SEAL（Intel、Safe Harbor） | 威胁情报发给成员；Safe Harbor 预先授权白帽在被攻击时介入 | 情报发给人，我们让情报自动变成放行规则。可以互补：白帽救援接在我们的收紧之后 |
-| ERC-7265 断路器 | 流出超过阈值就延迟或回退 | 阈值触发；我们是诱饵触发，额度只能由 CRE 补 |
-| Chainlink Proof of Reserve / Secure Mint | 抵押不足时在合约层自动停止发行 | 官方先例：预言机网络充当自动断路器。我们把这个思路用到出金 |
-| CRE 黑客松项目：Sentinel、Guardian、Riskometer | 监控 + DON 签名报告 + 链上暂停 | 评审大概率看过很多「CRE 监控 + 暂停」。差异必须放在诱饵触发和共享名单，不能放在「CRE 自动暂停」 |
+| [Safenet](https://docs.safefoundation.org/safenet/overview/introduction) (Safe Foundation, Beta on April 2, 2026) | Validators evaluate transactions independently, and Safe Guard verifies the proof on-chain before approving; the Beta only does static transaction checks | The closest competitor. It checks transaction structure; we check decoys and the user's own authorisation, and we have a cross-exchange list |
+| Blockaid Cosigner, Hypernative Guardian | Off-chain check, then co-sign; nothing executes without the signature; removing Guardian requires a 24-hour timelock | Rule engines that look at the transaction itself; a forgery that satisfies the rules is approved |
+| SEAL (Intel, Safe Harbor) | Sends threat intelligence to members; Safe Harbor pre-authorises white hats to step in during an attack | Intelligence goes to people; we turn intelligence into approval rules automatically. Complementary: a white-hat rescue can follow our tightening |
+| ERC-7265 circuit breaker | Delays or reverts outflows that exceed a threshold | Threshold-triggered; ours is decoy-triggered, and quota can only be refilled by CRE |
+| Chainlink Proof of Reserve / Secure Mint | Automatically halts minting at the contract level when collateral is insufficient | Official precedent: an oracle network acting as an automatic circuit breaker. We apply this idea to withdrawals |
+| CRE hackathon projects: Sentinel, Guardian, Riskometer | Monitoring + DON-signed report + on-chain pause | Judges have most likely seen many "CRE monitoring + pause" projects. Our difference must rest on decoy triggers and the shared list, not on "CRE auto-pause" |
 
-- **说法：** 「蜜罐」在区块链论文里多指骗人买币的诈骗合约。技术部分一律说「防守型诱饵（decoy）」，honeypot 只在开场比喻里出现。
-- **一个要记住的坑：** Sentinel 项目自述「Pause with DON」看起来成功，实际没暂停，原因是接口不匹配。报告上链成功不等于动作生效；我们要有一个测试，专门读合约状态确认金库真的冻结、额度真的清零。
-- **可能被问：** KeeperHub 的文章认为，只要有自动化独立轮询 Safe Transaction Service 的原始数据，就能发现 operation 字段异常。回答：那只防得了 Bybit 这一类签名界面被改；防不了 Bitget 这种后台直接伪造指令，也不会在踩点阶段就出手。
-- **新意怎么说：** 不说「首创」。说：我们把成熟的诱饵检测（Honeywords）和随机化布置（ARMOR）搬到交易所出金，用 CRE 做去中心化的检查者；据我们检索，没看到把诱饵触发直接接到链上自动收紧和跨交易所共享名单的方案。
+- **Wording:** in blockchain papers, "honeypot" mostly means a scam contract that tricks people into buying tokens. The technical sections always say "defensive decoy"; honeypot appears only in the opening metaphor.
+- **A pitfall to remember:** the Sentinel project's own write-up says its "Pause with DON" looked successful but did not actually pause, because of an interface mismatch. A report landing on-chain does not mean the action took effect; we need a test that reads contract state specifically to confirm the vault really froze and the quota really went to zero.
+- **Likely question:** a KeeperHub article argues that automated, independent polling of raw Safe Transaction Service data is enough to spot an anomalous operation field. Answer: that only defends against the Bybit class, where the signing interface is tampered with; it does not defend against a Bitget-style backend forging instructions directly, and it does not act during reconnaissance.
+- **How to describe the novelty:** do not say "first ever". Say: we bring mature decoy detection (Honeywords) and randomised placement (ARMOR) to exchange withdrawals, with CRE as a decentralised checker; as far as our search found, no existing solution wires decoy triggers directly into automatic on-chain tightening and a cross-exchange shared list.
 
-## 10. 边界与诚实声明
+## 10. Limits and honest disclosures
 
-- **陷阱不保证被碰。** 很小心的攻击者可能避开；所以需要预防层兜底。视频里不说「一定抓得到」。
-- **误触发。** 员工或正常程序碰到诱饵会造成冻结。诱饵要从正常流程里隔离，确认级冻结有期限，延长要两位人员签名。
-- **诱饵钱包要放少量真钱。** 被拿走是预算内的代价，换来的是提前发现。
-- **确认级收紧是公开的。** 以止血为先，攻击者会知道自己被发现，可能提前动手；这时靠热钱包已撤资、温钱包已冻结接住。
-- **CRE secret 对节点运营方是明文。** 名单一旦外泄，陷阱就失效。Confidential Workflows 仍在 private beta，列入路线图。
-- **原生币诱饵不是即时的。** 靠 Patrol 每 60 秒巡逻。
-- **非 EVM 链。** 诱饵钱包能检测，也能收紧 EVM 这边；但不能在非 EVM 链上链上强制。
-- **去中心化。** 只动这家交易所自己的出金；共享名单只标「可疑」。
-- **效果只在测试环境量过。** 视频里标明。
-- **不在范围内。** 验证软件漏洞（Liquid）、产生钥匙的程序漏洞（Coldcard）、用户自己的设备被控。
+- **Traps are not guaranteed to be touched.** A very careful attacker may avoid them, so the prevention layer is needed as a backstop. The video does not say "we will always catch them".
+- **False triggers.** An employee or a normal program touching a decoy causes a freeze. Decoys must be isolated from normal processes; Confirmed-level freezes are time-limited, and extending one needs two officers' signatures.
+- **Decoy wallets need a small amount of real money.** Losing it is a budgeted cost, paid in exchange for early detection.
+- **Confirmed-level tightening is visible.** Stopping the bleeding comes first. The attacker will know he has been detected and may strike early; at that point, the already-swept hot wallets and the already-frozen warm wallets absorb it.
+- **CRE secrets are plaintext to node operators.** If the list leaks, the traps stop working. Confidential Workflows is still in private beta; it is on the roadmap.
+- **Native-coin decoys are not instant.** They rely on Patrol's patrol every 60 seconds.
+- **Non-EVM chains.** Decoy wallets there can be detected, and the EVM side can be tightened, but nothing can be enforced on-chain on the non-EVM chain itself.
+- **Decentralisation.** It only touches this exchange's own withdrawals; the shared list only marks "suspicious".
+- **Effectiveness has only been measured in a test environment.** The video says so.
+- **Out of scope.** Bugs in verification software (Liquid), bugs in key-generation programs (Coldcard), a user's own device being compromised.
 
-**蜂群网络的边界：** 第二家能认出的是同一地址和同一手法；换全新地址的攻击者认不出来。视频里不说「换一家一滴都出不去」。
+**Limits of the hive network:** what a second exchange can recognise is the same address and the same technique; an attacker who switches to brand-new addresses is not recognised. The video does not say "at the next exchange, not a single drop gets out".
 
-**加入算法后多出来的边界：**
+**Additional limits introduced by the algorithms:**
 
-- **fail-slow，不是 fail-closed。** CRE 停了，额度不再补、快车道慢慢耗尽，大额走两人签名 + 时间锁的慢车道；不锁死，也不放开。业界也有 fail-open 的做法（Flying Tulip 的断路器），pitch 里说清楚这个取舍。
-- **弱信号的似然比是假设值。** 没有真实数据校准，只有事件重放和红队测试。
-- **诱饵 AUC 只能用合成数据测。** 真交易所的账户特征拿不到。
-- **CUSUM 每天会有误报。** 所以只做软动作。
-- **额度桶的上界只在签名验证被绕过时才有意义。**
-- **溯源只做一跳。** 进了跨链桥就断。
-- **诱饵钱包是普通钱包、真热钱包是合约。** 非常小心的攻击者去链上查就能分出来。可以把诱饵也做成同一份金库合约、指向一个永远批准的假 Receiver，让他多查一层才分得出。
-- **密钥 K 是单点。** 盐值、门槛、分数加密都从 K 派生，K 对节点运营方是明文。
+- **fail-slow, not fail-closed.** If CRE stops, quota is no longer refilled and the fast lane slowly drains; large amounts take the slow lane with two signatures + timelock. Nothing locks up, and nothing opens up. The industry also has fail-open designs (Flying Tulip's circuit breaker); the pitch should state this trade-off clearly.
+- **Likelihood ratios for weak signals are assumed values.** There is no real data to calibrate them, only incident replays and red-team tests.
+- **Decoy AUC can only be measured on synthetic data.** Account features from a real exchange are not available.
+- **CUSUM will produce false alarms every day.** So it only takes soft actions.
+- **The quota bucket bound only matters when signature verification is bypassed.**
+- **Tracing covers only one hop.** It breaks once funds enter a cross-chain bridge.
+- **Decoy wallets are ordinary wallets, while real hot wallets are contracts.** A very careful attacker can tell them apart by checking on-chain. We could make the decoys the same vault contract too, pointing to a fake Receiver that always approves, so he has to dig one layer deeper to tell them apart.
+- **Key K is a single point of failure.** Salts, thresholds and score encryption are all derived from K, and K is plaintext to node operators.
 
-## 11. 视频 demo 脚本
+## 11. Video demo script
 
-评审只看视频：全程英文字幕；每句话配证据画面；等待时间剪成快进并标明。先按 3 分钟排。
+Judges only watch the video: English subtitles throughout; every line is paired with evidence on screen; waiting time is cut to fast-forward and labelled as such. Plan for 3 minutes first.
 
-| 时间 | 画面 | 字幕 |
+| Time | Screen | Subtitle |
 | --- | --- | --- |
-| 0:00 | 蜂巢比喻动画：简洁的六边形，不画卡通蜜蜂 | Every exchange is a hive. Attackers always scout before they strike. |
-| 0:15 | Bitget 时间线：18:31 两笔测试转账，18:58 大额流出 | The attackers announced themselves 27 minutes early. Nobody was listening. |
-| 0:30 | 对账 34 分钟后才发现；攻击者删除记录 | Alarms inside a compromised system can be switched off. |
-| 0:40 | 一句话，然后切到真实控制台 | Here is what that looks like for real. |
-| 0:50 | 红队在交易所 A：读风控配置（50 ETH、旧热钱包），从旧热钱包发测试转账 |  |
-| 1:05 | Trap tripped → 节点共识 → 撤资、冻结 2 小时、地址写进名单；区块浏览器 | Tripped. Tightened. Marked. |
-| 1:25 | 红队删掉后台日志；警报和链上状态不变 | Deleting the logs changes nothing. |
-| 1:35 | 红队大额转出 revert；伪造提款被拒（三栏对照，第 3 关） | Even without the trap, he can't forge a user's signature. |
-| 1:55 | **转去交易所 B**：同一地址转人工，同样的试探模式直接 L2；两个控制台并排 | The second hive already knows his scent. |
-| 2:15 | 时间轴回放：第一笔测试转账就被标记 | He thought he was caught at step three. He was marked at step one. |
-| 2:30 | Bybit 主网交易重放（经 NOWNodes），拒绝 |  |
-| 2:40 | 蜂群网络图 + 边界一行 + 一句话 | Every attack makes every hive stronger. |
+| 0:00 | Hive metaphor animation: clean hexagons, no cartoon bees | Every exchange is a hive. Attackers always scout before they strike. |
+| 0:15 | Bitget timeline: two test transfers at 18:31, large outflows at 18:58 | The attackers announced themselves 27 minutes early. Nobody was listening. |
+| 0:30 | Reconciliation noticed only after 34 minutes; the attackers deleted records | Alarms inside a compromised system can be switched off. |
+| 0:40 | One line, then cut to the real console | Here is what that looks like for real. |
+| 0:50 | Red team at exchange A: reads the risk-control config (50 ETH, old hot wallet), sends a test transfer from the old hot wallet |  |
+| 1:05 | Trap tripped → node consensus → funds swept, 2-hour freeze, address written to the list; block explorer | Tripped. Tightened. Marked. |
+| 1:25 | Red team deletes the backend logs; the alarm and on-chain state are unchanged | Deleting the logs changes nothing. |
+| 1:35 | Red team's large transfer out reverts; forged withdrawal rejected (three-column comparison, gate 3) | Even without the trap, he can't forge a user's signature. |
+| 1:55 | **Switch to exchange B**: the same address goes to manual review, and the same probing pattern goes straight to L2; two consoles side by side | The second hive already knows his scent. |
+| 2:15 | Timeline replay: marked at the very first test transfer | He thought he was caught at step three. He was marked at step one. |
+| 2:30 | Bybit mainnet transaction replay (via NOWNodes), rejected |  |
+| 2:40 | Hive network diagram + one line of limits + one closing line | Every attack makes every hive stronger. |
 
-**要在测试环境里实际量出来的数字：**
+**Numbers to actually measure in the test environment:**
 
-| 指标 | 怎么测 | 对应算法 |
+| Metric | How to measure | Algorithm |
 | --- | --- | --- |
-| 命中概率曲线 | 不同 d/m 和 k 下的 P\_hit | A |
-| 诱饵 AUC | 分类器区分诱饵和真账户（合成数据） | B |
-| 检测延迟 | 诱饵被碰到金库真的冻结、额度真的清零的秒数；读合约状态，不看交易是否成功 | C、J |
-| 触发后攻击者还能拿走的金额 | 红队实测 | G |
-| 最坏损失 | 按 Bitget 时间线重放，有无 Quorum 对比 | G |
-| 误报率 | 合成正常流出跑 CUSUM；假门槛指纹对正常用户的误报 | E、F |
-| 网络生效时间 | 名单写入到第二家转人工的秒数 | H |
+| Hit probability curve | P\_hit under different d/m and k | A |
+| Decoy AUC | Classifier separating decoys from real accounts (synthetic data) | B |
+| Detection latency | Seconds from a decoy being touched to the vault actually freezing and the quota actually reaching zero; read contract state, do not rely on transaction success | C, J |
+| Amount the attacker can still take after the trigger | Red-team measurement | G |
+| Worst-case loss | Replay along the Bitget timeline, with and without Quorum | G |
+| False positive rate | Run CUSUM on synthetic normal outflows; false positives of the fake-threshold fingerprint on normal users | E, F |
+| Network propagation time | Seconds from the list write to the second exchange routing to manual review | H |
 
-全部是真跑出来的结果，并标明是测试环境。
+All results come from real runs and are labelled as test-environment results.
 
-## 12. 36 小时范围
+## 12. 36-hour scope
 
-| 优先级 | 内容 |
+| Priority | Content |
 | --- | --- |
-| P0（主轴） | 诱饵钱包（ERC-20）+ Trap workflow；诱饵账户（有真实充值记录）；确认级收紧（额度清零、撤资、有期限冻结、写名单）；Receiver + QuorumVault + 额度桶（G）；本地棘轮（H）；收紧用 LATEST（J）；红队后台（含假风控配置）；控制台 Traps 页 |
-| P0（预防层最小版） | Cosign 关 1、2、3、4；Cases 检视页 |
-| P1（视频高潮） | 共享名单 + 第二家测试交易所 + 网络传播（H）；DecoyCommit 与揭示（C）；控制台 Network 页；时间轴回放 |
-| P1 | SPRT 账户分数与加密存储（E）；HMAC 门槛与承诺（D）；诱饵门槛指纹；Bybit 重放；Patrol 原生币诱饵巡逻；命中概率曲线（A，只出图） |
-| P2 | CUSUM（F）；一跳溯源（I）；诱饵 AUC（B）；诱饵凭证回调；XRP 诱饵钱包（NOWNodes）；多链对账；控制等级页；开场比喻动画精修 |
+| P0 (core) | Decoy wallet (ERC-20) + Trap workflow; decoy accounts (with real deposit history); Confirmed-level tightening (zero quota, sweep funds, time-limited freeze, write to list); Receiver + QuorumVault + quota bucket (G); local ratchet (H); tighten on LATEST (J); red-team backend (with fake risk-control config); console Traps page |
+| P0 (minimal prevention layer) | Cosign gates 1, 2, 3, 4; Cases review page |
+| P1 (video climax) | Shared list + a second test exchange + network propagation (H); DecoyCommit and reveal (C); console Network page; timeline replay |
+| P1 | SPRT account score and encrypted storage (E); HMAC threshold and commitment (D); decoy threshold fingerprint; Bybit replay; Patrol native-coin decoy patrol; hit probability curve (A, chart only) |
+| P2 | CUSUM (F); one-hop tracing (I); decoy AUC (B); decoy credential callbacks; XRP decoy wallet (NOWNodes); multi-chain reconciliation; control level page; polish of the opening metaphor animation |
 
-- [ ] 第 26 小时先录一版完整视频
-- [ ] 第 28 小时冻结功能，之后只修 bug 和重录
+- [ ] Record a full version of the video at hour 26
+- [ ] Feature freeze at hour 28; after that, only bug fixes and re-recording
 
-## 13. 待确认与赛前验证
+## 13. Open questions and pre-competition checks
 
-- [ ] 视频长度上限；入围后有没有现场决赛
-- [ ] CRE log trigger 能不能按 topic 只听「从诱饵地址转出」的 Transfer 事件
-- [ ] 从事件到报告上链的实际秒数（模拟与部署各测一次）
-- [ ] 三个 workflow 刚好用满每个 org 的上限；一个 Cosign 能不能同时服务两家测试交易所，不额外占名额
-- [ ] CRE 报告送到 Receiver 时，能不能检查 workflow ID 和 owner
-- [ ] 在 CRE 里做 EIP-712 签名验证可行，否则改在链上 ecrecover
-- [ ] NOWNodes 读主网历史交易与 XRP 接口
-- [ ] 比赛能不能拿到 CRE Confidential Workflows 权限
-- [ ] 五起事件的金额、日期逐一对照原文
-- [ ] 名字：是否保留 Quorum（与 JPMorgan / ConsenSys 的 Quorum 撞名），或改 Propolis
-- [ ] 团队确认：确认级冻结的期限、收紧等级自动下降、名单只标可疑
+- [ ] Maximum video length; whether there is a live final for finalists
+- [ ] Whether a CRE log trigger can filter by topic to listen only for Transfer events "sent from a decoy address"
+- [ ] Actual seconds from event to report on-chain (measure once in simulation and once deployed)
+- [ ] Three workflows exactly use up the per-org limit; whether one Cosign can serve both test exchanges at once without taking an extra slot
+- [ ] When a CRE report reaches the Receiver, whether it can check the workflow ID and owner
+- [ ] EIP-712 signature verification is feasible inside CRE; otherwise use on-chain ecrecover instead
+- [ ] NOWNodes interfaces for reading mainnet historical transactions and XRP
+- [ ] Whether we can get CRE Confidential Workflows access for the competition
+- [ ] Check the amounts and dates of the five incidents one by one against the source texts
+- [ ] Name: whether to keep Quorum (it clashes with JPMorgan / ConsenSys's Quorum) or switch to Propolis
+- [ ] Team to confirm: duration of Confirmed-level freezes, automatic lowering of tightening levels, the list only marking suspicious
 
-* [ ] 写一个测试：报告到达后读合约状态，确认金库真的冻结、额度真的清零
-* [ ] CRE workflow 里能不能做 HMAC、keccak、对称加密，各节点结果完全一致
-* [ ] CUSUM 状态每分钟写链的成本
-* [ ] 诱饵账户的真实充值记录怎么做、要放多少钱
-* [ ] 相关工作逐条核对：Hypernative、SEAL Safe Harbor 条款、ERC-7265 对 Euler 的估算（开发者自估）、各 arXiv 编号、凭记忆的经典文献（Wald 1945、Page 1954、Axelsson 2000、Merkle 1987、RFC 2104、RFC 2697）、CUSUM 的 ARL 表
-* [ ] Circle 关于 USDC 冻结立场的原话
-* [ ] Bitget 头 18 分钟流出约 2.28 亿美元这个数字
+* [ ] Write a test: after a report arrives, read contract state to confirm the vault really froze and the quota really went to zero
+* [ ] Whether a CRE workflow can do HMAC, keccak and symmetric encryption with identical results on every node
+* [ ] Cost of writing CUSUM state on-chain every minute
+* [ ] How to create real deposit history for decoy accounts, and how much money to put in
+* [ ] Verify related work item by item: Hypernative, SEAL Safe Harbor terms, the ERC-7265 estimate for Euler (the developers' own estimate), each arXiv number, classic references cited from memory (Wald 1945, Page 1954, Axelsson 2000, Merkle 1987, RFC 2104, RFC 2697), the CUSUM ARL table
+* [ ] Circle's exact wording on its USDC freezing position
+* [ ] The figure of about $228 million leaving Bitget in the first 18 minutes
 
-## 14. 来源
+## 14. Sources
 
-- [Bitget 官方事件时间线](https://www.bitget.com/academy/bitget-security-incident-what-happened-timeline-impact-response)
-- [Bitget 事件解析（Halborn）](https://www.halborn.com/blog/post/explained-the-bitget-hack-september-2026)
-- [Bitget 披露的攻击细节（ChainCatcher）](https://www.chaincatcher.com/en/article/2292843)
-- [Bitget 洗钱路径与冻结（BlockSec）](https://blocksec.com/blog/bitget-hack-laundering-fund-tracing)
-- [Bybit 与签名界面（Max Avery）](https://www.maxavery.org/blog/bybit-the-largest-theft-in-the-asset-class-and-the-signing-interface-behind-it/)
-- [Radiant Capital 事件解析（Halborn）](https://www.halborn.com/blog/post/explained-the-radiant-capital-hack-october-2024)
-- [WazirX 事件解析（Halborn）](https://www.halborn.com/blog/post/explained-the-wazirx-hack-july-2024)
-- [DMM Bitcoin 与 LinkedIn 社交工程（CryptoSlate）](https://cryptoslate.com/fbi-reveals-north-korea-used-linkedin-to-steal-305-million-from-japans-dmm-bitcoin/)
-- [THORChain 撤回暂停投票（Cointelegraph）](https://cointelegraph.com/news/thorchain-dev-exits-north-korea-transactions-halt-vote-fails)
-- YT 的 Veil 文档（队内）
+- [Bitget official incident timeline](https://www.bitget.com/academy/bitget-security-incident-what-happened-timeline-impact-response)
+- [Bitget incident explained (Halborn)](https://www.halborn.com/blog/post/explained-the-bitget-hack-september-2026)
+- [Attack details disclosed by Bitget (ChainCatcher)](https://www.chaincatcher.com/en/article/2292843)
+- [Bitget laundering paths and freezes (BlockSec)](https://blocksec.com/blog/bitget-hack-laundering-fund-tracing)
+- [Bybit and the signing interface (Max Avery)](https://www.maxavery.org/blog/bybit-the-largest-theft-in-the-asset-class-and-the-signing-interface-behind-it/)
+- [Radiant Capital incident explained (Halborn)](https://www.halborn.com/blog/post/explained-the-radiant-capital-hack-october-2024)
+- [WazirX incident explained (Halborn)](https://www.halborn.com/blog/post/explained-the-wazirx-hack-july-2024)
+- [DMM Bitcoin and LinkedIn social engineering (CryptoSlate)](https://cryptoslate.com/fbi-reveals-north-korea-used-linkedin-to-steal-305-million-from-japans-dmm-bitcoin/)
+- [THORChain pause vote reversed (Cointelegraph)](https://cointelegraph.com/news/thorchain-dev-exits-north-korea-transactions-halt-vote-fails)
+- YT's Veil document (internal to the team)
 
-**算法与相关工作（队友整理，引用前核对）**
+**Algorithms and related work (compiled by teammates; verify before citing)**
 
-- [Safenet 文档（Safe Foundation）](https://docs.safefoundation.org/safenet/overview/introduction)；[Safenet Beta 发布](https://safefoundation.org/blog/safe-launches-safenet-beta)
-- [Honeywords（Juels & Rivest, ACM CCS 2013）](https://doi.org/10.1145/2508859.2516671)
+- [Safenet documentation (Safe Foundation)](https://docs.safefoundation.org/safenet/overview/introduction); [Safenet Beta launch](https://safefoundation.org/blog/safe-launches-safenet-beta)
+- [Honeywords (Juels & Rivest, ACM CCS 2013)](https://doi.org/10.1145/2508859.2516671)
 - [Advancing Honeywords for Real-World Authentication Security](https://arxiv.org/abs/2510.22971)
-- ARMOR（Pita et al., AAMAS 2008）；Tambe, *Security and Game Theory*（Cambridge University Press）
-- [Adaptive Honeypot Allocation via Bayesian Stackelberg Games](https://arxiv.org/abs/2505.16043)；[Honeypot Allocation in Dynamic Tactical Networks](https://arxiv.org/abs/2308.11817)
-- [Cryptocurrency Stealing Attack on Ethereum（RPC 蜜罐）](https://arxiv.org/abs/1904.01981)
-- [ERC-7265 Circuit Breaker 代码](https://github.com/DeFi-Circuit-Breaker/v1-core)；[Chainlink Proof of Reserve](https://chain.link/proof-of-reserve)；[SEAL](https://securityalliance.org/our-work)
-- [加密货币交易的网络分析综述（污点分析）](https://arxiv.org/abs/2011.09318)；[ConneX（跨链桥交易配对）](https://arxiv.org/abs/2511.01393)；Yousaf et al., *Tracing Transactions Across Cryptocurrency Ledgers*, USENIX Security 2019
-- 凭记忆、未核对：Wald 1945（SPRT）；Page 1954（CUSUM）；Axelsson 2000（基率谬误）；Merkle 1987；RFC 2104（HMAC）；RFC 2697（令牌桶）
+- ARMOR (Pita et al., AAMAS 2008); Tambe, *Security and Game Theory* (Cambridge University Press)
+- [Adaptive Honeypot Allocation via Bayesian Stackelberg Games](https://arxiv.org/abs/2505.16043); [Honeypot Allocation in Dynamic Tactical Networks](https://arxiv.org/abs/2308.11817)
+- [Cryptocurrency Stealing Attack on Ethereum (RPC honeypots)](https://arxiv.org/abs/1904.01981)
+- [ERC-7265 Circuit Breaker code](https://github.com/DeFi-Circuit-Breaker/v1-core); [Chainlink Proof of Reserve](https://chain.link/proof-of-reserve); [SEAL](https://securityalliance.org/our-work)
+- [A survey of network analysis of cryptocurrency transactions (taint analysis)](https://arxiv.org/abs/2011.09318); [ConneX (cross-chain bridge transaction pairing)](https://arxiv.org/abs/2511.01393); Yousaf et al., *Tracing Transactions Across Cryptocurrency Ledgers*, USENIX Security 2019
+- From memory, not verified: Wald 1945 (SPRT); Page 1954 (CUSUM); Axelsson 2000 (base-rate fallacy); Merkle 1987; RFC 2104 (HMAC); RFC 2697 (token bucket)
