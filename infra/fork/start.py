@@ -59,7 +59,7 @@ def main():
         for m in tar.getmembers():  # only plain files under /app, nothing absolute or escaping
             if not m.isfile() or m.name.startswith('/') or '..' in Path(m.name).parts:
                 raise RuntimeError(f'unexpected bundle entry {m.name}')
-        tar.extractall(APP, filter='data')
+        tar.extractall(APP)  # members checked above; bookworm's Python 3.11.2 has no extraction filter
 
     if os.environ.get('CRE_AUTH_SECRET_ARN'):
         auth = json.loads(boto3.client('secretsmanager', region_name=region).get_secret_value(SecretId=os.environ['CRE_AUTH_SECRET_ARN'])['SecretString'])
