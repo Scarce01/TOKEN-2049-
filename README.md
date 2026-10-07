@@ -31,6 +31,7 @@
         <li><a href="#how-it-works">How it works</a></li>
         <li><a href="#results">Results</a></li>
         <li><a href="#built-with">Built with</a></li>
+        <li><a href="#provenance">Provenance</a></li>
       </ul>
     </li>
     <li>
@@ -133,6 +134,14 @@ More detail and caveats: [docs/STATUS.md](docs/STATUS.md), [docs/AUDIT_2026-10-0
 * [![Supabase][Supabase-badge]][Supabase-url] Postgres, pg-boss outbox
 * [![Python][Python-badge]][Python-url] tracing analysis and Trek
 * NOWNodes (second data source), Base Sepolia and Ethereum Sepolia
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Provenance
+
+This codebase was started before TOKEN2049 Origins in the team's private beta repository
+(`Scarce01/TOKEN-2049-beta`) and was imported into this repository as a single commit on 2026-10-07. The full commit
+history of the beta repository is available to the organizers on request.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
