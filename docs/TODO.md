@@ -1,65 +1,65 @@
-# TODO（2026-10-07，main 合入 `integrate/all-features` 之后）
+# TODO (2026-10-07, after `integrate/all-features` was merged into main)
 
-现状：保护层、诱饵检测、跨交易所传播、溯源上链（Trek + CRE verify-edge）、patrol 都已在**模拟链**（Base Sepolia 的本地 anvil fork）
-用 CRE CLI `simulate --broadcast` 端到端跑通（见 [AUDIT_2026-10-07.md](AUDIT_2026-10-07.md)）。下面是还缺的东西，按上线顺序排。
-勾掉一项时，在 [STATUS.md](STATUS.md) 记证据。
+Current state: the protection layer, decoy detection, cross-exchange propagation, on-chain tracing (Trek + CRE verify-edge) and patrol all run end to end on the **simulated chain** (a local anvil fork of Base Sepolia)
+with CRE CLI `simulate --broadcast` (see [AUDIT_2026-10-07.md](AUDIT_2026-10-07.md)). Below is what is still missing, in go-live order.
+When you tick an item, record the evidence in [STATUS.md](STATUS.md).
 
-## 1. AWS 部署的前置（38_phase8_aws.md 之前必须先有）
+## 1. Prerequisites for the AWS deployment (must be in place before 38_phase8_aws.md)
 
-- [ ] **决定 CRE 运行方式**（STATUS「CRE 运行方式」还是空的）：方式 A DON 部署（要 `cre account access`）或方式 B sim-runner + SIM 模式。AWS 设计按方式 B 写（sim-runner 容器 + `CRE_API_KEY`）
-- [ ] **公开 Base Sepolia 部署**：`deployments/base-sepolia.json` 还不存在（现在只有 fork、anvil、Ethereum Sepolia）。需要有测试币的 deployer；`SIM_OPERATOR` 要等于 workflows/.env 里 CRE key 的地址；`pnpm deploy:base-sepolia`
-- [ ] 公开链上的诱饵：decoy-admin 生成并经 ConfigTimelock 提交 DecoyCommit root（fork 上由 fork-demo/setup.ts 做；公开链要正式流程，只用 secrets/）
-- [ ] NOWNodes 有 Base Sepolia 节点，但我们的 key 没开权限：在 NOWNodes 后台开通后，NOWNODES_URL 加 84532，公开链 Trap 才有第二数据源（本地 fork 上永远不适用，见 STATUS）
-- [x] 8443 的 UI 已搬进仓库：`apps/observatory`（`hexmap.html` 在仓库根目录）。还要决定：Amplify 部署 `apps/observatory` 还是 `apps/console`
-- [x] `packages/offchain/scripts/fork-demo/`（setup、bridge、patrol）已提交
+- [ ] **Decide how CRE runs** (the STATUS entry "CRE run mode" is still empty): option A, DON deployment (needs `cre account access`), or option B, sim-runner + SIM mode. The AWS design is written for option B (sim-runner container + `CRE_API_KEY`)
+- [ ] **Public Base Sepolia deployment**: `deployments/base-sepolia.json` does not exist yet (there are only fork, anvil and Ethereum Sepolia now). Needs a deployer with test funds; `SIM_OPERATOR` must equal the address of the CRE key in workflows/.env; `pnpm deploy:base-sepolia`
+- [ ] Decoys on the public chain: decoy-admin generates them and submits the DecoyCommit root through ConfigTimelock (on the fork, fork-demo/setup.ts does this; the public chain needs the formal process, using only secrets/)
+- [ ] NOWNodes has Base Sepolia nodes, but our key does not have access: once access is enabled in the NOWNodes dashboard, add 84532 to NOWNODES_URL, and only then does Trap on the public chain have a second data source (never applies on the local fork, see STATUS)
+- [x] The 8443 UI has been moved into the repo: `apps/observatory` (`hexmap.html` is in the repo root). Still to decide: whether Amplify deploys `apps/observatory` or `apps/console`
+- [x] `packages/offchain/scripts/fork-demo/` (setup, bridge, patrol) committed
 
-## 2. AWS 部署本身（38_phase8_aws.md）
+## 2. The AWS deployment itself (38_phase8_aws.md)
 
-- [ ] 每个服务的 Dockerfile：exchange-api（A、B）、indexer（Ponder）、trap-sync、sim-runner（容器内装 `cre` CLI 与 Bun）、**keeper**、**notifier**（这两个是 47 之后新加的，38 的架构表里还没有，要补进设计）
-- [ ] `infra/` AWS CDK（TypeScript）：VPC、ECR、ECS cluster、各 Fargate service、ALB、Secrets Manager、CloudWatch
-- [ ] Supabase Cloud：`supabase link`；`supabase db push` 推全部 migrations（`20261006000300_synthetic_withdrawals`、`20261006000400_notifier` 是云端没推过的）；重建角色与密码（含 keeper、notifier 的角色）；建人员账号
-- [ ] Secrets Manager → 各 ECS task：exchange-api 拿不到任何 Quorum 角色；Console 服务端只有 `console_svc`；CRE secrets 仍只在 sim-runner 的 .env 或 Vault DON
-- [ ] Amplify：console、user-app，只放 anon key 和公开地址
-- [ ] CloudWatch 告警（38 的五条）：Trap 报告失败、indexer 落后或停（missing data 算告警）、sim-runner 5 分钟没 patrol、ActionFailed、数据库增长
-- [ ] 部署后：`pnpm verify:design --env aws`（CLI 已支持 `--env`）；安全复查（anon key 读不到 quorum_index、exchange_*；Amplify 打包里找不到诱饵与 service key；SIM 模式时 Console 顶部常驻提示）
-- [ ] 收尾：Fargate 不用时 desired count 调 0；比赛后轮换所有密码、撤销 `CRE_API_KEY`
+- [ ] A Dockerfile for each service: exchange-api (A, B), indexer (Ponder), trap-sync, sim-runner (with the `cre` CLI and Bun installed in the container), **keeper**, **notifier** (these two were added after 47 and are not yet in the architecture table in 38; add them to the design)
+- [ ] `infra/` AWS CDK (TypeScript): VPC, ECR, ECS cluster, each Fargate service, ALB, Secrets Manager, CloudWatch
+- [ ] Supabase Cloud: `supabase link`; `supabase db push` to push all migrations (`20261006000300_synthetic_withdrawals` and `20261006000400_notifier` have never been pushed to the cloud); recreate roles and passwords (including the keeper and notifier roles); create officer accounts
+- [ ] Secrets Manager → each ECS task: exchange-api gets no Quorum role; the Console server side has only `console_svc`; CRE secrets stay only in the sim-runner .env or the Vault DON
+- [ ] Amplify: console, user-app, with only the anon key and public addresses
+- [ ] CloudWatch alarms (the five in 38): Trap report failure, indexer lagging or stopped (missing data counts as an alarm), sim-runner with no patrol for 5 minutes, ActionFailed, database growth
+- [ ] After deployment: `pnpm verify:design --env aws` (the CLI already supports `--env`); security re-check (the anon key cannot read quorum_index or exchange_*; no decoys or service key can be found in the Amplify bundle; in SIM mode the Console shows a persistent banner at the top)
+- [ ] Wrap-up: set the Fargate desired count to 0 when not in use; after the hackathon, rotate all passwords and revoke `CRE_API_KEY`
 
-## 3. 验收场景（verify:design 34 项 not-yet，单元测试都已通过）
+## 3. Acceptance scenarios (34 verify:design items are not-yet; all unit tests pass)
 
-缺的是在链上用 CRE CLI 真跑的场景，结果写进 `reports/scenes/<名字>.json`。**诱饵相关的先不做**。
+What is missing are the scenarios that actually run on-chain with the CRE CLI, with results written to `reports/scenes/<name>.json`. **Decoy-related ones are not done for now**.
 
-- [ ] 第 1 组，七关在链上挡得住：`forge_fields`（D14.1）、`s3_forge`（D14.3）、`same_block`（D14.5）、`stale_price`（D14.6）、`l2_new_recipient`（D14.7）；`s6_bybit`（D14.2，要主网 archive RPC）
-- [ ] 第 2 组，韧性与信任边界：`s2_wipe`（D01）、`stop_cre`（D27）、`config_drift`（D37）、`threshold_two_epochs`（D21）、`det_patrol`（D30）
-- [ ] 第 3 组，跨交易所与溯源：`s4_hop`（D13）、`trace_exclusion`（D31）；`trace_bybit`（D51，要 Etherscan key）
-- [ ] 第 4 组，性能与负载：`load_normal`（D41）、`load_normal_rate`（D56）、`load_normal_fingerprint`（D44）、`latency_breakdown`（D57）、`db_volume`（D60）
-- [ ] 第 5 组，Console：`console_without_indexer`（D47）、`console_rpc_budget`（D59）
-- [ ] 暂缓（诱饵相关）：`s1_trap`（D02）、`s1_trap_status`（D08）、`measure_trap`（D36）、`race`（D45）、`probe_native`（D03）、`forge_decoy`（D04）、`probe_threshold`（D05）、`stranger_transfer`（D06）、`use_api_keys`（D07，P2 未实现）、`s5_timeline`（D43）、`ops_replay`（D49）
-- [ ] 不做：`aws_alerts`（D46）等 AWS 部署完再做
+- [ ] Group 1, the seven gates hold on-chain: `forge_fields` (D14.1), `s3_forge` (D14.3), `same_block` (D14.5), `stale_price` (D14.6), `l2_new_recipient` (D14.7); `s6_bybit` (D14.2, needs a mainnet archive RPC)
+- [ ] Group 2, resilience and trust boundaries: `s2_wipe` (D01), `stop_cre` (D27), `config_drift` (D37), `threshold_two_epochs` (D21), `det_patrol` (D30)
+- [ ] Group 3, cross-exchange and tracing: `s4_hop` (D13), `trace_exclusion` (D31); `trace_bybit` (D51, needs an Etherscan key)
+- [ ] Group 4, performance and load: `load_normal` (D41), `load_normal_rate` (D56), `load_normal_fingerprint` (D44), `latency_breakdown` (D57), `db_volume` (D60)
+- [ ] Group 5, Console: `console_without_indexer` (D47), `console_rpc_budget` (D59)
+- [ ] Deferred (decoy-related): `s1_trap` (D02), `s1_trap_status` (D08), `measure_trap` (D36), `race` (D45), `probe_native` (D03), `forge_decoy` (D04), `probe_threshold` (D05), `stranger_transfer` (D06), `use_api_keys` (D07, P2 not implemented), `s5_timeline` (D43), `ops_replay` (D49)
+- [ ] Not doing now: `aws_alerts` (D46) and similar wait until the AWS deployment is done
 
-## 4. 团队要决定的（细节在 STATUS「待决定」）
+## 4. For the team to decide (details under "Open decisions (待决定)" in STATUS)
 
-- [ ] D28 诱饵可分辨（唯一 fail）：新生成器 analysis/decoygen 已做（docs/48），1,000 个账户过门槛、100 个不过；要定口径与账户池大小，再决定计划怎么落地（写 exchange_*、登记 Trap、提交新根）
-- [ ] NOWNodes 不可用时 Trap 照常收紧（已实现），还是 throw 重试 N 个区块
-- [ ] 被触发过的诱饵要轮换；旧 commit 里还有诱饵 label 与探针交易，历史改不了
-- [ ] R7：冻结时要不要连车道一起关；车道要不要受 R8 每小时、每天上限约束；proposal 第 4 节回写
-- [ ] verify-edge：撒灰只靠最小金额挡；衍生链没有深度上限；原生币边不支持
-- [ ] issue #17（Trek 的 5 个问题）：回复草稿在 STATUS，确认后发出
+- [ ] D28 decoys are distinguishable (the only fail): the new generator analysis/decoygen is done (docs/48); 1,000 accounts pass the threshold, 100 do not. Need to settle the criterion and the account pool size, then decide how to roll out the plan (write exchange_*, register in Trap, submit a new root)
+- [ ] When NOWNodes is unavailable: Trap tightens as usual (implemented), or throw and retry for N blocks
+- [ ] Decoys that have been triggered must be rotated; old commits still contain decoy labels and probe transactions, and history cannot be changed
+- [ ] R7: whether a freeze also closes the lane; whether the lane is bound by the R8 hourly and daily caps; write back to section 4 of the proposal
+- [ ] verify-edge: dusting is blocked only by the minimum amount; derived chains have no depth limit; native-coin edges are not supported
+- [ ] issue #17 (Trek's 5 questions): the draft reply is in STATUS; send it once confirmed
 
-## 5. 技术债与测试缺口
+## 5. Technical debt and test gaps
 
-- [ ] R7 车道不在不变量 handler 里
-- [ ] `services/decoy-admin`（诱饵生成）没有单元测试
-- [ ] decoy-admin 读 `secrets/decoygen/<org>/epoch-<e>.json` 落地计划（见 docs/48 第 8 节）；生活痕迹由 seeder 执行
-- [ ] Observatory 的诱饵库存页（在线 / 离线）接 127.0.0.1:8791（交给 UI 会话）
-- [x] indexer 补上 PatrolState、DecoyCommit、OfficerDesk，加状态快照表与 `/history` 时间序列 API 和 SSE，serve.ts 代理（docs/49）
-- [ ] Observatory 改用 `/history`：等级、冻结、CUSUM、资产、计数改从 indexer 取，删掉写死的数字（交给 UI 会话）
-- [ ] 不变量只驱动攻击者调用，合法路径（execute、sweep、topUp、fund）的 ghost 检查还没加
-- [ ] notifier 从最新区块开始，宕机期间的事件不会补发（要持久化游标）
-- [ ] Console、user-app 把非 31337 的链都当成 Base Sepolia；shared 没有 Ethereum Sepolia 的 CHAIN_ID
-- [ ] `trek.py watch` 只适用主网（evidenceHash 写死 chainId 1）；fork 上用 `fork_source.py`，请 chunlong 确认（handoff）
-- [ ] `packages/offchain/scripts` 不在 tsc 范围内（`e2e-prevention.ts` 有一个无害的类型断言错误一直没被发现）
-- [ ] CRE CLI 1.36.0 → 1.37.0 可升级
-- [ ] `apps/observatory` 用 oxfmt、不在 biome 与 pnpm workspace 里：之后统一格式与 lint
-- [ ] `archive/` 里的两份旧 UI 草稿：确认没有要回收的东西后可以删
-- [ ] `media/2049-tracking-demo.mp4`（27 MB）没进 git：有人看过确认画面里没有真实诱饵地址（规则 2）后再决定提交或另外存放
-- [x] UI 的 React「重复 key」警告：事件列表的 key 已改为 `交易 hash:log 序号:位置`；完整跑一次 Attack（11 步）0 个警告
+- [ ] The R7 lane is not in the invariant handler
+- [ ] `services/decoy-admin` (decoy generation) has no unit tests
+- [ ] decoy-admin reads `secrets/decoygen/<org>/epoch-<e>.json` and carries out the plan (see docs/48 section 8); the seeder produces the lived-in activity traces
+- [ ] The Observatory decoy inventory page (online / offline) connects to 127.0.0.1:8791 (handed to the UI session)
+- [x] indexer adds PatrolState, DecoyCommit, OfficerDesk, plus a state snapshot table, the `/history` time-series API and SSE, proxied by serve.ts (docs/49)
+- [ ] Observatory switches to `/history`: level, freeze, CUSUM, assets and counts come from the indexer instead, and the hard-coded numbers are removed (handed to the UI session)
+- [ ] The invariants drive only attacker calls; ghost checks for the legitimate paths (execute, sweep, topUp, fund) are not added yet
+- [ ] notifier starts from the latest block, so events during downtime are not re-sent (needs a persisted cursor)
+- [ ] Console and user-app treat every chain other than 31337 as Base Sepolia; shared has no CHAIN_ID for Ethereum Sepolia
+- [ ] `trek.py watch` only works on mainnet (evidenceHash hard-codes chainId 1); on the fork use `fork_source.py`; chunlong to confirm (handoff)
+- [ ] `packages/offchain/scripts` is outside tsc coverage (`e2e-prevention.ts` has a harmless type assertion error that has gone unnoticed)
+- [ ] CRE CLI 1.36.0 → 1.37.0 upgrade available
+- [ ] `apps/observatory` uses oxfmt and is not in biome or the pnpm workspace: unify formatting and lint later
+- [ ] The two old UI drafts in `archive/`: can be deleted once confirmed there is nothing to salvage
+- [ ] `media/2049-tracking-demo.mp4` (27 MB) is not in git: once someone has watched it and confirmed no real decoy address appears on screen (rule 2), decide whether to commit it or store it elsewhere
+- [x] The UI's React "duplicate key" warning: the event list key is now `tx hash:log index:position`; a full Attack run (11 steps) gives 0 warnings

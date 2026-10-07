@@ -321,7 +321,7 @@ calls (Trap before Patrol before Cosign). Production limits stay on.
 - [ ] AWS deployment ([docs/38_phase8_aws.md](docs/38_phase8_aws.md)): CDK, ECS Fargate, Amplify, CloudWatch
 - [ ] Team decisions: decoy indistinguishability (D28), R7 lane under freeze, decoy rotation
 
-Full list: [docs/TODO.md](docs/TODO.md). Open decisions: [docs/STATUS.md](docs/STATUS.md) under 待决定.
+Full list: [docs/TODO.md](docs/TODO.md). Open decisions: [docs/STATUS.md](docs/STATUS.md), section Open decisions.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
