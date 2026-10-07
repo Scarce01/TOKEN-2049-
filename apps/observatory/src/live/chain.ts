@@ -95,6 +95,8 @@ async function readOrg(o: OrgRef, block: bigint): Promise<LiveOrg> {
   const r = <T,>(fn: string, address: Address, args: unknown[], abi: unknown, d: T) =>
     safe<T>(client.readContract({ address, abi: abi as never, functionName: fn as never, args: args as never, blockNumber: block }), d)
   const tok = async (fn: string, v: Address) => amt(await r(fn, v, [D.qUSD], vaultAbi, 0n), await r(fn, v, [D.qETH], vaultAbi, 0n))
+  // ColdVault has no balanceOf(token) view: ask each token for the cold vault's balance
+  const coldTok = async (v: Address) => amt(await r('balanceOf', D.qUSD, [v], vaultAbi, 0n), await r('balanceOf', D.qETH, [v], vaultAbi, 0n))
   const [alert, alertExp, hotFroze, warmFroze, mode, lastPing, coldDelay] = await Promise.all([
     r('alert', o.receiver, [], receiverAbi, 0),
     r('alertExpiresAt', o.receiver, [], receiverAbi, 0n),
@@ -106,7 +108,7 @@ async function readOrg(o: OrgRef, block: bigint): Promise<LiveOrg> {
   ])
   const [hotBal, hotQ, hotCap, hourCap, dayCap, warmBal, warmQ, warmCap, coldBal] = await Promise.all([
     tok('balanceOf', o.hot), tok('quota', o.hot), tok('cap', o.hot), tok('hourCap', o.hot), tok('dayCap', o.hot),
-    tok('balanceOf', o.warm), tok('quota', o.warm), tok('cap', o.warm), tok('balanceOf', o.cold),
+    tok('balanceOf', o.warm), tok('quota', o.warm), tok('cap', o.warm), coldTok(o.cold),
   ])
   return {
     ...o,

@@ -218,7 +218,7 @@ function ExchangeRow({ o, live, series, onClick }: { o: LiveOrg; live: Live; ser
         </div>
         <div className="mt-2"><ReserveBar parts={parts} thin /></div>
       </button>
-      <button onClick={() => setExpanded((e) => !e)} aria-expanded={expanded} title="Show the hot quota over time"
+      <button onClick={() => setExpanded((e) => !e)} aria-expanded={expanded} title="Show the reserve and hot quota over time"
         className="w-full text-left px-3.5 pb-2.5 pt-0.5 hover:bg-white/[0.035] transition-colors">
         <div className="flex items-center gap-2 text-[11px] text-dim">
           <span className="w-[86px]">Hot quota</span>
@@ -235,12 +235,68 @@ function ExchangeRow({ o, live, series, onClick }: { o: LiveOrg; live: Live; ser
         )}
       </button>
       {expanded && (
-        <div className="px-3.5 pb-3">
-          <div className="mb-1 font-mono text-[10px] text-dim">Hot quota (qUSD) over time {'·'} live</div>
-          <Spark points={series} format={num} empty="Watching the hot quota (builds up live)" />
+        <div className="px-3.5 pb-3 space-y-3">
+          <ReserveChart org={o.letter} ethUsd={live.ethUsd} />
+          <div>
+            <div className="mb-1 font-mono text-[10px] text-dim">Hot quota (qUSD) over time {'·'} live</div>
+            <Spark points={series} format={num} empty="Watching the hot quota (builds up live)" />
+          </div>
         </div>
       )}
     </li>
+  )
+}
+
+const HISTORY = (import.meta.env.VITE_HISTORY_URL as string) ?? (typeof location !== 'undefined' ? `${location.origin}/history` : 'http://127.0.0.1:42069/history')
+type SnapRow = { block: number; time: number; vaults: Record<string, Record<string, { balance?: string }>> }
+
+/** Reserve value (hot + warm + cold, USD) per indexed block, refreshed every 4 s while the row is open.
+ * Per-block snapshots come from the indexer (/history); qETH is valued at the current feed price. */
+function ReserveChart({ org, ethUsd }: { org: string; ethUsd: number }) {
+  const [rows, setRows] = useState<SnapRow[] | null>(null)
+  // 'reindexing': the indexer answers 503 while it rebuilds (about 2-3 min after a fork reset)
+  const [down, setDown] = useState<false | 'offline' | 'reindexing'>(false)
+  useEffect(() => {
+    let stop = false
+    const tick = () =>
+      fetch(`${HISTORY}/series/snapshots?org=${org}&last=240`)
+        .then((r) => (r.ok ? r.json() : Promise.reject(new Error(r.status === 503 ? 'reindexing' : 'offline'))))
+        .then((d: SnapRow[]) => { if (!stop) { setRows(d); setDown(false) } })
+        .catch((e: Error) => !stop && setDown(e.message === 'reindexing' ? 'reindexing' : 'offline'))
+    tick()
+    const id = setInterval(tick, 4000)
+    return () => { stop = true; clearInterval(id) }
+  }, [org])
+  const pts = useMemo(() => {
+    const val = (s: SnapRow) =>
+      ['hot', 'warm', 'cold'].reduce((sum, tier) => {
+        const v = s.vaults[tier] ?? {}
+        return sum + Number(v.qUSD?.balance ?? 0) / 1e6 + (Number(v.qETH?.balance ?? 0) / 1e18) * ethUsd
+      }, 0)
+    // keep a point only when the reserve changes (plus the latest), so quiet blocks do not flatten the line
+    const out: { t: number; v: number }[] = []
+    for (const s of rows ?? []) {
+      const v = val(s)
+      if (!out.length || out[out.length - 1]!.v !== v) out.push({ t: s.time, v })
+    }
+    const last = rows?.[rows.length - 1]
+    if (last && out.length && out[out.length - 1]!.t !== last.time) out.push({ t: last.time, v: out[out.length - 1]!.v })
+    return out
+  }, [rows, ethUsd])
+  return (
+    <div>
+      <div className="mb-1 flex justify-between font-mono text-[10px] text-dim">
+        <span>Reserve (hot + warm + cold, USD) {'·'} live per block</span>
+        <span className={down === 'offline' ? 'text-[#ff8a7a]' : down ? 'text-[#E2B52E]' : 'text-mute'}>
+          {down === 'offline' ? 'indexer offline' : down ? 'reindexing' : rows ? `blk ${num(rows[rows.length - 1]?.block ?? 0)}` : '…'}
+        </span>
+      </div>
+      {down === 'reindexing' ? (
+        <Empty>Fork was reset: rebuilding the history (about 2-3 min)</Empty>
+      ) : (
+        <Spark points={pts} format={usd} empty={down ? 'Start the indexer (serve.ts) for reserve history' : 'Loading reserve history'} />
+      )}
+    </div>
   )
 }
 

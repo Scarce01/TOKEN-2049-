@@ -163,10 +163,8 @@ const vaultAbi = parseAbi([
   'function quota(address) view returns (uint256)',
   'function cap(address) view returns (uint256)',
 ])
-const coldAbi = parseAbi([
-  'function balanceOf(address) view returns (uint256)',
-  'function delay() view returns (uint64)',
-])
+const coldAbi = parseAbi(['function delay() view returns (uint64)'])
+const erc20Abi = parseAbi(['function balanceOf(address) view returns (uint256)'])
 const threatAbi = parseAbi(['function activeConfirmedCount() view returns (uint256)'])
 
 ponder.on(
@@ -195,8 +193,9 @@ ponder.on(
         for (const t of Object.values(TOKENS))
           for (const fn of ['balanceOf', 'quota', 'cap'])
             calls.push({ address: v, abi: vaultAbi, functionName: fn, args: [t] })
+      // ColdVault has no balanceOf(token) view: ask the token for the vault's balance
       for (const t of Object.values(TOKENS))
-        calls.push({ address: o.coldVault, abi: coldAbi, functionName: 'balanceOf', args: [t] })
+        calls.push({ address: t, abi: erc20Abi, functionName: 'balanceOf', args: [o.coldVault] })
     }
     // allowFailure: one reverting view (cold balanceOf on some deployments) must not drop the snapshot
     const res: { status: string; result?: unknown }[] = await context.client.multicall({

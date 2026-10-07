@@ -2,7 +2,7 @@
 // /history serves public chain events and state snapshots as time series for the Observatory (docs/49).
 // Everything here is already public on chain; no decoy list, no sealed reason in clear, no current threshold.
 // Bind to 127.0.0.1 and reach it through the one-origin server (apps/observatory/serve.ts proxies /history).
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { db } from 'ponder:api'
 import schema from 'ponder:schema'
@@ -45,6 +45,21 @@ for (const o of ORGS) {
     ORG_BY_ADDR.set(a.toLowerCase(), o.letter)
     TIER_BY_ADDR.set(a.toLowerCase(), tier as string)
   }
+}
+
+// Fork reset: the bridge's evm_revert rewinds the chain below what Ponder treats as final, which it cannot
+// reorg. Exit when the snapshot id changes; the supervisor (apps/observatory/serve.ts) restarts the indexer,
+// which then opens a fresh database for the new snapshot (ponder.config.ts) and reindexes.
+if ((process.env.DEPLOY_NAME ?? '').endsWith('-fork')) {
+  const file = join(__dirname, '..', '..', '..', '..', '.tmp', 'fork-snapshot.json')
+  const read = () => (existsSync(file) ? readFileSync(file, 'utf8') : '')
+  const atStart = read()
+  setInterval(() => {
+    if (read() !== atStart) {
+      console.log('fork snapshot changed (reset): exiting so the supervisor reindexes from a fresh database')
+      process.exit(0)
+    }
+  }, 3000).unref()
 }
 
 type Row = typeof schema.chainEvents.$inferSelect

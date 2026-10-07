@@ -34,14 +34,25 @@ const up = async (port: number) => {
 }
 
 const children: { name: string; proc: ReturnType<typeof Bun.spawn> }[] = []
-async function ensure(name: string, port: number, cmd: string[], opts: { cwd?: string; env?: Record<string, string> } = {}) {
+let shuttingDown = false
+async function ensure(name: string, port: number, cmd: string[], opts: { cwd?: string; env?: Record<string, string>; respawn?: boolean } = {}) {
   if (await up(port)) {
     console.log(`[serve] ${name} already up on :${port}, reusing`)
     return
   }
   console.log(`[serve] starting ${name} on :${port}`)
-  const proc = Bun.spawn(cmd, { cwd: opts.cwd ?? ROOT, env: { ...process.env, ...opts.env }, stdout: 'inherit', stderr: 'inherit' })
-  children.push({ name, proc })
+  const spawn = () => {
+    const proc = Bun.spawn(cmd, { cwd: opts.cwd ?? ROOT, env: { ...process.env, ...opts.env }, stdout: 'inherit', stderr: 'inherit' })
+    children.push({ name, proc })
+    // the indexer exits on purpose after a fork reset and must come back on a fresh database
+    if (opts.respawn)
+      proc.exited.then(() => {
+        if (shuttingDown) return
+        console.log(`[serve] ${name} exited, restarting`)
+        setTimeout(spawn, 1000)
+      })
+  }
+  spawn()
   for (let i = 0; i < 60; i++) {
     if (await up(port)) return
     await Bun.sleep(500)
@@ -65,6 +76,7 @@ async function startBackends() {
       PONDER_RPC_URL_1: process.env.PONDER_RPC_URL_1 ?? 'http://127.0.0.1:8545',
       PONDER_SNAPSHOT_EVERY: process.env.PONDER_SNAPSHOT_EVERY ?? '1',
     },
+    respawn: true,
   })
 }
 
@@ -119,6 +131,7 @@ console.log(`[serve] Observatory on http://localhost:${server.port}  (UI + /rpc 
 
 for (const sig of ['SIGINT', 'SIGTERM'] as const) {
   process.on(sig, () => {
+    shuttingDown = true
     console.log('\n[serve] shutting down; stopping child servers it started')
     for (const c of children) try { c.proc.kill() } catch {}
     process.exit(0)

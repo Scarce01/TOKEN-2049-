@@ -1,7 +1,7 @@
 // Ponder indexes only our own contracts (never MockERC20 Transfers, never the decoy list).
 // Addresses and start block come from deployments/<DEPLOY_NAME>.json.
 import { createHash } from 'node:crypto'
-import { readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
 import {
   ColdVaultAbi,
@@ -24,19 +24,34 @@ const d = JSON.parse(
 )
 const start = Number(process.env.PONDER_START_BLOCK ?? d.startBlock)
 const resetStart = Number(process.env.PONDER_RESET_BLOCK ?? d.resetBlock ?? start)
+/** Fork only: the bridge's current snapshot id. A reset (evm_revert) takes a new one, and the history after it
+ * never happened, so the local database must start over (src/api watches this file and exits on a change). */
+const SNAPSHOT_FILE = join(__dirname, '..', '..', '.tmp', 'fork-snapshot.json')
+function forkSnapshot(): string {
+  if (!(process.env.DEPLOY_NAME ?? '').endsWith('-fork') || !existsSync(SNAPSHOT_FILE)) return ''
+  return readFileSync(SNAPSHOT_FILE, 'utf8')
+}
 function codeHash(): string {
-  const h = createHash('sha256').update(process.env.DEPLOY_NAME ?? 'base-sepolia')
+  const h = createHash('sha256')
+    .update(process.env.DEPLOY_NAME ?? 'base-sepolia')
+    .update(forkSnapshot())
   for (const f of ['ponder.config.ts', 'ponder.schema.ts', 'src/index.ts']) h.update(readFileSync(join(__dirname, f)))
   return h.digest('hex').slice(0, 12)
 }
+// derived data only: drop databases of older code or older fork snapshots
+const PGLITE = `pglite-${codeHash()}`
+if (existsSync(join(__dirname, '.ponder')))
+  for (const dir of readdirSync(join(__dirname, '.ponder')))
+    if (dir.startsWith('pglite-') && dir !== PGLITE)
+      rmSync(join(__dirname, '.ponder', dir), { recursive: true, force: true })
 const rpcs = [process.env.PONDER_RPC_URL_1, process.env.PONDER_RPC_URL_2].filter(Boolean) as string[]
 
 export default createConfig({
   database: process.env.DATABASE_URL
     ? { kind: 'postgres', connectionString: process.env.DATABASE_URL }
     : // local runs without Postgres. One directory per version of the indexer code: Ponder refuses a database
-      // built by different code (MigrationError), so a pull that changes the indexer starts a fresh one by itself
-      { kind: 'pglite', directory: join(__dirname, '.ponder', `pglite-${codeHash()}`) },
+      // built by different code (MigrationError), so a pull that changes the indexer (or a fork reset) starts fresh
+      { kind: 'pglite', directory: join(__dirname, '.ponder', PGLITE) },
   chains: {
     chain: {
       id: d.chainId,
