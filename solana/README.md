@@ -18,7 +18,7 @@ checked on Base (KeystoneForwarder accepted it, the Receiver logged FREEZE and T
 | Same transfer after | [REJECTED on chain](https://explorer.solana.com/tx/2jhbFKJ9uWVgTJbsxnB9WCxWGuVcUsQi1oMabuC1u5BWMusP4cfTFYykhJSs9RdrfGw22w9GjrEGDXqmR5vHwkZd?cluster=devnet) (`Contained`) |
 
 Full run: [demo/solana-latest-run.json](../demo/solana-latest-run.json). Every transaction: [demo/solana-history.json](../demo/solana-history.json).
-Evidence page (live): https://dist-two-gamma-80.vercel.app · source `solana/site/page.html`, built by `bun solana/site/build.ts`.
+Evidence page (live): https://qu3ee-solana-proof.vercel.app · source `solana/site/page.html`, built by `bun solana/site/build.ts`.
 
 ## Rules the program enforces
 

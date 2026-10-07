@@ -11,7 +11,7 @@ Everything a judge needs, per track. Status as of 2026-10-07. Every link here op
 | Benchmark white paper (HTML, download and open) | [docs/benchmark_whitepaper.html](benchmark_whitepaper.html) |
 | Live deployment: addresses, workflow IDs, how it was deployed | [docs/DEPLOY_BASE_SEPOLIA.md](DEPLOY_BASE_SEPOLIA.md) |
 | Chainlink proof page (live) | https://qu3ee-chainlink-proof.vercel.app |
-| Solana evidence page (live) | https://dist-two-gamma-80.vercel.app |
+| Solana evidence page (live) | https://qu3ee-solana-proof.vercel.app |
 | NOWNodes proof page (live) | https://qu3ee-nownodes-proof.vercel.app |
 | Demo video | [to add: link] |
 | Pitch deck | [to add: link] |
@@ -70,7 +70,7 @@ NOWNodes has no Base Sepolia or Solana devnet endpoint, so those two use other R
 | Example transaction: Guard set to CONTAINED from the Base Sepolia DON report | [xcKtP7Q4…](https://explorer.solana.com/tx/xcKtP7Q4xsZmNPQXMHKvE1EqttUVuFvYeUEbLjp6r5N4tiCZqAXv49LqiNLyufYacAkP1jp5tQyRNrYrAMC1weU?cluster=devnet) |
 | Example transaction: same transfer after, REJECTED on chain | [2jhbFKJ9…](https://explorer.solana.com/tx/2jhbFKJ9uWVgTJbsxnB9WCxWGuVcUsQi1oMabuC1u5BWMusP4cfTFYykhJSs9RdrfGw22w9GjrEGDXqmR5vHwkZd?cluster=devnet) |
 | qUSD-S mint (Token-2022, transfer hook) | [`6D7PygkF5K85JS1Cbkxvz6J4Q7vrY1byCLx47T3w91o6`](https://explorer.solana.com/address/6D7PygkF5K85JS1Cbkxvz6J4Q7vrY1byCLx47T3w91o6?cluster=devnet) |
-| Evidence page with every transaction | https://dist-two-gamma-80.vercel.app |
+| Evidence page with every transaction | https://qu3ee-solana-proof.vercel.app |
 | Code, tests, how to run it alone | [solana/README.md](../solana/README.md) (`pnpm solana:test`, `pnpm solana:demo`) |
 | Hackathon work disclosed | [solana/README.md](../solana/README.md), first paragraph |
 
