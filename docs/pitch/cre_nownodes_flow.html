@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qu3ee Trap: CRE and NOWNodes flow</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0b0d10; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+    svg { width: 1280px; height: 720px; display: block; }
+  </style>
+</head>
+<body>
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="cre-nownodes-flow-title cre-nownodes-flow-desc">
+  <title id="cre-nownodes-flow-title">From decoy touch to on-chain freeze</title>
+  <desc id="cre-nownodes-flow-desc">Flowchart of the Qu3ee Trap workflow: a decoy transfer is re-read by Chainlink CRE, cross-checked by NOWNodes through node consensus, and turned into one signed report that QuorumReceiver executes; a missing log or a contradicting NOWNodes receipt ends in no action.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#a9adb5"/></marker>
+    <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#e2b52e"/></marker>
+    <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#6a95d8"/></marker>
+    <marker id="arrow-red" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#f0646a"/></marker>
+  </defs>
+
+  <rect width="1280" height="720" fill="#0b0d10"/>
+
+  <text x="40" y="64" fill="#e2b52e" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.14em">QU3EE TRAP · CHAINLINK CRE + NOWNODES</text>
+  <text x="40" y="108" fill="#f2efe6" font-size="40" font-family="'Instrument Serif', serif">From decoy touch to on-chain freeze</text>
+
+  <!-- arrows -->
+  <line x1="260" y1="220" x2="318" y2="220" stroke="#a9adb5" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="520" y1="220" x2="578" y2="220" stroke="#a9adb5" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="780" y1="220" x2="878" y2="220" stroke="#6a95d8" stroke-width="2" marker-end="url(#arrow-link)"/>
+  <line x1="420" y1="280" x2="420" y2="394" stroke="#f0646a" stroke-width="2" marker-end="url(#arrow-red)"/>
+  <line x1="680" y1="280" x2="680" y2="374" stroke="#a9adb5" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="1060" y1="276" x2="1060" y2="378" stroke="#a9adb5" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="960" y1="440" x2="810" y2="440" stroke="#a9adb5" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="1060" y1="500" x2="1060" y2="578" stroke="#f0646a" stroke-width="2" marker-end="url(#arrow-red)"/>
+  <line x1="680" y1="504" x2="680" y2="570" stroke="#e2b52e" stroke-width="2" marker-end="url(#arrow-accent)"/>
+
+  <!-- arrow labels -->
+  <g font-size="16" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.04em">
+    <rect x="532" y="196" width="36" height="16" rx="2" fill="#0b0d10"/>
+    <text x="550" y="208" fill="#a9adb5">YES</text>
+    <rect x="812" y="196" width="36" height="16" rx="2" fill="#0b0d10"/>
+    <text x="830" y="208" fill="#6a95d8">YES</text>
+    <rect x="428" y="328" width="28" height="16" rx="2" fill="#0b0d10"/>
+    <text x="442" y="340" fill="#f0646a">NO</text>
+    <rect x="688" y="320" width="120" height="16" rx="2" fill="#0b0d10"/>
+    <text x="748" y="332" fill="#a9adb5">NO ENDPOINT</text>
+    <rect x="820" y="416" width="132" height="16" rx="2" fill="#0b0d10"/>
+    <text x="886" y="428" fill="#a9adb5">MATCH OR DOWN</text>
+    <rect x="1068" y="528" width="120" height="16" rx="2" fill="#0b0d10"/>
+    <text x="1128" y="540" fill="#f0646a">CONTRADICTS</text>
+    <rect x="688" y="528" width="184" height="16" rx="2" fill="#0b0d10"/>
+    <text x="780" y="540" fill="#e2b52e">KEYSTONE FORWARDER</text>
+  </g>
+
+  <!-- start: decoy transfer -->
+  <rect x="40" y="176" width="220" height="88" rx="20" fill="#14171c" stroke="#f2efe6" stroke-opacity="0.55" stroke-width="1.2"/>
+  <text x="150" y="216" fill="#f2efe6" font-size="20" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Decoy transfer</text>
+  <text x="150" y="244" fill="#a9adb5" font-size="16" font-family="'Geist Mono', monospace" text-anchor="middle">EVM log trigger</text>
+
+  <!-- decision: CRE re-reads the receipt -->
+  <polygon points="320,220 420,160 520,220 420,280" fill="#14171c" stroke="#f2efe6" stroke-opacity="0.55" stroke-width="1.2"/>
+  <text x="420" y="214" fill="#f2efe6" font-size="20" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Log in CRE</text>
+  <text x="420" y="238" fill="#f2efe6" font-size="20" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">receipt?</text>
+
+  <!-- decision: NOWNodes endpoint -->
+  <polygon points="580,220 680,160 780,220 680,280" fill="#14171c" stroke="#f2efe6" stroke-opacity="0.55" stroke-width="1.2"/>
+  <text x="680" y="214" fill="#f2efe6" font-size="20" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">NOWNodes</text>
+  <text x="680" y="238" fill="#f2efe6" font-size="20" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">endpoint?</text>
+
+  <!-- external: every DON node asks NOWNodes -->
+  <rect x="880" y="164" width="360" height="112" rx="6" fill="#6a95d8" fill-opacity="0.08" stroke="#6a95d8" stroke-opacity="0.8" stroke-width="1.2"/>
+  <text x="1060" y="200" fill="#f2efe6" font-size="20" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Each DON node asks NOWNodes</text>
+  <text x="1060" y="228" fill="#a9adb5" font-size="16" font-family="'Geist Mono', monospace" text-anchor="middle">eth_getTransactionReceipt</text>
+  <text x="1060" y="252" fill="#a9adb5" font-size="16" font-family="'Geist Mono', monospace" text-anchor="middle">canonical text → consensus</text>
+
+  <!-- end: no action, log missing -->
+  <rect x="320" y="396" width="200" height="88" rx="20" fill="#f0646a" fill-opacity="0.10" stroke="#f0646a" stroke-width="1.2"/>
+  <text x="420" y="436" fill="#f0646a" font-size="20" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">No action</text>
+  <text x="420" y="464" fill="#a9adb5" font-size="16" font-family="'Geist Mono', monospace" text-anchor="middle">log not in receipt</text>
+
+  <!-- focal: signed report -->
+  <rect x="552" y="376" width="256" height="128" rx="6" fill="#e2b52e" fill-opacity="0.14" stroke="#e2b52e" stroke-width="1.6"/>
+  <text x="680" y="410" fill="#f2efe6" font-size="20" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Signed CRE report</text>
+  <text x="680" y="436" fill="#e2b52e" font-size="16" font-family="'Geist Mono', monospace" text-anchor="middle">FREEZE · QUOTA_ZERO</text>
+  <text x="680" y="460" fill="#e2b52e" font-size="16" font-family="'Geist Mono', monospace" text-anchor="middle">SWEEP · ALERT 4</text>
+  <text x="680" y="484" fill="#e2b52e" font-size="16" font-family="'Geist Mono', monospace" text-anchor="middle">COLD_DELAY · THREAT</text>
+
+  <!-- decision: NOWNodes verdict -->
+  <polygon points="960,440 1060,380 1160,440 1060,500" fill="#14171c" stroke="#f2efe6" stroke-opacity="0.55" stroke-width="1.2"/>
+  <text x="1060" y="434" fill="#f2efe6" font-size="20" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">NOWNodes</text>
+  <text x="1060" y="458" fill="#f2efe6" font-size="20" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">verdict?</text>
+
+  <!-- focal end: QuorumReceiver executes -->
+  <rect x="480" y="572" width="400" height="104" rx="20" fill="#e2b52e" fill-opacity="0.06" stroke="#e2b52e" stroke-width="1.6"/>
+  <text x="680" y="608" fill="#f2efe6" font-size="20" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">QuorumReceiver executes</text>
+  <text x="680" y="636" fill="#a9adb5" font-size="16" font-family="'Geist Mono', monospace" text-anchor="middle">warm frozen · hot quota 0</text>
+  <text x="680" y="660" fill="#a9adb5" font-size="16" font-family="'Geist Mono', monospace" text-anchor="middle">alert CONFIRMED · attacker shared</text>
+
+  <!-- end: no action, forged -->
+  <rect x="940" y="580" width="240" height="88" rx="20" fill="#f0646a" fill-opacity="0.10" stroke="#f0646a" stroke-width="1.2"/>
+  <text x="1060" y="620" fill="#f0646a" font-size="20" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">No action</text>
+  <text x="1060" y="648" fill="#a9adb5" font-size="16" font-family="'Geist Mono', monospace" text-anchor="middle">forged event rejected</text>
+</svg>
+</body>
+</html>
