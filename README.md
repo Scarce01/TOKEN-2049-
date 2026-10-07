@@ -18,6 +18,12 @@
     <br />
     <a href="docs/SUBMISSION.md"><strong>Submission links</strong></a>
     &middot;
+    <a href="https://qu3ee-chainlink-proof.vercel.app">Chainlink proof</a>
+    &middot;
+    <a href="https://dist-two-gamma-80.vercel.app">Solana proof</a>
+    &middot;
+    <a href="https://qu3ee-nownodes-proof.vercel.app">NOWNodes proof</a>
+    &middot;
     <a href="docs/BENCHMARK.md">Benchmark report</a>
     &middot;
     <a href="docs/benchmark_whitepaper.html">Benchmark white paper (HTML)</a>
@@ -343,11 +349,14 @@ The track asks for a CRE workflow that connects a blockchain to an external API,
 
 Both demonstrations exist. The fork rows in [Results](#results) are CRE CLI runs (`cre workflow simulate --broadcast`, commands in [Usage](#usage)). Patrol, Trap, and Cosign are also ACTIVE on the CRE DON, private registry, writing to public Base Sepolia. Workflow IDs:
 
-| Workflow | ID |
+**Proof page:** <https://qu3ee-chainlink-proof.vercel.app>. Every DON report on Base Sepolia, read from chain. Each
+workflow id below links to a DON report transaction whose input carries that id (with the owner and 4 DON signatures).
+
+| Workflow | ID (links to a Basescan tx that carries it) |
 | --- | --- |
-| Patrol | `002d793802489c6c0b8e379240bd9f8f7b6189ba682c02f19969e31fcaeb5078` |
-| Trap | `006576bb13bfa082e9ccf563521e2004534f708992cf597054db84be8ff3cd66` |
-| Cosign | `00e143e0e4721b04f2eb4f7d07274a5307c82c66d2d0d45a3fa110258bcb0ebc` |
+| Patrol | [`002d793802489c6c0b8e379240bd9f8f7b6189ba682c02f19969e31fcaeb5078`](https://sepolia.basescan.org/tx/0x02cb53a6fceaad029a39b5d45652169f6df673d0d904509652671edbe1248c17) |
+| Trap | [`006576bb13bfa082e9ccf563521e2004534f708992cf597054db84be8ff3cd66`](https://sepolia.basescan.org/tx/0x32ab0635fff14b905027e50d102d71feb25e66383ca40b536b9405a9da1b834f) |
+| Cosign | [`00e143e0e4721b04f2eb4f7d07274a5307c82c66d2d0d45a3fa110258bcb0ebc`](https://sepolia.basescan.org/tx/0x1f1317273a0e10ffba22d2b5af1a44d7f351cd785098bef5d2ab5f4b81d78b52) |
 
 Contract addresses and the KeystoneForwarder are in [docs/DEPLOY_BASE_SEPOLIA.md](docs/DEPLOY_BASE_SEPOLIA.md).
 
@@ -360,6 +369,10 @@ Contract addresses and the KeystoneForwarder are in [docs/DEPLOY_BASE_SEPOLIA.md
 ### NOWNodes
 
 The track asks for a working product in which a NOWNodes RPC or API endpoint takes part in the architecture.
+
+**Proof page:** <https://qu3ee-nownodes-proof.vercel.app>. The Trap's NOWNodes check on Ethereum Sepolia (report and
+refused payout, linked on Etherscan) and all 65 cross-chain bridge links found over NOWNodes, each with the origin-chain
+deposit and the Ethereum fill linked on their explorers.
 
 Trap uses `https://eth-sepolia.nownodes.io`. After a decoy transfer, each CRE node already holds the chain receipt. Before `writeReport`, the workflow sends `eth_getTransactionReceipt` for the same hash to that endpoint. The call is an HTTP POST from the CRE HTTP client. The key is the secret `NOWNODES_KEY`, sent as the `api-key` header (`workflows/trap/workflow.ts`, `workflows/trap/src/logic/nownodes.ts`). The nodes agree on one canonical receipt. When that receipt contradicts the trigger log, the workflow writes nothing. On the recorded Ethereum Sepolia run, NOWNodes confirmed the log, the trap tripped, and a later APPROVE reverted with `AlertConfirmed`.
 

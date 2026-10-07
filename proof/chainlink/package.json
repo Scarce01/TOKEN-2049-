@@ -1,0 +1,7 @@
+{
+  "name": "qu3ee-chainlink-proof",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "bun build.ts" },
+  "dependencies": { "viem": "^2.38.0" }
+}
