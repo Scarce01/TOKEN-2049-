@@ -11,7 +11,7 @@ Everything a judge needs, per track. Status as of 2026-10-07. Every link here op
 | Benchmark white paper (HTML, download and open) | [docs/benchmark_whitepaper.html](benchmark_whitepaper.html) |
 | Live deployment: addresses, workflow IDs, how it was deployed | [docs/DEPLOY_BASE_SEPOLIA.md](DEPLOY_BASE_SEPOLIA.md) |
 | Chainlink proof page (live) | https://qu3ee-chainlink-proof.vercel.app |
-| Solana evidence page (live) | https://dist-two-gamma-80.vercel.app |
+| Solana evidence page (live) | https://qu3ee-solana-proof.vercel.app |
 | NOWNodes proof page (live) | https://qu3ee-nownodes-proof.vercel.app |
 | Demo video | [to add: link] |
 | Pitch deck | [to add: link] |
@@ -61,6 +61,42 @@ Contracts (Base Sepolia, PROD mode):
 
 NOWNodes has no Base Sepolia or Solana devnet endpoint, so those two use other RPCs; this is stated in the README.
 
+### Form text: "How NOWNodes is used in your architecture"
+
+> NOWNodes is the independent second witness in Qu3ee's tightening path, and the multichain data source for tracing
+> stolen funds.
+>
+> **1. Second source before a freeze (Chainlink CRE Trap workflow).** Qu3ee plants decoy wallets inside an exchange.
+> When a decoy moves, the CRE Trap workflow is about to freeze the exchange's vaults on chain. Before it writes that
+> report, every CRE node calls `eth_getTransactionReceipt` on `https://eth-sepolia.nownodes.io` through the CRE HTTP
+> client. The key comes from the CRE secret `NOWNODES_KEY` (sent as the `api-key` header), never from source code.
+> The nodes canonicalize the receipt (status plus sorted logs) and must reach consensus on it.
+> - If NOWNodes returns the receipt and it contains the trigger log, the freeze goes ahead.
+> - If NOWNodes returns a receipt that does not contain the trigger log, the workflow stops and writes nothing: one
+>   faulty RPC cannot make the network freeze an exchange.
+> - If NOWNodes is down, returns null, or the nodes disagree, the Trap acts on its own receipt: an unavailable third
+>   party cannot suppress a real detection.
+>
+> Recorded on Ethereum Sepolia: the CRE report logged `nownodes status=1 logs=1`, the trap tripped, and a later
+> payout was refused on chain with `AlertConfirmed`
+> ([report](https://sepolia.etherscan.io/tx/0x8a16e65f11ebcf65ee21b500af784bf567e680e47fa4677c3d82a7918547b5e5),
+> [refused payout](https://sepolia.etherscan.io/tx/0xf3dffa31fe9476ff0822aa0357c2a3eac756312e45da52d8c84298beb1ae2fe9)).
+> Code: `workflows/trap/src/logic/nownodes.ts` (11 unit tests).
+>
+> **2. Following stolen money across chains.** On the Bitget hack (Sep 2026) the attacker bridged funds back to
+> Ethereum from four chains. Our tracer follows the attacker's address on Arbitrum, Optimism, Base and BNB Chain over
+> NOWNodes JSON-RPC, finds every transaction an address sent by bisecting its nonce (no indexer needed), and decodes
+> Across and Stargate deposits from the receipts. Each deposit only counts once its Ethereum fill is found. Result:
+> 65 bridge links worth $18.5M, and 12 of 14 analyst-labelled attacker wallets found from one seed address (8 with
+> Ethereum alone), in 2,671 calls. Code: `analysis/trace_bybit/xchain.py`, `bridges.py`.
+>
+> Every result above links to a public explorer on our proof page: https://qu3ee-nownodes-proof.vercel.app
+>
+> Scope today: the receipt check runs where NOWNodes serves the chain (Ethereum Sepolia). Base Sepolia has no NOWNodes
+> endpoint, so the Base deployment acts on the CRE receipt alone. Adding a chain is one URL in `NOWNODES_URL`.
+> Cross-chain tracing runs as an analysis job; running it live on every block is the next step and needs a paid
+> NOWNodes plan (about 700,000 calls a day for Arbitrum alone).
+
 ## Solana: Best use of Solana
 
 | Requirement | Link |
@@ -70,7 +106,7 @@ NOWNodes has no Base Sepolia or Solana devnet endpoint, so those two use other R
 | Example transaction: Guard set to CONTAINED from the Base Sepolia DON report | [xcKtP7Q4…](https://explorer.solana.com/tx/xcKtP7Q4xsZmNPQXMHKvE1EqttUVuFvYeUEbLjp6r5N4tiCZqAXv49LqiNLyufYacAkP1jp5tQyRNrYrAMC1weU?cluster=devnet) |
 | Example transaction: same transfer after, REJECTED on chain | [2jhbFKJ9…](https://explorer.solana.com/tx/2jhbFKJ9uWVgTJbsxnB9WCxWGuVcUsQi1oMabuC1u5BWMusP4cfTFYykhJSs9RdrfGw22w9GjrEGDXqmR5vHwkZd?cluster=devnet) |
 | qUSD-S mint (Token-2022, transfer hook) | [`6D7PygkF5K85JS1Cbkxvz6J4Q7vrY1byCLx47T3w91o6`](https://explorer.solana.com/address/6D7PygkF5K85JS1Cbkxvz6J4Q7vrY1byCLx47T3w91o6?cluster=devnet) |
-| Evidence page with every transaction | https://dist-two-gamma-80.vercel.app |
+| Evidence page with every transaction | https://qu3ee-solana-proof.vercel.app |
 | Code, tests, how to run it alone | [solana/README.md](../solana/README.md) (`pnpm solana:test`, `pnpm solana:demo`) |
 | Hackathon work disclosed | [solana/README.md](../solana/README.md), first paragraph |
 

@@ -20,7 +20,7 @@
     &middot;
     <a href="https://qu3ee-chainlink-proof.vercel.app">Chainlink proof</a>
     &middot;
-    <a href="https://dist-two-gamma-80.vercel.app">Solana proof</a>
+    <a href="https://qu3ee-solana-proof.vercel.app">Solana proof</a>
     &middot;
     <a href="https://qu3ee-nownodes-proof.vercel.app">NOWNodes proof</a>
     &middot;
@@ -144,7 +144,7 @@ Chainlink DON, **testnet (Solana devnet)** = the Solana program below.
 | Gate 7 false-pending on real withdrawals (Binance) | about **14 per 10,000** | on-chain (cap scaling assumed) |
 | Quota bucket vs the Bitget theft | **6 of 7** theft transfers would go to the manual lane | on-chain (C multiplier assumed) |
 | Design conformance (`pnpm verify:design`) | 83 items: **47 pass**, 1 fail (D28), 34 not yet (acceptance scenes not written), 1 waived | test |
-| **Solana Guard** (devnet, hackathon work) | qUSD-S, a Token-2022 mint with the Qu3ee transfer hook: transfer **SUCCESS** before, Guard set to CONTAINED from the DON's Base Sepolia Trap report, the same transfer **REJECTED on chain** after; 16/16 program tests ([solana/README.md](solana/README.md), [evidence page](https://dist-two-gamma-80.vercel.app)) | testnet (Solana devnet) |
+| **Solana Guard** (devnet, hackathon work) | qUSD-S, a Token-2022 mint with the Qu3ee transfer hook: transfer **SUCCESS** before, Guard set to CONTAINED from the DON's Base Sepolia Trap report, the same transfer **REJECTED on chain** after; 16/16 program tests ([solana/README.md](solana/README.md), [evidence page](https://qu3ee-solana-proof.vercel.app)) | testnet (Solana devnet) |
 | Public fork Observatory | <https://da2whkz14p08x.cloudfront.net/>. Recorded attack on org A, blocks 47786511 to 47786515: decoy tripwire, CRE report, warm vault frozen, hot quota 0, alert CONFIRMED, threat shared. The verify line names the local fork, not a NOWNodes call | testnet fork (hosted) |
 
 #### Not working yet
@@ -227,7 +227,7 @@ Base Sepolia (chain id 84532, mode SIM). It is not the PROD deployment above. A 
 line on that run is the local fork: a public node cannot see the fork transaction, and NOWNodes is not called.
 
 **Solana devnet**: recorded program id, mint, and the before, contain, and after transactions are in
-[solana/README.md](solana/README.md). Evidence page: <https://dist-two-gamma-80.vercel.app>. The fork Observatory does
+[solana/README.md](solana/README.md). Evidence page: <https://qu3ee-solana-proof.vercel.app>. The fork Observatory does
 not embed that run.
 
 ```sh
@@ -411,7 +411,7 @@ Qu3ee Guard is `solana/programs/qu3ee_guard`, written on 2026-10-07. The EVM con
 | Guard set to CONTAINED | [tx](https://explorer.solana.com/tx/xcKtP7Q4xsZmNPQXMHKvE1EqttUVuFvYeUEbLjp6r5N4tiCZqAXv49LqiNLyufYacAkP1jp5tQyRNrYrAMC1weU?cluster=devnet), from [Base Sepolia](https://sepolia.basescan.org/tx/0x32ab0635fff14b905027e50d102d71feb25e66383ca40b536b9405a9da1b834f) |
 | Same transfer after | [REJECTED on chain](https://explorer.solana.com/tx/2jhbFKJ9uWVgTJbsxnB9WCxWGuVcUsQi1oMabuC1u5BWMusP4cfTFYykhJSs9RdrfGw22w9GjrEGDXqmR5vHwkZd?cluster=devnet) |
 
-The full run is [demo/solana-latest-run.json](demo/solana-latest-run.json). Every transaction is [demo/solana-history.json](demo/solana-history.json). A judge opens the lot at <https://dist-two-gamma-80.vercel.app>.
+The full run is [demo/solana-latest-run.json](demo/solana-latest-run.json). Every transaction is [demo/solana-history.json](demo/solana-history.json). A judge opens the lot at <https://qu3ee-solana-proof.vercel.app>.
 
 **Technical execution, 30%.** The allow and the reject happen inside the transfer hook. The program is the product, and the three transactions above are the execution.
 
