@@ -3,7 +3,8 @@ import { Kind } from '../shared/constants'
 import { DataTable, Metric, PageHeader, Panel, StateBadge, Tabs } from '../components/ui'
 import { buildCases, CHAIN_LABEL, readEvents, readLive, useLive, type Case } from '../live/chain'
 import { CASES, proves } from './Replay'
-import { keyOf, readAttack, STAGES, type Key, type Status } from '../components/AttackTimeline'
+import { keyOf, STAGES, type Key } from '../components/AttackTimeline'
+import { useAttackFeed, type AttackStatus as Status } from '../live/attackFeed'
 
 // Incidents, live from the fork. A case is a CRE report and every tightening it applied, grouped by caseId.
 const KIND_NAME = Object.fromEntries(Object.entries(Kind).map(([k, v]) => [v, k.toLowerCase().replace(/_/g, ' ')]))
@@ -57,7 +58,7 @@ export default function Incidents() {
   const tab = params.get('tab') === 'history' ? 'History' : 'Live'
   const live = useLive(readLive, 6000)
   const events = useLive(readEvents, 6000)
-  const attack = useLive(readAttack, 1000)
+  const attack = useAttackFeed()
   const now = live.data?.chainTime ?? 0
   // an incident is a case that tightened or published a threat; patrol checkpoint cases are not incidents
   const TIGHTEN = ['Tightened', 'QuotaZeroed', 'FreezeSet', 'Swept', 'AlertSet', 'DelayRaised', 'ThreatAdded']
@@ -77,7 +78,7 @@ export default function Incidents() {
         <Metric label="Threats published" value={(events.data ?? []).filter((e) => e.name === 'ThreatAdded').length} sub="to the shared registry" status="warning" />
         <Metric label="Funds lost" value="$0" sub="drains reverted at the vault" />
       </div>
-      {attack.data?.steps.length ? <Simulation st={attack.data} /> : null}
+      {attack.status?.steps.length ? <Simulation st={attack.status} /> : null}
       <Panel title={`Live cases · ${CHAIN_LABEL}`}>
         {cases.length === 0 ? (
           <p className="px-5 py-8 text-[13px] text-mute">No cases on {CHAIN_LABEL} yet. Run an attack from the Overview to create one.</p>

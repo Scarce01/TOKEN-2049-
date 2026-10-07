@@ -4,7 +4,11 @@
 
 <br />
 <div align="center">
-  <h1 align="center">Qu3ee (beta)</h1>
+  <a href="https://github.com/Scarce01/TOKEN-2049-">
+    <img src="logo.png" alt="Qu3ee logo" width="120" height="120">
+  </a>
+
+  <h1 align="center">Qu3ee</h1>
 
   <p align="center">
     A second line of defense for exchange withdrawals, enforced by Chainlink CRE and on-chain vaults.
@@ -12,7 +16,13 @@
     <a href="docs/proposal_v4.md"><strong>Read the design »</strong></a>
     <br />
     <br />
+    <a href="docs/SUBMISSION.md"><strong>Submission links</strong></a>
+    &middot;
     <a href="docs/BENCHMARK.md">Benchmark report</a>
+    &middot;
+    <a href="docs/benchmark_whitepaper.html">Benchmark white paper (HTML)</a>
+    &middot;
+    <a href="docs/DEPLOY_BASE_SEPOLIA.md">Live on Base Sepolia</a>
     &middot;
     <a href="docs/STATUS.md">Status</a>
     &middot;
@@ -20,7 +30,7 @@
     &middot;
     <a href="docs/TODO.md">To do</a>
     &middot;
-    <a href="https://github.com/Scarce01/TOKEN-2049-beta/issues">Report an issue</a>
+    <a href="https://github.com/Scarce01/TOKEN-2049-/issues">Report an issue</a>
   </p>
 </div>
 
@@ -94,12 +104,17 @@ obey the QuorumReceiver, which only obeys whitelisted workflows and two officers
 
 Every number is tagged with its source: **on-chain** = public chain data, **assumed** = simulation or assumed
 parameters, **test** = automated test, **testnet fork (local)** = local anvil fork of Base Sepolia driven by the CRE
-CLI (`cre workflow simulate --broadcast`), **testnet** = public Ethereum Sepolia.
+CLI (`cre workflow simulate --broadcast`), **testnet** = public Ethereum Sepolia, **testnet (DON)** = public Base Sepolia
+with the workflows running on the Chainlink DON.
 
 #### Working
 
 | Result | Number | Source |
 | --- | --- | --- |
+| **Live on the Chainlink DON** (public Base Sepolia, PROD contracts, real KeystoneForwarder) | Patrol, Trap and Cosign deployed; Patrol **52/52** reports accepted, cron tick to block 18 s; 7 DON transmitters ([deploy](docs/DEPLOY_BASE_SEPOLIA.md)) | testnet (DON) |
+| Trap on the DON | decoy touch to on-chain freeze in **10 s** (5 blocks): alert 4, warm frozen, hot quota 0, attacker listed (1 run) | testnet (DON) |
+| Cosign on the DON | withdrawal request to APPROVE on chain in **18 s** (9 blocks); paid 50 qUSD after the network-follow delay (1 run) | testnet (DON) |
+| Spike rule (CUSUM + Shewhart) on the Bitget hot wallet | alarm at **18:58**, the minute of the first large theft; Bitget noticed at 19:05 | on-chain |
 | Decoy touched to freeze, end to end | attacker probes, CRE trips, then alert 4, warm frozen, hot quota 0, receiver listed; **15 s** probe to freeze including about 14 s CLI compile | testnet fork (local) |
 | Decoy hit on a public chain | recorded run on Ethereum Sepolia: NOWNodes confirmed the log, trap tripped, a later APPROVE reverted with `AlertConfirmed`; re-verified read-only | testnet |
 | Prevention layer, 8 cases with the real CRE CLI | honest paid; forged REJECT; over-deposit PENDING; large-to-new shadow; passkey delayed then paid; user cancel; officer HOLD then two-officer cancel; over-cap delayed and paid by the keeper: **8/8** | testnet fork (local) |
@@ -112,19 +127,21 @@ CLI (`cre workflow simulate --broadcast`), **testnet** = public Ethereum Sepolia
 | Gate 7 false-pending on real withdrawals (Binance) | about **14 per 10,000** | on-chain (cap scaling assumed) |
 | Quota bucket vs the Bitget theft | **6 of 7** theft transfers would go to the manual lane | on-chain (C multiplier assumed) |
 | Design conformance (`pnpm verify:design`) | 83 items: **47 pass**, 1 fail (D28), 34 not yet (acceptance scenes not written), 1 waived | test |
+| **Solana Guard** (devnet, hackathon work) | qUSD-S, a Token-2022 mint with the Qu3ee transfer hook: transfer **SUCCESS** before, Guard set to CONTAINED from the DON's Base Sepolia Trap report, the same transfer **REJECTED on chain** after; 16/16 program tests ([solana/README.md](solana/README.md), [evidence page](https://dist-two-gamma-80.vercel.app)) | testnet (Solana devnet) |
 
 #### Not working yet
 
 | Result | Number | Source | Why |
 | --- | --- | --- | --- |
 | **Decoys still distinguishable** (D28) | top-60 accounts: AUC 0.71 / 0.58, target <= 0.65 | assumed | 10 decoys only; generator may leak through activity features |
-| **CUSUM misses the Bitget drain** | no alarm after the hack at any threshold | on-chain | a few huge transfers over 2.5 hours never accumulate |
 | **Quota bucket only helps in the first minutes** | fast-lane bound USD 16.9M vs USD 47.6M stolen by 19:05 | on-chain | an attacker who splits transfers is slowed, not stopped |
-| **Tracing stops at bridges** | Bitget: 8 of 14 attacker wallets from one seed | on-chain | cross-chain matching not built |
-| No public Base Sepolia or DON run | everything above ran on a local fork, plus one Ethereum Sepolia run | testnet fork (local) | needs a funded deployer and a CRE deployment decision |
+| **Tracing stops at some bridges** | Bitget: 8 to 12 of 14 attacker wallets from one seed with Across and Stargate decoded | on-chain | intent solvers, CCTP and Mayan not decoded yet |
+| DON figures are single runs; frontend still on the fork | the other prevention cases ran on the local fork only; the Observatory reads the fork until it is switched | testnet (DON) | more runs and the frontend switch are in progress |
 | Invariants do not cover the legitimate path | removing some vault checks is caught only by unit tests | test | ghost-variable checks still to add |
 
-Full benchmark write-up (tracing, cross-chain, Trek, alarm rules, limits, deployment plan): [docs/BENCHMARK.md](docs/BENCHMARK.md).
+Full benchmark write-up (tracing, cross-chain, Trek, alarm rules, DON runs, limits, deployment plan):
+[docs/BENCHMARK.md](docs/BENCHMARK.md). The same report as a designed page with charts:
+[docs/benchmark_whitepaper.html](docs/benchmark_whitepaper.html) (download and open in a browser).
 
 More detail and caveats: [docs/STATUS.md](docs/STATUS.md), [docs/AUDIT_2026-10-07.md](docs/AUDIT_2026-10-07.md),
 [reports/design-conformance.md](reports/design-conformance.md).
@@ -177,6 +194,15 @@ earlier design notes ([docs/background](docs/background)) and two earlier UI dra
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Usage
+
+**Public Base Sepolia (live)**: contracts in PROD mode, Patrol, Trap and Cosign on the Chainlink DON. Addresses,
+workflow IDs and how it was deployed: [docs/DEPLOY_BASE_SEPOLIA.md](docs/DEPLOY_BASE_SEPOLIA.md). Which `.env` holds
+what: [docs/ENV.md](docs/ENV.md).
+
+```sh
+bun packages/offchain/scripts/e2e-cosign-public.ts   # one honest withdrawal, verdict written by the DON
+python analysis/don_bench/don_benchmark.py           # DON executions joined with on-chain reports
+```
 
 **Simulation chain** (local anvil fork of Base Sepolia, the setup the team uses):
 
@@ -256,7 +282,8 @@ calls (Trap before Patrol before Cosign). Production limits stay on.
 - [x] Tracing on chain: Trek proposals verified by CRE verify-edge
 - [x] End-to-end runs on the simulation chain with the CRE CLI
 - [ ] Acceptance scenes for the 34 open design items (see [docs/TODO.md](docs/TODO.md))
-- [ ] Public Base Sepolia deployment and CRE mode decision (DON or sim-runner)
+- [x] Public Base Sepolia deployment, mode A: Patrol, Trap and Cosign live on the Chainlink DON
+- [ ] Frontend and indexer switched to the public deployment
 - [ ] AWS deployment ([docs/38_phase8_aws.md](docs/38_phase8_aws.md)): CDK, ECS Fargate, Amplify, CloudWatch
 - [ ] Team decisions: decoy indistinguishability (D28), R7 lane under freeze, decoy rotation
 
@@ -277,6 +304,15 @@ The team works through pull requests; see [docs/TEAM_WORKFLOW.md](docs/TEAM_WORK
 Rules that never bend: the exchange backend holds no decision logic, the decoy list never reaches git, logs, frontends
 or exchange schemas, and every number in the UI or the video names its source.
 
+### Top contributors
+
+<a href="https://github.com/Scarce01/TOKEN-2049-/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Scarce01/TOKEN-2049-" alt="contrib.rocks image" />
+</a>
+
+An avatar shows up once your commit email is linked to your GitHub account (GitHub, Settings, Emails), or when you
+commit with your GitHub noreply address.
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## License
@@ -287,9 +323,9 @@ No license has been chosen yet; until then all rights are reserved by the team.
 
 ## Contact
 
-Team board and issues: [github.com/Scarce01/TOKEN-2049-beta/issues](https://github.com/Scarce01/TOKEN-2049-beta/issues)
+Team board and issues: [github.com/Scarce01/TOKEN-2049-/issues](https://github.com/Scarce01/TOKEN-2049-/issues)
 
-Project link: [github.com/Scarce01/TOKEN-2049-beta](https://github.com/Scarce01/TOKEN-2049-beta)
+Project link: [github.com/Scarce01/TOKEN-2049-](https://github.com/Scarce01/TOKEN-2049-)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

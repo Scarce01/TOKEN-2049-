@@ -1,90 +1,215 @@
-// Client for the qubee-guard program without the Anchor TS client: four instructions and one account layout.
-// Shared by the local tests and the devnet setup/demo scripts.
-import { createHash } from 'node:crypto'
+// Client for the Qu3ee Guard program (hackathon work, 2026-10-07). Shared by the tests and the devnet demo.
+// Instruction data is built from the IDL's discriminators by hand, so no Anchor TS client is needed.
 import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import {
-  ExtensionType,
-  TOKEN_2022_PROGRAM_ID,
-  createInitializeMintInstruction,
+  createAssociatedTokenAccountIdempotentInstruction,
+  createInitializeMint2Instruction,
   createInitializeTransferHookInstruction,
+  createMintToInstruction,
   createTransferCheckedWithTransferHookInstruction,
+  ExtensionType,
+  getAssociatedTokenAddressSync,
   getMintLen,
+  TOKEN_2022_PROGRAM_ID,
 } from '@solana/spl-token'
 import {
   type Connection,
   Keypair,
   PublicKey,
-  type Signer,
+  SendTransactionError,
   SystemProgram,
   Transaction,
-  TransactionInstruction,
+  type TransactionInstruction,
+  TransactionInstruction as Ix,
   sendAndConfirmTransaction,
 } from '@solana/web3.js'
 
-export const CONFIRMED = 2 // classifications: 0 BEHAVIOR, 1 LINKED, 2 CONFIRMED
-export const MODE = ['NORMAL', 'CONTAINED'] as const
+const SOLANA_DIR = join(import.meta.dir, '..')
+export const ROOT = join(SOLANA_DIR, '..')
+const idl = JSON.parse(readFileSync(join(SOLANA_DIR, 'target', 'idl', 'qu3ee_guard.json'), 'utf8'))
+export const PROGRAM_ID = new PublicKey(idl.address)
 export const DECIMALS = 6
+export const MODE = { NORMAL: 0, CONTAINED: 1 } as const
+export const ERR = Object.fromEntries((idl.errors as { code: number; name: string }[]).map((e) => [e.name, e.code]))
 
-const disc = (s: string) => createHash('sha256').update(s).digest().subarray(0, 8)
-export const sha256 = (s: string) => createHash('sha256').update(s).digest()
-const u32 = (n: number) => { const b = Buffer.alloc(4); b.writeUInt32LE(n); return b }
-const u64 = (n: bigint) => { const b = Buffer.alloc(8); b.writeBigUInt64LE(n); return b }
-const i64 = (n: bigint) => { const b = Buffer.alloc(8); b.writeBigInt64LE(n); return b }
+const disc = (name: string) => Buffer.from(idl.instructions.find((i: { name: string }) => i.name === name).discriminator)
+const u64 = (n: bigint) => {
+  const b = Buffer.alloc(8)
+  b.writeBigUInt64LE(n)
+  return b
+}
+const b32 = (h: Uint8Array | string) => {
+  const b = typeof h === 'string' ? Buffer.from(h.replace(/^0x/, ''), 'hex') : Buffer.from(h)
+  if (b.length !== 32) throw new Error('need 32 bytes')
+  return b
+}
 
-export const keypair = (file: string) => Keypair.fromSecretKey(Uint8Array.from(JSON.parse(readFileSync(file, 'utf8'))))
-export const guardPda = (program: PublicKey, mint: PublicKey) => PublicKey.findProgramAddressSync([Buffer.from('guard'), mint.toBuffer()], program)[0]
-export const metasPda = (program: PublicKey, mint: PublicKey) => PublicKey.findProgramAddressSync([Buffer.from('extra-account-metas'), mint.toBuffer()], program)[0]
+export const loadKeypair = (path: string) => Keypair.fromSecretKey(Uint8Array.from(JSON.parse(readFileSync(path, 'utf8'))))
+export const guardPda = (mint: PublicKey) => PublicKey.findProgramAddressSync([Buffer.from('guard'), mint.toBuffer()], PROGRAM_ID)[0]
+export const metasPda = (mint: PublicKey) =>
+  PublicKey.findProgramAddressSync([Buffer.from('extra-account-metas'), mint.toBuffer()], PROGRAM_ID)[0]
 
-export const send = (conn: Connection, ixs: TransactionInstruction[], signers: Signer[], skipPreflight = false) =>
-  sendAndConfirmTransaction(conn, new Transaction().add(...ixs), signers, { skipPreflight, commitment: 'confirmed' })
+export type ThreatReport = { caseHash: string; sourceChain: bigint; evidenceHash: string; sourceSeq: bigint }
 
-/** Token-2022 mint whose every transfer calls the guard program (one transaction). */
-export async function createProtectedMint(conn: Connection, authority: Keypair, program: PublicKey, mint = Keypair.generate()) {
-  const space = getMintLen([ExtensionType.TransferHook])
+export function ixInitializeGuard(payer: PublicKey, mintAuthority: PublicKey, mint: PublicKey, orgId: string, authority: PublicKey) {
+  return new Ix({
+    programId: PROGRAM_ID,
+    keys: [
+      { pubkey: payer, isSigner: true, isWritable: true },
+      { pubkey: mintAuthority, isSigner: true, isWritable: false },
+      { pubkey: mint, isSigner: false, isWritable: false },
+      { pubkey: guardPda(mint), isSigner: false, isWritable: true },
+      { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+    ],
+    data: Buffer.concat([disc('initialize_guard'), b32(orgId), authority.toBuffer()]),
+  })
+}
+
+export function ixInitializeMetas(payer: PublicKey, mintAuthority: PublicKey, mint: PublicKey) {
+  return new Ix({
+    programId: PROGRAM_ID,
+    keys: [
+      { pubkey: payer, isSigner: true, isWritable: true },
+      { pubkey: mintAuthority, isSigner: true, isWritable: false },
+      { pubkey: mint, isSigner: false, isWritable: false },
+      { pubkey: metasPda(mint), isSigner: false, isWritable: true },
+      { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+    ],
+    data: disc('initialize_extra_account_meta_list'),
+  })
+}
+
+export function ixSetContained(authority: PublicKey, mint: PublicKey, r: ThreatReport) {
+  return new Ix({
+    programId: PROGRAM_ID,
+    keys: [
+      { pubkey: authority, isSigner: true, isWritable: false },
+      { pubkey: guardPda(mint), isSigner: false, isWritable: true },
+    ],
+    data: Buffer.concat([disc('set_guard_contained'), b32(r.caseHash), u64(r.sourceChain), b32(r.evidenceHash), u64(r.sourceSeq)]),
+  })
+}
+
+export function ixSetNormal(authority: PublicKey, mint: PublicKey, sourceSeq: bigint) {
+  return new Ix({
+    programId: PROGRAM_ID,
+    keys: [
+      { pubkey: authority, isSigner: true, isWritable: false },
+      { pubkey: guardPda(mint), isSigner: false, isWritable: true },
+    ],
+    data: Buffer.concat([disc('set_guard_normal'), u64(sourceSeq)]),
+  })
+}
+
+/** Guard account layout: 8 discriminator, then the fields of `Guard` in order. */
+export async function readGuard(conn: Connection, mint: PublicKey) {
+  const a = await conn.getAccountInfo(guardPda(mint), 'confirmed')
+  if (!a) return null
+  const d = a.data
+  let o = 8
+  const version = d[o++]!
+  const orgId = d.subarray(o, (o += 32)).toString('hex')
+  const mintKey = new PublicKey(d.subarray(o, (o += 32)))
+  const mode = d[o++]!
+  const caseHash = d.subarray(o, (o += 32)).toString('hex')
+  const sourceChain = d.readBigUInt64LE(o)
+  o += 8
+  const evidenceHash = d.subarray(o, (o += 32)).toString('hex')
+  const sourceSeq = d.readBigUInt64LE(o)
+  o += 8
+  const updatedSlot = d.readBigUInt64LE(o)
+  o += 8
+  const authority = new PublicKey(d.subarray(o, (o += 32)))
+  return { version, orgId, mint: mintKey, mode, caseHash, sourceChain, evidenceHash, sourceSeq, updatedSlot, authority }
+}
+
+export async function send(conn: Connection, ixs: TransactionInstruction[], signers: Keypair[]) {
+  return sendAndConfirmTransaction(conn, new Transaction().add(...ixs), signers, { commitment: 'confirmed' })
+}
+
+/** Sends a transaction that is expected to fail, without preflight, so the failure is recorded on chain. */
+export async function sendExpectFail(conn: Connection, ixs: TransactionInstruction[], signers: Keypair[]) {
+  const tx = new Transaction().add(...ixs)
+  const { blockhash, lastValidBlockHeight } = await conn.getLatestBlockhash('confirmed')
+  tx.recentBlockhash = blockhash
+  tx.feePayer = signers[0]!.publicKey
+  tx.sign(...signers)
+  const sig = await conn.sendRawTransaction(tx.serialize(), { skipPreflight: true })
+  await conn.confirmTransaction({ signature: sig, blockhash, lastValidBlockHeight }, 'confirmed')
+  const st = await conn.getTransaction(sig, { commitment: 'confirmed', maxSupportedTransactionVersion: 0 })
+  return { sig, err: st?.meta?.err ?? null, logs: st?.meta?.logMessages ?? [] }
+}
+
+/** The custom error code inside a failed transaction's error, if any. */
+export function customCode(err: unknown): number | null {
+  const s = JSON.stringify(err ?? null)
+  const m = s.match(/"Custom":(\d+)/)
+  return m ? Number(m[1]) : null
+}
+
+export async function expectFailure(p: Promise<unknown>): Promise<string> {
+  try {
+    await p
+  } catch (e) {
+    const logs = e instanceof SendTransactionError ? (e.logs ?? []).join('\n') : ''
+    return `${String(e)}\n${logs}`
+  }
+  throw new Error('expected the transaction to fail')
+}
+
+/** A new Token-2022 mint whose transfer hook is `hookProgram` (PROGRAM_ID by default; null = no hook). */
+export async function createMint(conn: Connection, payer: Keypair, mintAuthority: Keypair, hookProgram: PublicKey | null = PROGRAM_ID) {
+  const mint = Keypair.generate()
+  const exts = hookProgram ? [ExtensionType.TransferHook] : []
+  const space = getMintLen(exts)
+  const ixs: TransactionInstruction[] = [
+    SystemProgram.createAccount({
+      fromPubkey: payer.publicKey,
+      newAccountPubkey: mint.publicKey,
+      space,
+      lamports: await conn.getMinimumBalanceForRentExemption(space),
+      programId: TOKEN_2022_PROGRAM_ID,
+    }),
+  ]
+  if (hookProgram) ixs.push(createInitializeTransferHookInstruction(mint.publicKey, mintAuthority.publicKey, hookProgram, TOKEN_2022_PROGRAM_ID))
+  ixs.push(createInitializeMint2Instruction(mint.publicKey, DECIMALS, mintAuthority.publicKey, null, TOKEN_2022_PROGRAM_ID))
+  const sig = await send(conn, ixs, [payer, mint])
+  return { mint: mint.publicKey, sig }
+}
+
+/** Mint + Guard + extra account metas in one go; returns the setup signatures. */
+export async function protectMint(conn: Connection, payer: Keypair, mintAuthority: Keypair, orgId: string, authority: PublicKey) {
+  const { mint, sig: mintSig } = await createMint(conn, payer, mintAuthority)
+  const guardSig = await send(
+    conn,
+    [ixInitializeGuard(payer.publicKey, mintAuthority.publicKey, mint, orgId, authority), ixInitializeMetas(payer.publicKey, mintAuthority.publicKey, mint)],
+    payer.publicKey.equals(mintAuthority.publicKey) ? [payer] : [payer, mintAuthority],
+  )
+  return { mint, mintSig, guardSig }
+}
+
+export const ata = (mint: PublicKey, owner: PublicKey) => getAssociatedTokenAddressSync(mint, owner, false, TOKEN_2022_PROGRAM_ID)
+
+export async function fund(conn: Connection, payer: Keypair, mintAuthority: Keypair, mint: PublicKey, owner: PublicKey, amount: bigint) {
+  const a = ata(mint, owner)
   await send(
     conn,
     [
-      SystemProgram.createAccount({ fromPubkey: authority.publicKey, newAccountPubkey: mint.publicKey, space, lamports: await conn.getMinimumBalanceForRentExemption(space), programId: TOKEN_2022_PROGRAM_ID }),
-      createInitializeTransferHookInstruction(mint.publicKey, authority.publicKey, program, TOKEN_2022_PROGRAM_ID),
-      createInitializeMintInstruction(mint.publicKey, DECIMALS, authority.publicKey, null, TOKEN_2022_PROGRAM_ID),
+      createAssociatedTokenAccountIdempotentInstruction(payer.publicKey, a, owner, mint, TOKEN_2022_PROGRAM_ID),
+      ...(amount > 0n ? [createMintToInstruction(mint, a, mintAuthority.publicKey, amount, [], TOKEN_2022_PROGRAM_ID)] : []),
     ],
-    [authority, mint],
+    payer.publicKey.equals(mintAuthority.publicKey) ? [payer] : [payer, mintAuthority],
   )
-  return mint.publicKey
+  return a
 }
 
-const ix = (program: PublicKey, keys: [PublicKey, boolean, boolean][], data: Buffer) =>
-  new TransactionInstruction({ programId: program, keys: keys.map(([pubkey, isSigner, isWritable]) => ({ pubkey, isSigner, isWritable })), data })
+/** A transfer with the hook's extra accounts resolved from the mint's meta list (what any wallet does). */
+export async function transferIx(conn: Connection, mint: PublicKey, from: PublicKey, to: PublicKey, amount: bigint) {
+  return createTransferCheckedWithTransferHookInstruction(conn, ata(mint, from), mint, ata(mint, to), from, amount, DECIMALS, [], 'confirmed', TOKEN_2022_PROGRAM_ID)
+}
 
-export const initGuardIx = (program: PublicKey, mint: PublicKey, authority: PublicKey, orgId: number) =>
-  ix(program, [[guardPda(program, mint), false, true], [mint, false, false], [authority, true, true], [SystemProgram.programId, false, false]], Buffer.concat([disc('global:initialize_guard'), u32(orgId)]))
-
-export const initMetasIx = (program: PublicKey, mint: PublicKey, authority: PublicKey) =>
-  ix(program, [[metasPda(program, mint), false, true], [mint, false, false], [authority, true, true], [SystemProgram.programId, false, false]], disc('spl-transfer-hook-interface:initialize-extra-account-metas'))
-
-export type Threat = { classification: number; caseHash: Buffer; sourceChain: bigint; evidenceHash: Buffer; issuedAt: bigint }
-export const containIx = (program: PublicKey, mint: PublicKey, authority: PublicKey, t: Threat) =>
-  ix(program, [[guardPda(program, mint), false, true], [authority, true, false]], Buffer.concat([disc('global:set_guard_contained'), Buffer.from([t.classification]), t.caseHash, u64(t.sourceChain), t.evidenceHash, i64(t.issuedAt)]))
-
-export const normalIx = (program: PublicKey, mint: PublicKey, authority: PublicKey) =>
-  ix(program, [[guardPda(program, mint), false, true], [authority, true, false]], disc('global:set_guard_normal'))
-
-/** Transfer that resolves the hook's extra accounts (the Guard PDA) from the on-chain list. */
-export const transferIx = (conn: Connection, mint: PublicKey, from: PublicKey, to: PublicKey, owner: PublicKey, amount: bigint) =>
-  createTransferCheckedWithTransferHookInstruction(conn, from, mint, to, owner, amount, DECIMALS, [], 'confirmed', TOKEN_2022_PROGRAM_ID)
-
-/** Guard layout: 8 discriminator, version u8, org_id u32, mode u8, case hash, source chain u64, evidence hash, issued_at i64, slot u64, authority, mint, bump. */
-export async function readGuard(conn: Connection, program: PublicKey, mint: PublicKey) {
-  const d = (await conn.getAccountInfo(guardPda(program, mint), 'confirmed'))?.data
-  if (!d) return null
-  return {
-    orgId: d.readUInt32LE(9),
-    mode: MODE[d[13]!]!,
-    caseHash: `0x${d.subarray(14, 46).toString('hex')}`,
-    sourceChain: d.readBigUInt64LE(46),
-    evidenceHash: `0x${d.subarray(54, 86).toString('hex')}`,
-    issuedAt: d.readBigInt64LE(86),
-    updatedSlot: d.readBigUInt64LE(94),
-    authority: new PublicKey(d.subarray(102, 134)),
-  }
+export async function balance(conn: Connection, mint: PublicKey, owner: PublicKey) {
+  const b = await conn.getTokenAccountBalance(ata(mint, owner), 'confirmed')
+  return BigInt(b.value.amount)
 }

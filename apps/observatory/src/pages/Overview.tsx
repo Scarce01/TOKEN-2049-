@@ -7,6 +7,7 @@ import { DECOYS, DISTRICTS, STEPS, T, TR, stepAt, traceCaption, type WorldMode }
 import { useReplay } from '../components/replay'
 import SecurityPanel from '../components/SecurityPanel'
 import AttackTimeline from '../components/AttackTimeline'
+import CreLiveConsole from '../components/CreLiveConsole'
 import { ORGS, readLive, useLive } from '../live/chain'
 import { BRIDGE, runAttack, toMap } from '../live/bridge'
 
@@ -37,6 +38,7 @@ export default function Overview() {
   const [panelId, setPanelId] = useState<string | null>(selected)
   useEffect(() => { if (selected) setPanelId(selected) }, [selected])
   const [view, setView] = useState<ViewCmd>({ kind: 'reset', n: 0 })
+  const [networkExpanded, setNetworkExpanded] = useState(false)
   const cmd = (kind: ViewCmd['kind']) => { if (kind === 'reset') setSelected(null); setView((v) => ({ kind, n: v.n + 1 })) }
   const { set: setReplay } = useReplay()
 
@@ -181,6 +183,8 @@ export default function Overview() {
   }
 
   const done = tracing ? tr >= TR.end : t >= T.end
+  const creVisible = !selected && !networkExpanded
+  const controlsBottom = creVisible ? 204 : 20
 
   return (
     <section className="relative h-full overflow-hidden bg-[#0f1526]">
@@ -201,7 +205,7 @@ export default function Overview() {
         <span className="font-mono text-[10.5px] uppercase tracking-[0.14em] text-mute">{`Hive City · ${7 + DISTRICTS.length} agencies mapped · 5 protected · ${DECOYS.length} decoys`}</span>
       </div>
 
-      <SecurityPanel selected={exchange} onSelect={setExchange} hidden={!!selected} />
+      <SecurityPanel selected={exchange} onSelect={setExchange} hidden={!!selected} onExpanded={setNetworkExpanded} />
 
       {/* inspection mode — right half; the world keeps the left */}
       <div className={`absolute top-0 right-0 bottom-0 z-30 transition-[transform,opacity] duration-500 ease-[cubic-bezier(.2,.7,.2,1)] ${selected ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 pointer-events-none'}`} style={{ width: `${PANEL_SHARE * 100}%` }}>
@@ -209,7 +213,7 @@ export default function Overview() {
       </div>
 
       {/* legend */}
-      <div className={`absolute left-5 bottom-5 z-20 transition-opacity duration-300 ${selected ? 'opacity-0 pointer-events-none' : ''}`}>
+      <div className={`absolute left-5 z-20 transition-[opacity,bottom] duration-300 ${selected ? 'opacity-0 pointer-events-none' : ''}`} style={{ bottom: controlsBottom }}>
         {legend && (
           <ul className="panel-in mb-2 w-[210px] p-3 space-y-1.5 rounded-lg bg-[#0F1115]/90 backdrop-blur border border-white/[0.06]">
             {LEGEND.map(([g, l]) => <li key={l} className="flex items-center gap-2.5 text-[11.5px] text-dim"><span className="w-[22px] grid place-items-center">{g}</span>{l}</li>)}
@@ -219,7 +223,7 @@ export default function Overview() {
       </div>
 
       {/* view controls — full orbit; right-drag also rotates */}
-      <div className={`absolute right-5 bottom-5 z-20 flex items-center gap-2 transition-opacity duration-300 ${selected ? 'opacity-0 pointer-events-none' : ''}`}>
+      <div className={`absolute right-5 z-20 flex items-center gap-2 transition-[opacity,bottom] duration-300 ${selected ? 'opacity-0 pointer-events-none' : ''}`} style={{ bottom: controlsBottom }}>
         <span className="hidden 2xl:block font-mono text-[10px] uppercase tracking-[0.12em] text-mute">Drag orbit · right-drag pan · scroll zoom</span>
         <div className="flex items-center p-0.5 rounded-lg bg-[#0F1115]/80 backdrop-blur border border-white/[0.06]">
           <Ctl label="Orbit left" onClick={() => cmd('left')}><path d="M5 3 2 6l3 3M2.5 6H9a3 3 0 0 1 0 6H7" fill="none" stroke="currentColor" strokeWidth="1.3" /></Ctl>
@@ -230,10 +234,11 @@ export default function Overview() {
       </div>
 
       {/* left pop-out: one card per stage of the real attack (bridge /attack/status) */}
-      <AttackTimeline />
+      <AttackTimeline insetBottom={creVisible ? 200 : 96} />
+      <CreLiveConsole visible={creVisible} />
 
       {/* attack control: no scrubber. The button runs the real backend flow; the map plays each response. */}
-      <div className="absolute -translate-x-1/2 bottom-6 z-20 flex flex-col items-center transition-[left] duration-500" style={{ left: selected ? `${(1 - PANEL_SHARE) * 50}%` : '50%' }}>
+      <div className="absolute -translate-x-1/2 z-20 flex flex-col items-center transition-[left,bottom] duration-300" style={{ left: selected ? `${(1 - PANEL_SHARE) * 50}%` : '50%', bottom: controlsBottom }}>
         {tracing ? (
           <button onClick={() => (done ? changeMode('trace') : setPlaying(!playing))}
             className="flex items-center gap-2 h-11 px-6 rounded-xl bg-[#D6A61F] text-ink text-[13px] font-semibold hover:bg-[#E2B52E] shadow-[0_8px_30px_rgba(214,166,31,.35)]">

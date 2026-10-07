@@ -1,20 +1,15 @@
 {
-  "name": "qubee-solana-guard",
-  "version": "0.1.0",
+  "name": "qu3ee-solana",
   "private": true,
   "type": "module",
-  "description": "QUBEE Solana Guard: Token-2022 transfer hook enforcing QUBEE threat state (devnet)",
   "scripts": {
-    "test": "bun test --timeout 120000",
+    "test": "bun test tests",
     "setup": "bun scripts/setup.ts",
     "demo": "bun scripts/demo.ts"
   },
   "dependencies": {
-    "@solana/spl-token": "0.4.15",
-    "@solana/web3.js": "1.99.0"
-  },
-  "devDependencies": {
-    "@types/bun": "latest",
-    "typescript": "5.9.3"
+    "@solana/spl-token": "^0.4.13",
+    "@solana/web3.js": "^1.98.0",
+    "viem": "^2.57.3"
   }
 }
