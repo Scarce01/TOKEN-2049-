@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Qu3ee Benchmark Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a single reading column (about 72ch) for a technical report, figures break out to a wider measure. */
+:root {
+  --bg: #fffaf0;
+  --surface: #ffffff;
+  --ink: #17140f;
+  --muted: #5f574a;
+  --line: #e7dcc6;
+  --amber: #c98700;
+  --amber-fill: #f6a800;
+  --amber-soft: #fff1cf;
+  --grey-bar: #b9ad97;
+  --good: #2f7d4f;
+  --bad: #b3401f;
+  --display: "Montserrat", "Segoe UI", Arial, sans-serif;
+  --body: "Work Sans", "Segoe UI", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12100c; --surface: #1b1813; --ink: #f4ecdc; --muted: #b3a88f; --line: #34302a;
+    --amber: #f6b52e; --amber-fill: #f6a800; --amber-soft: #2a2213; --grey-bar: #6c6352; --good: #6cc391; --bad: #ef7f5c;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12100c; --surface: #1b1813; --ink: #f4ecdc; --muted: #b3a88f; --line: #34302a;
+  --amber: #f6b52e; --amber-fill: #f6a800; --amber-soft: #2a2213; --grey-bar: #6c6352; --good: #6cc391; --bad: #ef7f5c;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 16px/1.6 var(--body); padding-inline: 16px; padding-block: 0 64px; }
+.wrap { max-width: 980px; margin: 0 auto; }
+.col { max-width: 72ch; }
+header { padding-block: 56px 28px; border-bottom: 1px solid var(--line); }
+.eyebrow { font: 600 12px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--amber); }
+h1 { font: 800 clamp(34px, 6vw, 56px)/1.05 var(--display); margin: 14px 0 12px; letter-spacing: -.01em; text-wrap: balance; }
+h1 .three { color: var(--amber); }
+.lede { font-size: 19px; color: var(--muted); max-width: 64ch; margin: 0; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 20px; font: 13px/1.4 var(--mono); color: var(--muted); }
+h2 { font: 700 26px/1.2 var(--display); margin: 56px 0 10px; text-wrap: balance; }
+h2 .n { color: var(--amber); margin-right: 10px; font-variant-numeric: tabular-nums; }
+h3 { font: 600 18px/1.3 var(--display); margin: 28px 0 6px; }
+p { margin: 10px 0; }
+.small { font-size: 14px; color: var(--muted); }
+code, .mono { font-family: var(--mono); font-size: .9em; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.tag { font: 500 12px/1 var(--mono); padding: 6px 9px; border-radius: 4px; border: 1px solid var(--line); color: var(--muted); background: var(--surface); }
+.tag b { color: var(--ink); font-weight: 500; }
+.src { font: 500 11px/1 var(--mono); padding: 3px 6px; border-radius: 3px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 32px; }
+.kpi { background: var(--surface); padding: 18px 18px 16px; min-width: 0; }
+.kpi .v { font: 800 34px/1 var(--display); font-variant-numeric: tabular-nums; }
+.kpi .v em { font-style: normal; color: var(--amber); }
+.kpi .l { font-size: 14px; color: var(--muted); margin-top: 8px; }
+.kpi .src { display: inline-block; margin-top: 10px; }
+.tbl { overflow-x: auto; margin: 14px 0; border: 1px solid var(--line); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 600 12px/1.3 var(--body); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--amber-soft); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+.hi { font-weight: 600; color: var(--amber); }
+figure { margin: 18px 0 8px; background: var(--surface); border: 1px solid var(--line); padding: 16px; }
+figure svg { width: 100%; height: auto; display: block; }
+figcaption { font-size: 13px; color: var(--muted); margin-top: 8px; }
+.chart text { fill: var(--muted); font: 12px var(--body); }
+.chart .lab { fill: var(--ink); font-weight: 600; }
+.chart .axis { stroke: var(--line); }
+.chart .bar-a { fill: var(--amber-fill); }
+.chart .bar-g { fill: var(--grey-bar); }
+.chart .line-a { stroke: var(--amber-fill); fill: none; stroke-width: 2.5; }
+.chart .line-g { stroke: var(--grey-bar); fill: none; stroke-width: 2.5; stroke-dasharray: 5 4; }
+.chart .dot-a { fill: var(--amber-fill); }
+.chart .dot-g { fill: var(--grey-bar); }
+.chart .mark { stroke: var(--muted); stroke-dasharray: 3 3; }
+.chart .alarm { fill: var(--good); }
+.chart .miss { fill: var(--bad); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--muted); margin-top: 8px; }
+.sw { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.two > * { min-width: 0; }
+.steps { counter-reset: s; list-style: none; padding: 0; margin: 12px 0; display: grid; gap: 10px; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 34px 1fr; gap: 10px; background: var(--surface); border: 1px solid var(--line); padding: 12px 14px; }
+.steps li::before { content: counter(s); font: 700 15px/26px var(--display); color: var(--amber); text-align: center; border: 1px solid var(--line); border-radius: 50%; width: 28px; height: 28px; }
+.steps li > div { min-width: 0; }
+.steps b { font-family: var(--display); font-weight: 600; }
+pre { background: var(--surface); border: 1px solid var(--line); padding: 12px 14px; overflow-x: auto; font: 13px/1.55 var(--mono); }
+.note { border-left: 3px solid var(--amber-fill); padding: 8px 14px; background: var(--amber-soft); margin: 14px 0; font-size: 15px; }
+ul.plain { padding-left: 20px; margin: 8px 0; }
+ul.plain li { margin: 4px 0; }
+footer { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+@media (max-width: 520px) { .kpi .v { font-size: 28px; } h2 { font-size: 22px; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Benchmark report · TOKEN2049 hackathon</div>
+  <h1>Qu<span class="three">3</span>ee benchmark report</h1>
+  <p class="lede">How far a single decoy touch gets you: tracing stolen funds from one address, following them across bridges, and raising the alarm before an exchange notices. Measured on three real incidents with public chain data.</p>
+  <div class="meta"><span>Version 2026-10-07, updated with Chainlink DON runs</span><span>Repo: Scarce01/TOKEN-2049-</span><span>Data package: qu3ee_benchmark_data_2026-10-07.zip</span></div>
+  <div class="tags">
+    <span class="tag"><b>public on-chain</b> &nbsp;real chain data</span>
+    <span class="tag"><b>testnet (DON)</b> &nbsp;public Base Sepolia, Chainlink DON</span>
+    <span class="tag"><b>testnet fork</b> &nbsp;local fork of Base Sepolia, real CRE CLI</span>
+    <span class="tag"><b>test</b> &nbsp;automated test suite</span>
+    <span class="tag"><b>assumed</b> &nbsp;model or assumed parameter</span>
+  </div>
+</header>
+
+<section class="kpis" aria-label="Headline results">
+  <div class="kpi"><div class="v"><em>51</em>/51</div><div class="l">Bybit wallets on the FBI list, traced from one address within 3 hops. The FBI published 5 days later.</div><span class="src">public on-chain</span></div>
+  <div class="kpi"><div class="v">8 → <em>12</em>/14</div><div class="l">Bitget attacker wallets found once Across and Stargate bridges are followed.</div><span class="src">public on-chain</span></div>
+  <div class="kpi"><div class="v"><em>18:58</em></div><div class="l">Spike rule alarm on Bitget's hot wallet, the minute of the first large theft. Bitget noticed at 19:05.</div><span class="src">public on-chain</span></div>
+  <div class="kpi"><div class="v"><em>10</em> s</div><div class="l">Decoy touch to on-chain freeze on the Chainlink DON, public Base Sepolia (one run).</div><span class="src">testnet (DON)</span></div>
+  <div class="kpi"><div class="v"><em>18</em> s</div><div class="l">Withdrawal request to Cosign verdict on chain, on the Chainlink DON (one run). Paid after the delay.</div><span class="src">testnet (DON)</span></div>
+  <div class="kpi"><div class="v"><em>94.7</em>%</div><div class="l">of flagged wallets still holding the money if the flag lands within 60 seconds (Trek replay on Bybit).</div><span class="src">public on-chain</span></div>
+</section>
+
+<div class="col">
+<h2><span class="n">1</span>What we measured</h2>
+<p>Qu3ee plants decoys inside an exchange. When an attacker touches one, Chainlink CRE nodes tighten withdrawals on chain and the attacker's address is shared with other exchanges. This report covers what happens next: can we follow the money from that one address, how fast, and does the alarm fire before the exchange's own monitoring?</p>
+<p>Every case starts from <b>one seed address</b> and uses only public chain data. Answers are scored against an outside list the method never sees.</p>
+</div>
+<div class="tbl"><table>
+  <thead><tr><th>Incident</th><th>Seed</th><th>Scored against</th><th class="num">List size</th></tr></thead>
+  <tbody>
+    <tr><td>Bybit, Feb 2025</td><td class="mono">0x47666…</td><td>FBI PSA I-022625-PSA</td><td class="num">51</td></tr>
+    <tr><td>Stake.com, Sep 2023</td><td class="mono">0x3130…</td><td>FBI release, the addresses active on Ethereum</td><td class="num">4</td></tr>
+    <tr><td>Bitget, Sep 2026</td><td class="mono">0x770b… (Exploiter 1)</td><td>Analyst labels with at least 2 independent sources (Bitquery, Etherscan, TRM)</td><td class="num">14</td></tr>
+  </tbody>
+</table></div>
+
+<h2><span class="n">2</span>Tracing back from one address</h2>
+<div class="col">
+<p>Taint spreads in time order with the <b>haircut</b> rule: a wallet that receives stolen and clean money passes on the stolen share in proportion. The tracer understands swaps (a DEX trade that pays a fresh wallet), stops at exchanges, bridges and contracts, and only follows wallets that are at least 50% tainted. All amounts are integers, so every run gives the same bytes.</p>
+</div>
+<div class="tbl"><table>
+  <thead><tr><th>Incident</th><th class="num">Found</th><th class="num">In top N by tainted amount</th><th>First reached after the attack</th><th>Source</th></tr></thead>
+  <tbody>
+    <tr><td>Bybit</td><td class="num hi">51 / 51</td><td class="num">49 in top 51, 51 in top 102</td><td>16 min earliest, 97 min median</td><td><span class="src">public on-chain</span></td></tr>
+    <tr><td>Stake</td><td class="num hi">4 / 4</td><td class="num">4 in top 8</td><td>14 min earliest, about 26 min median</td><td><span class="src">public on-chain</span></td></tr>
+    <tr><td>Bitget, Ethereum only</td><td class="num">8 / 14</td><td class="num">8 in top 14</td><td>34 min earliest</td><td><span class="src">public on-chain</span></td></tr>
+    <tr><td>Bitget, cross-chain</td><td class="num hi">12 / 14</td><td class="num">12 in top 28</td><td>new finds at 80, 192, 209 min</td><td><span class="src">public on-chain</span></td></tr>
+  </tbody>
+</table></div>
+
+<figure class="chart" aria-label="Bybit FBI wallets found by hop for three tracing models">
+  <svg viewBox="0 0 640 260" role="img">
+    <title>Bybit: FBI wallets found by hop limit, FIFO vs haircut vs haircut with swap awareness</title>
+    <!-- y scale: 0..51 mapped to 210..30 (180 px); x groups at 110, 250, 390, 530 -->
+    <line class="axis" x1="60" y1="210" x2="620" y2="210"/>
+    <line class="axis" x1="60" y1="30" x2="620" y2="30" stroke-dasharray="2 4"/>
+    <text x="52" y="214" text-anchor="end">0</text>
+    <text x="52" y="34" text-anchor="end">51</text>
+    <text x="52" y="73" text-anchor="end">40</text>
+    <line class="axis" x1="60" y1="69" x2="620" y2="69" stroke-dasharray="2 4"/>
+    <!-- k1: FIFO 40, haircut 40, swap 41 -->
+    <rect class="bar-g" x="80" y="69" width="26" height="141"/><rect class="bar-g" x="110" y="69" width="26" height="141" opacity=".6"/><rect class="bar-a" x="140" y="65.3" width="26" height="144.7"/>
+    <!-- k2: 40, 41, 42 -->
+    <rect class="bar-g" x="220" y="69" width="26" height="141"/><rect class="bar-g" x="250" y="65.3" width="26" height="144.7" opacity=".6"/><rect class="bar-a" x="280" y="61.8" width="26" height="148.2"/>
+    <!-- k3: 40, 50, 51 -->
+    <rect class="bar-g" x="360" y="69" width="26" height="141"/><rect class="bar-g" x="390" y="33.5" width="26" height="176.5" opacity=".6"/><rect class="bar-a" x="420" y="30" width="26" height="180"/>
+    <!-- k4: 40, 50, 51 -->
+    <rect class="bar-g" x="500" y="69" width="26" height="141"/><rect class="bar-g" x="530" y="33.5" width="26" height="176.5" opacity=".6"/><rect class="bar-a" x="560" y="30" width="26" height="180"/>
+    <text class="lab" x="433" y="24" text-anchor="middle">51</text>
+    <text x="93" y="63" text-anchor="middle">40</text><text x="373" y="63" text-anchor="middle">40</text>
+    <text x="123" y="232" text-anchor="middle">1 hop</text><text x="263" y="232" text-anchor="middle">2 hops</text><text x="403" y="232" text-anchor="middle">3 hops</text><text x="543" y="232" text-anchor="middle">4 hops</text>
+  </svg>
+  <div class="legend"><span><i class="sw" style="background:var(--grey-bar)"></i>FIFO</span><span><i class="sw" style="background:var(--grey-bar);opacity:.6"></i>Haircut</span><span><i class="sw" style="background:var(--amber-fill)"></i>Haircut with swap awareness (used)</span></div>
+  <figcaption>Bybit, FBI wallets found by hop limit. FIFO stalls at 40 of 51: the order of money inside an account is not recorded, so an attacker can choose it. <span class="src">public on-chain</span></figcaption>
+</figure>
+
+<h2><span class="n">3</span>Following money across bridges</h2>
+<div class="col">
+<p>On Bitget the Ethereum-only trace stopped at 8 of 14. The missing wallets were funded by theft on Arbitrum, Optimism, Base and BSC that the attacker bridged back to Ethereum. Those inflows looked clean, and they diluted the hub wallet below the 50% follow line, so its children were lost too.</p>
+<h3>Method</h3>
+<ul class="plain">
+  <li>The same seed address is followed on every origin chain (attackers reuse one key across EVM chains), using plain JSON-RPC from NOWNodes.</li>
+  <li>Every transaction an address sent is found by <b>bisecting its nonce</b> (about 21 calls per transaction). Native transfers are visible without an indexer.</li>
+  <li>Bridge deposits are decoded from receipts: Across <span class="mono">FundsDeposited</span>, Stargate <span class="mono">OFTSent</span>.</li>
+  <li>A deposit only counts after its Ethereum fill is found by the same identifier: Across by origin chain and deposit id, Stargate by message guid. A fill paid to a pass-through contract (AcrossAdapter) follows to the wallet it pays in the same transaction.</li>
+  <li>Each matched fill becomes an edge with the Ethereum transaction and log index, the same shape the CRE verify-edge handler reads.</li>
+</ul>
+</div>
+<div class="two">
+  <figure class="chart" aria-label="Bitget wallets found single-chain vs cross-chain">
+    <svg viewBox="0 0 320 200" role="img">
+      <title>Bitget: 8 of 14 found on Ethereum only, 12 of 14 with cross-chain tracing</title>
+      <!-- x scale: 0..14 mapped to 110..300 (190 px), 13.57 px per wallet -->
+      <line class="axis" x1="110" y1="30" x2="110" y2="150"/>
+      <rect class="bar-g" x="110" y="48" width="108.6" height="30"/>
+      <rect class="bar-a" x="110" y="104" width="162.9" height="30"/>
+      <line class="mark" x1="300" y1="36" x2="300" y2="146"/>
+      <text class="lab" x="102" y="68" text-anchor="end">Ethereum only</text>
+      <text class="lab" x="102" y="124" text-anchor="end">Cross-chain</text>
+      <text x="226" y="68">8</text>
+      <text x="280" y="124">12</text>
+      <text x="300" y="168" text-anchor="middle">14</text>
+      <text x="110" y="168" text-anchor="middle">0</text>
+    </svg>
+    <figcaption>Bitget attacker wallets found out of 14. <span class="src">public on-chain</span></figcaption>
+  </figure>
+  <div class="tbl" style="margin:18px 0 8px"><table>
+    <thead><tr><th>Origin chain</th><th class="num">Reached</th><th class="num">Bridge links</th></tr></thead>
+    <tbody>
+      <tr><td>BSC</td><td class="num">3</td><td class="num">49 (Across)</td></tr>
+      <tr><td>Optimism</td><td class="num">3</td><td class="num">7 (6 Stargate, 1 Across)</td></tr>
+      <tr><td>Arbitrum</td><td class="num">4</td><td class="num">5 (Across)</td></tr>
+      <tr><td>Base</td><td class="num">2</td><td class="num">4 (Stargate)</td></tr>
+      <tr><td>Avalanche</td><td class="num">skipped</td><td class="num">node keeps no history</td></tr>
+      <tr><td><b>Total</b></td><td class="num"><b>12</b></td><td class="num"><b>65</b></td></tr>
+    </tbody>
+  </table></div>
+</div>
+<p class="small col">Cost: 2,671 distinct JSON-RPC calls, all cached (the free NOWNodes plan allows 100,000 a month). Two runs give the same sha256.</p>
+<div class="note col"><b>Still missed: 2 of 14.</b> Both sit under the hub wallet, which is now 40% tainted, still under the follow line. The remaining clean-looking inflows come from intent bridges whose solvers pay from their own wallets (Relay, deBridge style; about 26.8M of one wallet's 34.7M), USDC minted from the zero address (likely CCTP) and 3 Mayan fills (possibly from Solana). None of these are decoded yet.</div>
+
+<h2><span class="n">4</span>Following in real time (Trek)</h2>
+<div class="col">
+<p>Trek follows tainted money block by block and only <b>proposes</b> actions; it never writes to the chain. Each proposal carries the transfer that explains the taint, so CRE can re-read it before anything is listed. Replayed on the Bybit data (1,256 addresses, 32,690 transfers) at three watch budgets:</p>
+</div>
+<div class="tbl"><table>
+  <thead><tr><th>Watch budget</th><th class="num">Proposals</th><th class="num">Delay tier</th><th class="num">FBI wallets proposed</th><th class="num">Lead time p10 / median / p90</th><th class="num">CRE queue (12 edges per 30 s)</th></tr></thead>
+  <tbody>
+    <tr><td>10 wallets</td><td class="num">57</td><td class="num">52</td><td class="num">51 / 51</td><td class="num">79 min / 2.8 d / 4.7 d</td><td class="num">100% verified in time</td></tr>
+    <tr><td>50 wallets</td><td class="num">1,015</td><td class="num">1,010</td><td class="num hi">51 / 51</td><td class="num">96 s / 312 s / 41 min</td><td class="num">100%, wait 24 s max</td></tr>
+    <tr><td>Unlimited</td><td class="num">4,166</td><td class="num">3,103</td><td class="num">51 / 51</td><td class="num">84 s / 216 s / 31 min</td><td class="num">99.8%, wait 24 s max</td></tr>
+  </tbody>
+</table></div>
+<figure class="chart" aria-label="Share of flagged wallets still holding the money by flag delay">
+  <svg viewBox="0 0 640 250" role="img">
+    <title>Share of delay-tier wallets that have not moved the money yet, by how long the flag takes</title>
+    <!-- x: categorical 12 s, 60 s, 10 min, 1 h at 110, 270, 430, 590. y: 0..100% mapped to 200..30 (1.7 px per %) -->
+    <line class="axis" x1="70" y1="200" x2="620" y2="200"/>
+    <line class="axis" x1="70" y1="30" x2="620" y2="30" stroke-dasharray="2 4"/>
+    <line class="axis" x1="70" y1="115" x2="620" y2="115" stroke-dasharray="2 4"/>
+    <text x="62" y="204" text-anchor="end">0%</text><text x="62" y="119" text-anchor="end">50%</text><text x="62" y="34" text-anchor="end">100%</text>
+    <!-- budget 50: 100, 94.7, 32.4, 7.9 -->
+    <polyline class="line-a" points="110,30 270,39 430,144.9 590,186.6"/>
+    <circle class="dot-a" cx="110" cy="30" r="4"/><circle class="dot-a" cx="270" cy="39" r="4"/><circle class="dot-a" cx="430" cy="144.9" r="4"/><circle class="dot-a" cx="590" cy="186.6" r="4"/>
+    <!-- unlimited: 100, 92.9, 25.7, 6.0 -->
+    <polyline class="line-g" points="110,30 270,42.1 430,156.3 590,189.8"/>
+    <text class="lab" x="278" y="34">94.7%</text>
+    <text x="438" y="138">32.4%</text>
+    <text x="590" y="176" text-anchor="middle">7.9%</text>
+    <text x="110" y="222" text-anchor="middle">12 s</text><text x="270" y="222" text-anchor="middle">60 s</text><text x="430" y="222" text-anchor="middle">10 min</text><text x="590" y="222" text-anchor="middle">1 h</text>
+    <text x="345" y="244" text-anchor="middle">time from the money arriving to the flag landing</text>
+  </svg>
+  <div class="legend"><span><i class="sw" style="background:var(--amber-fill)"></i>Watch budget 50</span><span><i class="sw" style="background:var(--grey-bar)"></i>Unlimited</span></div>
+  <figcaption>Laundering hops after the first one move money on within minutes (median 2 to 5 min), so the flag has to land in about a minute. <span class="src">public on-chain</span></figcaption>
+</figure>
+
+<h2><span class="n">5</span>Raising the alarm: CUSUM and the spike rule</h2>
+<div class="col">
+<p>Patrol watches each hot vault's outflow per minute with CUSUM, which catches a slow rise. On Bitget it never fired at any threshold: idle minutes inflate the baseline spread, so the 34.75M USDT minute scored only about 1.7 standard deviations, and eight transfers over 2.5 hours never added up. The spike rule (Shewhart) is its classic companion: one minute above a cap raises the alarm at once. The action stays soft (refill halved); raising the alert level still needs a second signal.</p>
+</div>
+<figure class="chart" aria-label="Bitget timeline with alarm times">
+  <svg viewBox="0 0 640 170" role="img">
+    <title>Bitget 24 Sep 2026 timeline: test transfer 18:31, theft 18:58, spike alarm 18:58 and 19:01, Bitget noticed 19:05</title>
+    <!-- x scale: 18:25..19:10 (45 min) mapped to 40..610, 12.67 px per minute -->
+    <line class="axis" x1="40" y1="90" x2="610" y2="90"/>
+    <text x="40" y="112" text-anchor="middle">18:25</text><text x="610" y="112" text-anchor="middle">19:10</text>
+    <!-- 18:31 -> 116 -->
+    <line class="mark" x1="116" y1="40" x2="116" y2="90"/><circle class="dot-g" cx="116" cy="90" r="5"/><text x="116" y="34" text-anchor="middle">18:31 test transfer</text>
+    <!-- 18:58 -> 458 -->
+    <circle class="alarm" cx="458" cy="90" r="6"/><text class="lab" x="452" y="134" text-anchor="end">18:58 spike alarm (USDT)</text>
+    <line class="mark" x1="458" y1="40" x2="458" y2="84"/><text x="458" y="34" text-anchor="middle">18:58 first large theft</text>
+    <!-- 19:01 -> 496 -->
+    <circle class="alarm" cx="496" cy="90" r="5"/><text x="502" y="152">19:01 alarm (ETH)</text>
+    <!-- 19:05 -> 547 -->
+    <circle class="miss" cx="547" cy="90" r="5"/><text x="560" y="72" text-anchor="middle">19:05 Bitget noticed</text>
+  </svg>
+  <figcaption>CUSUM alone stays silent all day. <span class="src">public on-chain</span></figcaption>
+</figure>
+<div class="tbl"><table>
+  <thead><tr><th>Rule (cap per minute)</th><th>USDT first alarm</th><th>ETH first alarm</th><th class="num">False alarms per day (USDT, ETH)</th></tr></thead>
+  <tbody>
+    <tr><td>CUSUM only (h = 5)</td><td>none</td><td>none</td><td class="num">1.86</td></tr>
+    <tr><td>Spike, 5x p99</td><td>18:58</td><td>19:01</td><td class="num">0.80, 0.80</td></tr>
+    <tr><td><b>Spike, 10x p99 (suggested)</b></td><td class="hi">18:58</td><td class="hi">19:01</td><td class="num">0.53, 0.27</td></tr>
+    <tr><td>Spike, 20x p99</td><td>18:58</td><td>19:01</td><td class="num">0, 0</td></tr>
+  </tbody>
+</table></div>
+<p class="small col">p99 is per active minute from Bitget 6's own 4 weeks before the hack. False alarms are counted on only 3.8 days, and 20x has a thin margin (34.75M against a 28.1M cap), so 10x is the suggested default. <span class="src">public on-chain</span></p>
+
+<h2><span class="n">6</span>Running on the Chainlink DON</h2>
+<div class="col">
+<p>Since 2026-10-07 the contracts run on public Base Sepolia in PROD mode, and only accept reports that arrive through Chainlink's KeystoneForwarder from our registered workflows. Patrol, Trap and Cosign all run on the Chainlink DON (private registry, zone-a), with their secrets in the Vault DON. The Receivers' workflow owner was set to the DON owner through the timelock, with two officer signatures.</p>
+</div>
+<figure class="chart" aria-label="Decoy touch to freeze report, DON vs local fork">
+  <svg viewBox="0 0 640 170" role="img">
+    <title>Decoy touch to freeze report: 10 s on the DON, 3.1 s local prebuilt, 11.2 s local with compile</title>
+    <!-- x scale: 0..12 s mapped to 250..610 (30 px per second) -->
+    <line class="axis" x1="250" y1="20" x2="250" y2="140"/>
+    <rect class="bar-a" x="250" y="26" width="300" height="26"/>
+    <rect class="bar-g" x="250" y="66" width="93" height="26"/>
+    <rect class="bar-g" x="250" y="106" width="336" height="26" opacity=".6"/>
+    <text class="lab" x="240" y="44" text-anchor="end">Chainlink DON (real)</text>
+    <text x="240" y="84" text-anchor="end">Local fork, prebuilt</text>
+    <text x="240" y="124" text-anchor="end">Local fork, with compile</text>
+    <text class="lab" x="558" y="44">10 s</text>
+    <text x="351" y="84">3.1 s</text>
+    <text x="594" y="124" text-anchor="end" style="fill:var(--ink)">11.2 s</text>
+    <text x="250" y="158" text-anchor="middle">0</text><text x="400" y="158" text-anchor="middle">5 s</text><text x="550" y="158" text-anchor="middle">10 s</text>
+  </svg>
+  <figcaption>The DON figure includes log-trigger delivery, node consensus and the KeystoneForwarder; the local ones are a single simulated node. <span class="src">testnet (DON)</span> <span class="src">testnet fork</span></figcaption>
+</figure>
+<div class="tbl"><table>
+  <thead><tr><th>Workflow on the DON</th><th>Result</th><th>Source</th></tr></thead>
+  <tbody>
+    <tr><td>Trap: decoy touch to freeze</td><td><b>10 s</b>, 5 blocks (one run, org B, test decoy). Report wrote FREEZE, QUOTA_ZERO, SWEEP, ALERT, COLD_DELAY, THREAT; read back after: alert 4, warm vault frozen, hot quota 0, attacker in the ThreatRegistry. DON execution 9 s</td><td><span class="src">testnet (DON)</span></td></tr>
+    <tr><td>Cosign: withdrawal request to verdict</td><td><b>18 s</b>, 9 blocks (one run, org A). A new user deposited 1,000 qUSD and signed a 50 qUSD withdrawal; the DON wrote APPROVE with no simulate and no person involved. The verdict carried a 578 s delay (network follow: 2 confirmed threats from the Trap run were active); after it, the vault paid 50 qUSD</td><td><span class="src">testnet (DON)</span></td></tr>
+    <tr><td>Patrol: reports accepted</td><td>52 of 52 through the KeystoneForwarder, from 7 distinct DON transmitters</td><td><span class="src">testnet (DON)</span></td></tr>
+    <tr><td>Patrol: cron tick to report on chain</td><td>18 s median, 24 s p90, 28 s max; execution 16 s median</td><td><span class="src">testnet (DON)</span></td></tr>
+    <tr><td>Patrol: what it wrote</td><td>heartbeats, asset checkpoints, warm-to-hot top-ups, CUSUM checkpoints; about 218,000 gas per report, paid by the DON transmitters</td><td><span class="src">testnet (DON)</span></td></tr>
+  </tbody>
+</table></div>
+<p class="small col">A first decoy touch 2 minutes after deploying Trap did not trigger: the DON log trigger takes a few minutes to go live. Patrol's native-decoy handler failed until its secret was uploaded; it has run cleanly since. Measured with <span class="mono">analysis/don_bench/don_benchmark.py</span> and <span class="mono">packages/offchain/scripts/e2e-cosign-public.ts</span>.</p>
+
+<h2><span class="n">7</span>System tests from the build</h2>
+<div class="tbl"><table>
+  <thead><tr><th>What</th><th>Result</th><th>Source</th></tr></thead>
+  <tbody>
+    <tr><td>Decoy touched to freeze, local fork</td><td>alert 4, warm vault frozen, hot quota 0, receiver listed; 3.1 s with a prebuilt workflow, 11.2 s with compile (see section 6 for the DON)</td><td><span class="src">testnet fork</span></td></tr>
+    <tr><td>Decoy hit on a public chain</td><td>Ethereum Sepolia run: NOWNodes confirmed the log, trap tripped, a later approval reverted</td><td><span class="src">testnet</span></td></tr>
+    <tr><td>Prevention layer, 8 cases through the CRE CLI</td><td>8 / 8</td><td><span class="src">testnet fork</span></td></tr>
+    <tr><td>Tracing on chain (Trek proposes, CRE verifies)</td><td>11 / 11 checks; last hop listed in 14 s</td><td><span class="src">testnet fork</span></td></tr>
+    <tr><td>Contracts</td><td>146 tests, 5 invariants over 262,144 random calls</td><td><span class="src">test</span></td></tr>
+    <tr><td>CRE workflow logic</td><td>87 tests; the same event twice gives byte-identical reports</td><td><span class="src">test</span></td></tr>
+    <tr><td>Decoy hit probability (10 decoys, 200 wallets, 20 probes)</td><td>66.02% formula, 66.07% Monte Carlo</td><td><span class="src">assumed</span></td></tr>
+    <tr><td>Quota bucket vs the Bitget theft</td><td>6 of 7 theft transfers above the fast-lane cap</td><td><span class="src">public on-chain, cap assumed</span></td></tr>
+  </tbody>
+</table></div>
+
+<h2><span class="n">8</span>Limits</h2>
+<ul class="plain col">
+  <li><b>Decoys can still be told apart</b> (AUC 0.71, target 0.65 or lower). Only 10 decoys; the generator may leak through activity features.</li>
+  <li><b>The quota bucket slows a split drain, it does not stop it</b>: by 19:05 the fast lane allows at most 16.9M against 47.6M taken.</li>
+  <li><b>Bridges are partly covered</b>: Across and Stargate are decoded; intent solvers, CCTP and Mayan are not. Past those, tracing firms take over.</li>
+  <li><b>Bitget's truth set is analyst labels</b>, weaker than the FBI lists used for Bybit and Stake.</li>
+  <li><b>Trek's replay classifies with hindsight</b>; live it classifies as money arrives.</li>
+  <li><b>The DON figures are single runs</b>: one Trap touch and one Cosign withdrawal. The other prevention cases (forged signature, caps, officer hold) ran on the local fork only.</li>
+  <li><b>Bitget's 18:31 test transfer came from a real hot wallet, not a decoy.</b> Any "what if it hit a decoy" is a hypothetical replay.</li>
+</ul>
+
+<h2><span class="n">9</span>Deployment plan</h2>
+<div class="col"><p>None of the steps below changes a contract. The spike rule is a configuration change; cross-chain tracing in real time is new workflow and service code.</p></div>
+<h3>Done</h3>
+<ol class="steps">
+  <li><div><b>Merged:</b> product name, spike rule, cross-chain tracing, this benchmark (PRs #2 to #5).</div></li>
+  <li><div><b>Public Base Sepolia, mode A:</b> contracts in PROD behind the KeystoneForwarder; Patrol, Trap and Cosign on the Chainlink DON (private registry, no mainnet gas); workflow owner set through the timelock; CRE secrets uploaded.</div></li>
+  <li><div><b>Spike rule on:</b> spikeMax set in the deployed Patrol config (1,000 qUSD on the test token).</div></li>
+</ol>
+<h3>Now</h3>
+<ol class="steps">
+  <li><div><b>Frontend on the public deployment.</b> Sliced log reads and neutral org names are merged (PR #10); the RPC target, the deployment file, the indexer and the attack flow move next.</div></li>
+  <li><div><b>More runs on the DON.</b> Repeat Trap and Cosign for medians, and run the other 7 prevention cases on the public chain.</div></li>
+  <li><div><b>AWS.</b> Containers for exchange-api, indexer, trap-sync, keeper and notifier; CDK stack; Supabase Cloud migrations; alarms (docs/38_phase8_aws.md).</div></li>
+</ol>
+<h3>Next: cross-chain tracing in real time (about 3 to 4 days)</h3>
+<ol class="steps">
+  <li><div><b>Trek on several chains.</b> In real time Trek scans each block, so nonce bisection is not needed. Plug the Across and Stargate decoders from <span class="mono">bridges.py</span> into Trek's live source.</div></li>
+  <li><div><b>A bridge edge for CRE verify-edge.</b> Read the origin receipt (deposit) and the destination receipt (fill), check the identifiers match, then write the derived threat. Two receipts per edge halve the batch to 6 edges per call. ThreatRegistry already keys entries by chain id, so the contract stays as it is.</div></li>
+  <li><div><b>Native transfers.</b> verify-edge rejects native transfers today because a receipt carries no value, yet most of the stolen funds on L2s moved as native ETH. Ask the Chainlink mentor whether the CRE EVM client can read a transaction's value by hash.</div></li>
+  <li><div><b>A paid data source.</b> Scanning five chains in real time is about two calls per block: Arbitrum alone is roughly 700,000 calls a day, far above the free 100,000 a month. Use a paid NOWNodes plan, own nodes or websocket feeds.</div></li>
+  <li><div><b>Testnet demo.</b> Across runs between Sepolia, Base Sepolia and Arbitrum Sepolia: a decoy hit on Base Sepolia, the attacker bridges to Sepolia, Trek follows, verify-edge checks both chains. No mainnet funds needed.</div></li>
+</ol>
+
+<h2><span class="n">10</span>Reproduce</h2>
+<div class="col"><p>Every result in sections 2 to 5 re-runs from the repo. With the cache package unzipped into <span class="mono">analysis/out/</span>, no API keys are needed and the outputs match byte for byte.</p></div>
+<pre>cd analysis/trace_bybit
+python3 run.py score --seeds A            # Bybit
+python3 run.py score --case stake         # Stake
+python3 run.py score --case bitget        # Bitget, Ethereum only
+python3 xchain.py --case bitget           # Bitget, cross-chain
+python3 trek.py replay                    # Trek replay
+python3 ../bitget_spike.py                # spike rule
+cd ../.. && python3 analysis/don_bench/don_benchmark.py --workflows quorum-trap,quorum-patrol --trap-trigger-tx &lt;tx&gt;   # DON</pre>
+
+<footer>Qu3ee, built with Chainlink CRE. Sources: FBI PSA I-022625-PSA (Bybit); FBI release on Stake.com (Sep 2023); Bitquery, Etherscan labels, TRM Labs, BlockSec (Bitget); public chain data via Etherscan, BigQuery and NOWNodes. Numbers carry their source type; assumed values are marked.</footer>
+</div>
+
+</body>
+</html>
