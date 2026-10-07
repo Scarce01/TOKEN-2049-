@@ -19,7 +19,7 @@ import { type Hex, parseEventLogs } from 'viem'
 import { readJson, repoRoot, writeJson } from '../../src/index'
 import { parseCre, reportTxs } from './cre-log'
 import { dueHandlers, HANDLERS, type Handler, indexOf } from './patrol'
-import { d, pub, rpc, snapPath } from './setup'
+import { type DemoState, d, fund, pub, rpc, snapPath, statePath } from './setup'
 
 const PORT = 8790
 const TICK_S = Number(process.env.PATROL_TICK_S ?? 60)
@@ -242,6 +242,9 @@ async function runAttackJob() {
     const decoys = trapDecoySet()
     const org = 'A' // the fork decoy belongs to org A
 
+    // every run sends 1 qUSD out of the top 3 wallets; without this the balances drift flat after enough runs,
+    // the address tie-break decides the order and the probes miss the decoy
+    await fund(readJson<DemoState>(statePath))
     pushStep({ type: 'start', org, block: Number(await pub.getBlockNumber()) })
 
     const ranked = rankWallets(await fetchHotWallets(EX_API, ADMIN))

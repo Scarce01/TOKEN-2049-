@@ -125,7 +125,8 @@ function freshState(): DemoState {
   }
 }
 
-async function fund(s: DemoState) {
+/** Tops every visible wallet back up to its layout amount (also used by the bridge before each attack run). */
+export async function fund(s: DemoState) {
   const deployer = walletOf(keys.DEPLOYER!.privateKey)
   for (const w of [...s.wallets.map((x) => x.address), s.attacker.address]) {
     await rpc('anvil_setBalance', [w, toHex(parseEther('0.05'))])
