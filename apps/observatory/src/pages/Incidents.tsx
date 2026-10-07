@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router'
-import { Kind } from '@hexmap/packages/shared/src/constants'
+import { Kind } from '../shared/constants'
 import { DataTable, Metric, PageHeader, Panel, StateBadge } from '../components/ui'
 import { buildCases, readEvents, readLive, useLive, type Case } from '../live/chain'
 

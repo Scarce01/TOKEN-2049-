@@ -31,3 +31,7 @@ datasets/out/
 **/.verify-junit.xml
 # demo videos: commit only after someone checked no real decoy address is on screen (rule 2)
 media/*.mp4
+
+# Observatory: local copy of the fork deployment (addresses only, no decoys). The unified server
+# (apps/observatory/serve.ts) copies the fresh deployment here on start. Source: deployments/base-sepolia-fork.json
+apps/observatory/src/deployment.json

@@ -198,6 +198,9 @@ async function simulateTrap(txHash: Hex, eventIndex: number) {
 }
 
 type AttackStep = {
+  cre?: string
+  nownodes?: string
+  verdict?: string
   seq: number
   type: 'start' | 'step' | 'response' | 'done' | 'error'
   phase?: string
@@ -282,6 +285,12 @@ async function runAttackJob() {
       pushStep({ type: 'error', message: trap.errors.join(' | ') || 'trap did not report' })
       return
     }
+    // integrated CRE + NOWNodes verdict, read from the real trap log line (CLAUDE.md rule 8: show the source)
+    const nn = trap.logs.find((l) => l.startsWith('nownodes '))?.slice('nownodes '.length).trim() ?? 'n/a'
+    const nownodes = /not served/.test(nn) ? 'no node for this chain · skipped' : /status=1/.test(nn) ? `${nn} · agrees` : nn
+    const verdict = /not served|unavailable/.test(nn) ? 'acting on CRE receipt' : /status=1/.test(nn) ? 'two sources agree' : nn
+    pushStep({ type: 'step', phase: 'verified', org, detail: `CRE receipt confirmed · NOWNodes ${nownodes}`, cre: 'receipt confirmed', nownodes, verdict })
+
     const trapRc = await pub.getTransactionReceipt({ hash: trapTx })
     pushStep({
       type: 'step',

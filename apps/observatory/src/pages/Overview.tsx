@@ -109,6 +109,15 @@ export default function Overview() {
     setSelected(id)
   }, [])
 
+  // Leaving the focused ("special") view returns the camera to the original angle. Fires however the panel
+  // closes: its X, the Escape key, a back/collapse, or another click on the map or interface.
+  const wasFocused = useRef(false)
+  useEffect(() => {
+    const focused = !!selected || !!exchange
+    if (wasFocused.current && !focused) toMap({ type: 'home' })
+    wasFocused.current = focused
+  }, [selected, exchange])
+
   const tracing = mode === 'trace'
   const step = stepAt(t)
   const progress = tracing ? Math.max(0, tr) / TR.end : t < 0 ? 0 : t / T.end
@@ -134,9 +143,19 @@ export default function Overview() {
       await runAttack((e) => {
         if (e.type === 'error') { setAtk((a) => ({ ...a, busy: false, err: e.message })); return }
         if (e.type === 'start') { atkOrg.current = e.org; toMap({ type: 'focus', exchange: e.org }); return }
-        if (e.type === 'done') { toMap({ type: 'beat', t: BEAT.done }); setAtk({ busy: false, done: true, status: 'Contained · funds held, attacker shared to the network' }); return }
+        if (e.type === 'done') {
+          // attacker trapped -> finale: trace the funds to the off-ramp, hold, then the attacker fades away
+          toMap({ type: 'beat', t: BEAT.done }) // 10: caged, cash-out held
+          setTimeout(() => toMap({ type: 'beat', t: 13.6 }), 2200) // trace to the (illustrative cross-chain) off-ramp
+          setTimeout(() => toMap({ type: 'beat', t: 16 }), 5200) // settle: attacker neutralised, deposit held
+          setAtk({ busy: false, done: true, status: 'Attacker trapped · funds traced to the off-ramp and held (illustrative cross-chain)' })
+          return
+        }
         const key = e.type === 'response' ? e.event : e.phase
         if (BEAT[key] !== undefined) toMap({ type: 'beat', t: BEAT[key] })
+        // integrated CRE + NOWNodes verification card on the map
+        if (e.type === 'step' && e.phase === 'verify') toMap({ type: 'verify', phase: 'run', exchange: e.org })
+        if (e.type === 'step' && e.phase === 'verified') toMap({ type: 'verify', phase: 'done', exchange: e.org, cre: e.cre, nownodes: e.nownodes, verdict: e.verdict })
         setAtk({ busy: true, status: e.detail, tx: e.tx, block: e.block })
       })
     } catch (err) {

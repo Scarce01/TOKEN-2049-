@@ -3,10 +3,10 @@
 // file and event ABIs from packages/shared, so a redeploy or an interface change needs no edit here.
 import { useEffect, useState } from 'react'
 import { createPublicClient, formatUnits, http, parseAbi, parseEventLogs, type Address, type Hex, type Log } from 'viem'
-import fork from '@hexmap/deployments/base-sepolia-fork.json'
-import { ColdVaultAbi, PatrolStateAbi, QuorumReceiverAbi, QuorumVaultAbi, ThreatRegistryAbi } from '@hexmap/packages/shared/src/abi'
+import fork from '../deployment.json'
+import { ColdVaultAbi, PatrolStateAbi, QuorumReceiverAbi, QuorumVaultAbi, ThreatRegistryAbi } from '../shared/abi'
 
-export const RPC = (import.meta.env.VITE_RPC_URL as string) ?? 'http://127.0.0.1:8545'
+export const RPC = (import.meta.env.VITE_RPC_URL as string) ?? (typeof location !== 'undefined' ? location.origin + '/rpc' : 'http://127.0.0.1:8545')
 export const CHAIN_LABEL = fork.chainId === 84532 ? 'Base Sepolia fork' : `chain ${fork.chainId}`
 
 /** Display names for the demo orgs; any other org in the deployment shows as "Org <letter>". */

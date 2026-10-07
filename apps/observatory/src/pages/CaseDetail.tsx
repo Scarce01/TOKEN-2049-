@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router'
-import { Decision, Kind } from '@hexmap/packages/shared/src/constants'
+import { Decision, Kind } from '../shared/constants'
 import { Badge, DataTable, Mono, PageHeader, Panel, Row, StateBadge, Tabs } from '../components/ui'
 import { buildCases, readEvents, readLive, tokenAmount, useLive, type ChainEvent } from '../live/chain'
 

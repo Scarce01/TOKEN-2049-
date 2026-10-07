@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Decision, Kind } from '@hexmap/packages/shared/src/constants'
+import { Decision, Kind } from '../shared/constants'
 import { ALERT, CHAIN_LABEL, ORGS, readEvents, readLive, tokenAmount, usdOf, useLive, type ChainEvent, type Live, type LiveOrg } from '../live/chain'
 import { HANDLERS, readPatrol, toMap, type HandlerState, type PatrolStatus } from '../live/bridge'
 
@@ -99,7 +99,7 @@ export default function SecurityPanel({ selected, onSelect, hidden }: { selected
   return (
     <div className="absolute top-4 right-4 z-30 w-[440px] h-[564px] max-h-[calc(100%-32px)] flex flex-col rounded-2xl bg-[#0D0F12]/95 backdrop-blur-xl border border-white/[0.08] shadow-[0_24px_80px_rgba(0,0,0,.55)] overflow-hidden">
       {org && live.data ? (
-        <ExchangeView org={org} live={live.data} events={events.data ?? []} updatedAt={live.at} onBack={() => onSelect(null)} onClose={() => setCollapsed(true)} />
+        <ExchangeView org={org} live={live.data} events={events.data ?? []} updatedAt={live.at} onBack={() => onSelect(null)} onClose={() => { onSelect(null); setCollapsed(true) }} />
       ) : (
         <NetworkView live={live.data} error={live.error} events={events.data ?? []} patrol={patrol.data} patrolDown={!!patrol.error && !patrol.data} onSelect={onSelect} onClose={() => setCollapsed(true)} />
       )}

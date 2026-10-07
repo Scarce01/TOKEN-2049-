@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import hexmapHtml from '@hexmap/hexmap.html?raw'
+import hexmapHtml from '../../hexmap.html?raw'
 import { DECOYS, T } from './worldData'
 import type { ViewCmd } from './World'
 

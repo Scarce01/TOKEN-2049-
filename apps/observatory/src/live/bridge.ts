@@ -1,6 +1,6 @@
 // Read-only client for the fork bridge (packages/offchain/scripts/fork-demo/bridge.ts in this repo), which
 // schedules the real Patrol workflow on its own (sim-runner cadence). The UI only shows its status.
-export const BRIDGE = (import.meta.env.VITE_BRIDGE_URL as string) ?? 'http://127.0.0.1:8790'
+export const BRIDGE = (import.meta.env.VITE_BRIDGE_URL as string) ?? (typeof location !== 'undefined' ? location.origin + '/bridge' : 'http://127.0.0.1:8790')
 
 export const HANDLERS = ['ping', 'decoys', 'epoch', 'quota', 'reconcile'] as const
 export type Handler = (typeof HANDLERS)[number]
@@ -35,7 +35,7 @@ export async function readPatrol(): Promise<PatrolStatus> {
 
 export type AttackEvent =
   | { type: 'start'; org: string; block: number }
-  | { type: 'step'; phase: string; org: string; detail: string; tx?: string; block?: number }
+  | { type: 'step'; phase: string; org: string; detail: string; tx?: string; block?: number; cre?: string; nownodes?: string; verdict?: string }
   | { type: 'response'; phase: 'tighten'; event: string; org: string; detail: string; tx: string; block: number }
   | { type: 'done'; org: string; block: number }
   | { type: 'error'; message: string }

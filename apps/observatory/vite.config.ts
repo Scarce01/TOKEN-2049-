@@ -27,18 +27,22 @@ react(),
     ],
     resolve: {
       dedupe: ['three', 'react', 'react-dom', '@react-three/fiber', 'viem'], // viem: also imported by the repo's packages/shared
-      alias: {
-        // '@hexmap' is the repo root (this app lives in apps/observatory): hexmap.html, packages/shared, deployments
-        '@hexmap': process.env.HEXMAP_DIR ?? path.resolve(__dirname, '../..'),
-        '@': path.resolve(__dirname, './src'),
-      },
+      // Self-contained: hexmap.html, src/shared (abi+constants) and src/deployment.json all live in this folder.
+      alias: { '@': path.resolve(__dirname, './src') },
     },
     optimizeDeps: { include: ['three', '@react-three/fiber', '@react-three/drei', '@react-three/postprocessing', 'postprocessing'] },
     server: {
       host: process.env.FIGMA_DEV_SERVER_HOST || '0.0.0.0',
       port: parseInt(process.env.PORT || '8443'),
       strictPort: true,
-      fs: { allow: ['.', process.env.HEXMAP_DIR ?? path.resolve(__dirname, '../..')] },
+      fs: { allow: ['.'] },
+      // One origin in dev too: the UI calls same-origin /rpc /bridge /decoygen, proxied to the local backends.
+      // The unified server (serve.ts) proxies the same paths in production.
+      proxy: {
+        '/rpc': { target: 'http://127.0.0.1:8545', changeOrigin: true, rewrite: (p) => p.replace(/^\/rpc/, '') || '/' },
+        '/bridge': { target: 'http://127.0.0.1:8790', changeOrigin: true, rewrite: (p) => p.replace(/^\/bridge/, '') || '/' },
+        '/decoygen': { target: 'http://127.0.0.1:8791', changeOrigin: true },
+      },
       watch: {
         ignored: [
           '**/.figma/**',
