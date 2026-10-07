@@ -1,0 +1,102 @@
+{
+ "source": "testnet (public Base Sepolia, Chainlink DON, private registry)",
+ "generated_utc": "2026-10-07T11:33:53Z",
+ "chain": {
+  "chainId": 84532,
+  "mode": "PROD",
+  "receivers": [
+   "0x3304068e75Cdac0D3aFfB1120ffd4411152d551e",
+   "0x8089424197ce5F64eFf7db3ab9c9fbEf4E173630"
+  ],
+  "blocks": [
+   47802100,
+   47802250
+  ]
+ },
+ "workflows": {
+  "quorum-trap": {
+   "executions": 1,
+   "window_utc": [
+    "2026-10-07T11:32:29Z",
+    "2026-10-07T11:32:29Z"
+   ],
+   "by_status": {
+    "SUCCESS/SUCCESS": 1
+   },
+   "success_duration_s_p50_p90_max": [
+    9,
+    9,
+    9
+   ],
+   "failure_causes_sampled": {},
+   "credit_used": 0.0
+  },
+  "quorum-patrol": {
+   "executions": 100,
+   "window_utc": [
+    "2026-10-07T11:09:01Z",
+    "2026-10-07T11:33:01Z"
+   ],
+   "by_status": {
+    "SUCCESS/SUCCESS": 75,
+    "FAILURE/USER_ERROR": 25
+   },
+   "success_duration_s_p50_p90_max": [
+    16,
+    23,
+    27
+   ],
+   "failure_causes_sampled": {
+    "secret retrieval failed for PATROL_DECOYS (namespace: default): PATROL_DECOYS: secret request returned an error: key does not exist. Verify the secret name is correct and that the secret has been conf": 3
+   },
+   "credit_used": 0.0
+  }
+ },
+ "reports": {
+  "accepted_reports": 21,
+  "forwarder_result_1": 21,
+  "by_kind": {
+   "PATROL_STATE": 4,
+   "TOPUP": 20,
+   "ASSET_CHECKPOINT": 20,
+   "PING": 10,
+   "FREEZE": 1,
+   "QUOTA_ZERO": 1,
+   "SWEEP": 1,
+   "ALERT": 1,
+   "COLD_DELAY": 1,
+   "THREAT": 1
+  },
+  "dON_transmitters": 7,
+  "via_keystone_forwarder": [
+   "0xf8344cfd5c43616a4366c34e3eee75af79a74482"
+  ],
+  "cron_tick_to_block_s_p50_p90_max": [
+   18,
+   24,
+   36
+  ],
+  "gas_per_report_p50": 217918,
+  "fees_eth_total": 2.34e-05,
+  "examples": [
+   "0x018d025e5616e838d95cd365d44486370342a981ec4f0d8d6520ee2652c82081",
+   "0x0ac51a1028fee3fd78bc66b4e22ef9a8b0afee7c13924357b0ee427d3ace5cb3",
+   "0x0c3b6bbcbcde27a5a02b5ec094543375519e9a051181637927ee9c2fc10fe788"
+  ]
+ },
+ "trap": {
+  "trigger_tx": "0x236778f240c573d869949d54c4f3d2bf66e07057944d696a7e4006ba6299abde",
+  "trigger_block": 47802229,
+  "freeze_tx": "0x32ab0635fff14b905027e50d102d71feb25e66383ca40b536b9405a9da1b834f",
+  "freeze_block": 47802234,
+  "decoy_touch_to_freeze_s": 10,
+  "freeze_report_kinds": [
+   "FREEZE",
+   "QUOTA_ZERO",
+   "SWEEP",
+   "ALERT",
+   "COLD_DELAY",
+   "THREAT"
+  ]
+ }
+}

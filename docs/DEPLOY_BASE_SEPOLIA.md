@@ -11,7 +11,8 @@ KeystoneForwarder; Patrol runs on the Chainlink DON. Addresses: [deployments/bas
 | Patrol workflow | ACTIVE on the DON (zone-a), private registry, every minute | workflow ID `002d793802489c6c0b8e379240bd9f8f7b6189ba682c02f19969e31fcaeb5078` |
 | Workflow owner on the DON | `0x31ed35d932725595DD5D27F23705D8c0c54e29db` (private registry, derived by CRE) | `cre workflow list` |
 | Receiver owner | `0x31ed…29db` on both Receivers, through ConfigTimelock (officers `0x4060…` and `0xbfad…` signed, 10 min delay) | queue `0x3cc9d57d…` / `0x1fd3a6b6…`, execute `0xff06e7e3…` / `0x0c55d958…` (org A / org B) |
-| Trap, Cosign | not on the DON yet | need decoys on this chain first (see below) |
+| Trap workflow | ACTIVE on the DON, watching one test decoy wallet of org B (no secrets needed: no NOWNodes on Base Sepolia, no committed proof) | workflow ID `006576bb13bfa082e9ccf563521e2004534f708992cf597054db84be8ff3cd66`; decoy touch to freeze 10 s (BENCHMARK.md) |
+| Cosign | not on the DON yet | |
 
 **Verified after the owner change:** DON reports are accepted. Example: tx `0x554b02a6a1cc1bfca7210cc0c6f504eaf1b6129a4be78ca4951861b240b320ec` (block 47801297), sent by a DON transmitter to the KeystoneForwarder, `ReportProcessed` result 1 for Receiver A, with `PatrolStateUpdated` (CUSUM checkpoint) and `AssetCheckpoint` in the same tx; tx `0x7cf4bad9…` carried a `Ping`. No `ActionFailed` or `ActionStale`.
 
