@@ -5,6 +5,11 @@ import path from 'node:path'
 
 import siteConfiguration from './.figma/make/site.json'
 
+// QUORUM_NET=public: read the PROD deployment on public Base Sepolia (Patrol, Trap, Cosign on the DON) instead of the fork.
+const PUBLIC = process.env.QUORUM_NET === 'public'
+const RPC_TARGET = PUBLIC ? 'https://sepolia.base.org' : 'http://127.0.0.1:8545'
+const PUBLIC_DEPLOYMENT = path.resolve(__dirname, '../../deployments/base-sepolia.json')
+
 
 // Vite config — https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -28,18 +33,21 @@ react(),
     resolve: {
       dedupe: ['three', 'react', 'react-dom', '@react-three/fiber', 'viem'], // viem: also imported by the repo's packages/shared
       // Self-contained: hexmap.html, src/shared (abi+constants) and src/deployment.json all live in this folder.
-      alias: { '@': path.resolve(__dirname, './src') },
+      alias: [
+        ...(PUBLIC ? [{ find: /^\.\.\/deployment\.json$/, replacement: PUBLIC_DEPLOYMENT }] : []),
+        { find: '@', replacement: path.resolve(__dirname, './src') },
+      ],
     },
     optimizeDeps: { include: ['three', '@react-three/fiber', '@react-three/drei', '@react-three/postprocessing', 'postprocessing'] },
     server: {
       host: process.env.FIGMA_DEV_SERVER_HOST || '0.0.0.0',
       port: parseInt(process.env.PORT || '8443'),
       strictPort: true,
-      fs: { allow: ['.'] },
+      fs: { allow: PUBLIC ? ['.', PUBLIC_DEPLOYMENT] : ['.'] },
       // One origin in dev too: the UI calls same-origin /rpc /bridge /decoygen, proxied to the local backends.
       // The unified server (serve.ts) proxies the same paths in production.
       proxy: {
-        '/rpc': { target: 'http://127.0.0.1:8545', changeOrigin: true, rewrite: (p) => p.replace(/^\/rpc/, '') || '/' },
+        '/rpc': { target: RPC_TARGET, changeOrigin: true, rewrite: (p) => p.replace(/^\/rpc/, '') || '/' },
         '/bridge': { target: 'http://127.0.0.1:8790', changeOrigin: true, rewrite: (p) => p.replace(/^\/bridge/, '') || '/' },
         '/decoygen': { target: 'http://127.0.0.1:8791', changeOrigin: true },
         '/history': { target: 'http://127.0.0.1:42069', changeOrigin: true },

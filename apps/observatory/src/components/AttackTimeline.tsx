@@ -1,13 +1,13 @@
 // Attack timeline: a left-side pop-out that follows the real attack on the fork (bridge /attack/status).
 // One card per stage. Done stages read honey; stages not reached yet carry no colour. Clicking anywhere on the
-// panel opens the incident page (/cases). When the attack completes the panel collapses to a small redirect tab
+// panel opens the Live tab of the incident page (/cases). When the attack completes the panel collapses to a small redirect tab
 // with a 10s countdown, then hides. Every value comes from the bridge (source: testnet fork, measured); no decoy
 // address is shown (CLAUDE.md rule 2). Mounted in Overview.tsx.
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { BRIDGE } from '../live/bridge'
 
-type Step = {
+export type Step = {
   seq: number
   at: number
   type: 'start' | 'step' | 'response' | 'done' | 'error'
@@ -22,9 +22,9 @@ type Step = {
   event?: string
   message?: string
 }
-type Status = { running: boolean; startedAt?: number; steps: Step[] }
+export type Status = { running: boolean; startedAt?: number; steps: Step[] }
 
-const STAGES = [
+export const STAGES = [
   { key: 'start', title: 'Backend compromised' },
   { key: 'scan', title: 'Hot wallets scanned' },
   { key: 'probe', title: 'Probe transfers sent' },
@@ -35,11 +35,13 @@ const STAGES = [
   { key: 'tighten', title: 'Defence tightened' },
   { key: 'done', title: 'Attacker contained' },
 ] as const
-type Key = (typeof STAGES)[number]['key']
+export type Key = (typeof STAGES)[number]['key']
 
-const keyOf = (s: Step): Key | null =>
+export const keyOf = (s: Step): Key | null =>
   s.type === 'start' ? 'start' : s.type === 'done' ? 'done' : s.type === 'response' ? 'tighten' : ((s.phase as Key) ?? null)
 const secs = (ms: number) => `+${(ms / 1000).toFixed(1)}s`
+
+export const readAttack = (): Promise<Status> => fetch(`${BRIDGE}/attack/status`).then((r) => (r.ok ? r.json() : Promise.reject(new Error(`bridge ${r.status}`))))
 
 export default function AttackTimeline() {
   const [st, setSt] = useState<Status>({ running: false, steps: [] })

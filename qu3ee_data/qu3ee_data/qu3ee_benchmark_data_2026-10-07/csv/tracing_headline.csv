@@ -1,0 +1,5 @@
+case,truth,truth_size,found,hits_in_top_truth_size,candidates,source
+Bybit 2025-02,FBI PSA I-022625-PSA,51,51,49,3631,public on-chain
+Stake 2023-09,FBI release (Ethereum addresses),4,4,2,7,public on-chain
+Bitget 2026-09 single chain,"analyst labels, >=2 sources",14,8,8,173,public on-chain
+Bitget 2026-09 cross-chain,"analyst labels, >=2 sources",14,12,8,192,public on-chain

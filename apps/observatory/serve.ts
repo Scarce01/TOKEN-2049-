@@ -17,6 +17,10 @@ const ROOT = join(import.meta.dir, '..', '..') // apps/observatory -> repo root
 const DIST = join(import.meta.dir, 'dist')
 const PORT = Number(process.env.PORT ?? 8443)
 const BUN = process.execPath
+// QUORUM_NET=public: the PROD deployment on public Base Sepolia. The DON runs Patrol, Trap and Cosign there, so the
+// fork-only backends (exchange DB and API, decoygen, fork bridge) are not started; build with the same QUORUM_NET.
+const PUBLIC = process.env.QUORUM_NET === 'public'
+const RPC_UPSTREAM = PUBLIC ? 'https://sepolia.base.org' : 'http://127.0.0.1:8545'
 
 const up = async (port: number) => {
   try {
@@ -42,7 +46,7 @@ async function ensure(name: string, port: number, cmd: string[], opts: { cwd?: s
   }
   console.log(`[serve] starting ${name} on :${port}`)
   const spawn = () => {
-    const proc = Bun.spawn(cmd, { cwd: opts.cwd ?? ROOT, env: { ...process.env, ...opts.env }, stdout: 'inherit', stderr: 'inherit' })
+    const proc = Bun.spawn(cmd, { cwd: opts.cwd ?? ROOT, env: { ...process.env, PORT: String(port), ...opts.env }, stdout: 'inherit', stderr: 'inherit' })
     children.push({ name, proc })
     // the indexer exits on purpose after a fork reset and must come back on a fresh database
     if (opts.respawn)
@@ -64,17 +68,20 @@ async function ensure(name: string, port: number, cmd: string[], opts: { cwd?: s
 const BRIDGE_ENV = { PATROL_TICK_S: process.env.PATROL_TICK_S ?? '60' }
 
 async function startBackends() {
-  await ensure('exchange-db (PGlite)', 54329, [BUN, 'scripts/round3-pg.ts'])
-  await ensure('exchange-api', 8797, [BUN, '--env-file=apps/exchange-api/.env.fork', 'apps/exchange-api/src/index.ts'])
-  await ensure('decoygen', 8791, ['python', 'analysis/decoygen/serve.py', '--org', 'a', '--tick', '30'])
-  await ensure('fork bridge', 8790, [BUN, 'packages/offchain/scripts/fork-demo/bridge.ts'], { env: BRIDGE_ENV })
+  if (!PUBLIC) {
+    await ensure('exchange-db (PGlite)', 54329, [BUN, 'scripts/round3-pg.ts'])
+    await ensure('exchange-api', 8797, [BUN, '--env-file=apps/exchange-api/.env.fork', 'apps/exchange-api/src/index.ts'])
+    await ensure('decoygen', 8791, ['python', 'analysis/decoygen/serve.py', '--org', 'a', '--tick', '30'])
+    await ensure('fork bridge', 8790, [BUN, 'packages/offchain/scripts/fork-demo/bridge.ts'], { env: BRIDGE_ENV })
+  }
   // Ponder runs on Node; a snapshot every block on the fork (blocks only exist when something happens there)
   await ensure('indexer', 42069, ['node', 'node_modules/ponder/dist/esm/bin/ponder.js', 'start', '--schema', 'ponder_quorum', '-H', '127.0.0.1'], {
     cwd: join(ROOT, 'services', 'indexer'),
     env: {
-      DEPLOY_NAME: process.env.DEPLOY_NAME ?? 'base-sepolia-fork',
-      PONDER_RPC_URL_1: process.env.PONDER_RPC_URL_1 ?? 'http://127.0.0.1:8545',
-      PONDER_SNAPSHOT_EVERY: process.env.PONDER_SNAPSHOT_EVERY ?? '1',
+      DEPLOY_NAME: process.env.DEPLOY_NAME ?? (PUBLIC ? 'base-sepolia' : 'base-sepolia-fork'),
+      PONDER_RPC_URL_1: process.env.PONDER_RPC_URL_1 ?? RPC_UPSTREAM,
+      // public chain: a block every 2 s, so snapshot every 30 (about a minute)
+      PONDER_SNAPSHOT_EVERY: process.env.PONDER_SNAPSHOT_EVERY ?? (PUBLIC ? '30' : '1'),
     },
     respawn: true,
   })
@@ -85,7 +92,9 @@ const CT: Record<string, string> = { html: 'text/html', js: 'text/javascript', c
 /** Reverse-proxy to a local backend, streaming the response (so SSE passes through). */
 async function proxy(req: Request, base: string, path: string): Promise<Response> {
   const search = new URL(req.url).search
-  const init: RequestInit & { duplex?: string } = { method: req.method, headers: req.headers, redirect: 'manual' }
+  const headers = new Headers(req.headers)
+  headers.delete('host') // a remote upstream (public RPC) must see its own host, not localhost
+  const init: RequestInit & { duplex?: string } = { method: req.method, headers, redirect: 'manual' }
   if (req.method !== 'GET' && req.method !== 'HEAD') {
     init.body = req.body
     init.duplex = 'half'
@@ -120,14 +129,14 @@ const server = Bun.serve({
   idleTimeout: 0, // SSE + long patrol/attack polling
   async fetch(req) {
     const path = new URL(req.url).pathname
-    if (path === '/rpc' || path.startsWith('/rpc/')) return proxy(req, 'http://127.0.0.1:8545', path.replace(/^\/rpc/, '') || '/')
+    if (path === '/rpc' || path.startsWith('/rpc/')) return proxy(req, RPC_UPSTREAM, path.replace(/^\/rpc/, '') || '/')
     if (path.startsWith('/bridge')) return proxy(req, 'http://127.0.0.1:8790', path.replace(/^\/bridge/, '') || '/')
     if (path.startsWith('/decoygen')) return proxy(req, 'http://127.0.0.1:8791', path)
     if (path.startsWith('/history')) return proxy(req, 'http://127.0.0.1:42069', path)
     return serveStatic(path)
   },
 })
-console.log(`[serve] Observatory on http://localhost:${server.port}  (UI + /rpc + /bridge + /decoygen + /history on one origin)`)
+console.log(`[serve] Observatory on http://localhost:${server.port}  (${PUBLIC ? 'public Base Sepolia, DON' : 'fork'}; UI + /rpc + /bridge + /decoygen + /history on one origin)`)
 
 for (const sig of ['SIGINT', 'SIGTERM'] as const) {
   process.on(sig, () => {

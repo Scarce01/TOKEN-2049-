@@ -1,0 +1,90 @@
+{
+  "source": "public_onchain (baseline p99) + test of a new rule",
+  "events_utc": {
+    "test_transfer": "09-24 18:31",
+    "large_outflow": "09-24 18:58",
+    "bitget_detected": "09-24 19:05"
+  },
+  "results": [
+    {
+      "kind": "stable",
+      "spike_max_x_p99": 3,
+      "spike_max_units": "4214802819600",
+      "false_alarms_before_test_transfer": 9,
+      "false_alarms_per_day": 2.39,
+      "first_alarm": "09-24 18:58",
+      "minutes_after_large_outflow": 0,
+      "before_bitget_detected": true
+    },
+    {
+      "kind": "stable",
+      "spike_max_x_p99": 5,
+      "spike_max_units": "7024671366000",
+      "false_alarms_before_test_transfer": 3,
+      "false_alarms_per_day": 0.8,
+      "first_alarm": "09-24 18:58",
+      "minutes_after_large_outflow": 0,
+      "before_bitget_detected": true
+    },
+    {
+      "kind": "stable",
+      "spike_max_x_p99": 10,
+      "spike_max_units": "14049342732000",
+      "false_alarms_before_test_transfer": 2,
+      "false_alarms_per_day": 0.53,
+      "first_alarm": "09-24 18:58",
+      "minutes_after_large_outflow": 0,
+      "before_bitget_detected": true
+    },
+    {
+      "kind": "stable",
+      "spike_max_x_p99": 20,
+      "spike_max_units": "28098685464000",
+      "false_alarms_before_test_transfer": 0,
+      "false_alarms_per_day": 0.0,
+      "first_alarm": "09-24 18:58",
+      "minutes_after_large_outflow": 0,
+      "before_bitget_detected": true
+    },
+    {
+      "kind": "eth",
+      "spike_max_x_p99": 3,
+      "spike_max_units": "608787234930000000000",
+      "false_alarms_before_test_transfer": 9,
+      "false_alarms_per_day": 2.39,
+      "first_alarm": "09-24 19:01",
+      "minutes_after_large_outflow": 3,
+      "before_bitget_detected": true
+    },
+    {
+      "kind": "eth",
+      "spike_max_x_p99": 5,
+      "spike_max_units": "1014645391550000000000",
+      "false_alarms_before_test_transfer": 3,
+      "false_alarms_per_day": 0.8,
+      "first_alarm": "09-24 19:01",
+      "minutes_after_large_outflow": 3,
+      "before_bitget_detected": true
+    },
+    {
+      "kind": "eth",
+      "spike_max_x_p99": 10,
+      "spike_max_units": "2029290783100000000000",
+      "false_alarms_before_test_transfer": 1,
+      "false_alarms_per_day": 0.27,
+      "first_alarm": "09-24 19:01",
+      "minutes_after_large_outflow": 3,
+      "before_bitget_detected": true
+    },
+    {
+      "kind": "eth",
+      "spike_max_x_p99": 20,
+      "spike_max_units": "4058581566200000000000",
+      "false_alarms_before_test_transfer": 0,
+      "false_alarms_per_day": 0.0,
+      "first_alarm": "09-24 19:01",
+      "minutes_after_large_outflow": 3,
+      "before_bitget_detected": true
+    }
+  ]
+}

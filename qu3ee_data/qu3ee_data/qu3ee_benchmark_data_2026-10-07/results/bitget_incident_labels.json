@@ -1,0 +1,409 @@
+{
+  "source": "public_onchain",
+  "accessed": "2026-10-05",
+  "notes": "Addresses copied from fetched pages (raw HTML grep), lowercased. Etherscan labels read from page <title>. Ethereum mainnet unless chain says otherwise.",
+  "incident": {
+    "date": "2026-09-24",
+    "loss_usd_reported": "about 387.5M (Bitget revised figure, per BlockSec and Bitquery); initial 351.6M",
+    "sources": [
+      "https://blocksec.com/blog/bitget-hack-laundering-fund-tracing",
+      "https://bitquery.io/investigations/bitget-hack",
+      "https://info.arkm.com/research/hacker-steals-350m-from-bitget-and-begins-on-chain-laundering",
+      "https://www.trmlabs.com/resources/blog/bitget-loses-usd-3516-million-in-hot-wallet-breach-in-likely-north-korea-attack",
+      "https://rekt.news/bitget-rekt",
+      "https://www.scorechain.com/blog/bitget-hack-traced-across-eight-blockchains"
+    ]
+  },
+  "drained_wallets": [
+    {
+      "address": "0x1ab4973a48dc892cd9971ece8e01dcc7688f8f23",
+      "chain": "ethereum",
+      "also_drained_on": ["arbitrum", "avalanche"],
+      "etherscan_label": "Bitget 6",
+      "role": "drained hot wallet (largest Ethereum source: USDT, USDC, ETH; sent the 18:31:11 test transfer)",
+      "sources": [
+        "https://bitquery.io/investigations/bitget-hack",
+        "https://info.arkm.com/research/hacker-steals-350m-from-bitget-and-begins-on-chain-laundering",
+        "https://etherscan.io/address/0x1ab4973a48dc892cd9971ece8e01dcc7688f8f23"
+      ],
+      "independent_sources": 3
+    },
+    {
+      "address": "0x5bdf85216ec1e38d6458c870992a69e38e03f7ef",
+      "chain": "ethereum",
+      "also_drained_on": ["optimism"],
+      "etherscan_label": "Bitget 5",
+      "role": "drained hot wallet (on Ethereum only the 3,000.32 XAUt transfer; 5,737.68 ETH on Optimism)",
+      "sources": [
+        "https://bitquery.io/investigations/bitget-hack",
+        "https://info.arkm.com/research/hacker-steals-350m-from-bitget-and-begins-on-chain-laundering",
+        "https://etherscan.io/address/0x5bdf85216ec1e38d6458c870992a69e38e03f7ef"
+      ],
+      "independent_sources": 3
+    },
+    {
+      "address": "0xffa8db7b38579e6a2d14f9b347a9ace4d044cd54",
+      "chain": "ethereum",
+      "also_drained_on": ["bsc", "avalanche"],
+      "etherscan_label": "Bitget 35",
+      "role": "drained warm wallet (Arkham calls it 'Cold wallet'; Bitquery says it behaves as warm: tops up hot wallets). Sent 13,965.93 ETH and 1,395.90 ETH plus 0.65 ETH test",
+      "sources": [
+        "https://bitquery.io/investigations/bitget-hack",
+        "https://info.arkm.com/research/hacker-steals-350m-from-bitget-and-begins-on-chain-laundering",
+        "https://etherscan.io/address/0xffa8db7b38579e6a2d14f9b347a9ace4d044cd54"
+      ],
+      "independent_sources": 3
+    },
+    {
+      "address": "0x97b9d2102a9a65a26e1ee82d59e42d1b73b68689",
+      "chain": "base",
+      "also_drained_on": [],
+      "etherscan_label": "Bitget 3",
+      "role": "drained hot wallet on Base only (1,555.32 ETH). Bitquery's Ethereum transfer table shows no theft from it on Ethereum mainnet",
+      "sources": [
+        "https://bitquery.io/investigations/bitget-hack",
+        "https://info.arkm.com/research/hacker-steals-350m-from-bitget-and-begins-on-chain-laundering",
+        "https://etherscan.io/address/0x97b9d2102a9a65a26e1ee82d59e42d1b73b68689"
+      ],
+      "independent_sources": 2
+    }
+  ],
+  "attacker_addresses": [
+    {
+      "address": "0x770b10b273fc44fe9197d6bf20f145c2e98463ee",
+      "chain": "ethereum",
+      "also_on": ["arbitrum", "avalanche", "base", "bsc", "optimism"],
+      "etherscan_label": "Bitget Exploiter 1",
+      "role": "attacker primary receiving address (every Ethereum theft tx lands here)",
+      "sources": [
+        "https://etherscan.io/address/0x770b10b273fc44fe9197d6bf20f145c2e98463ee",
+        "https://bitquery.io/investigations/bitget-hack",
+        "https://info.arkm.com/research/hacker-steals-350m-from-bitget-and-begins-on-chain-laundering",
+        "https://www.trmlabs.com/resources/blog/bitget-loses-usd-3516-million-in-hot-wallet-breach-in-likely-north-korea-attack",
+        "https://rekt.news/bitget-rekt",
+        "https://decrypt.co/379275/bitget-hack-183-million-crypto-exchange-wallets"
+      ],
+      "independent_sources": 6
+    },
+    {
+      "address": "0xa6dd3f218b65e32ccc37be30f74884133c655545",
+      "chain": "ethereum",
+      "etherscan_label": "Bitget Exploiter 3",
+      "role": "attacker hub (passed 43,698 ETH to five new wallets, per Bitquery)",
+      "sources": [
+        "https://etherscan.io/address/0xa6dd3f218b65e32ccc37be30f74884133c655545",
+        "https://bitquery.io/investigations/bitget-hack",
+        "https://www.trmlabs.com/resources/blog/bitget-loses-usd-3516-million-in-hot-wallet-breach-in-likely-north-korea-attack"
+      ],
+      "independent_sources": 3
+    },
+    {
+      "address": "0x7c96279ec1e888aa56b9b836e0db26ca48573e1c",
+      "chain": "ethereum",
+      "etherscan_label": "Bitget Exploiter 2",
+      "role": "attacker (stablecoin swap wallet per Scorechain; reused across chains per Bitquery)",
+      "sources": [
+        "https://etherscan.io/address/0x7c96279ec1e888aa56b9b836e0db26ca48573e1c",
+        "https://bitquery.io/investigations/bitget-hack"
+      ],
+      "independent_sources": 2
+    },
+    {
+      "address": "0x469ac1406de92f82c0563477240a3627057425dc",
+      "chain": "ethereum",
+      "etherscan_label": "Bitget Exploiter 21",
+      "role": "attacker dispersal wallet",
+      "sources": [
+        "https://etherscan.io/address/0x469ac1406de92f82c0563477240a3627057425dc",
+        "https://bitquery.io/investigations/bitget-hack",
+        "https://decrypt.co/379275/bitget-hack-183-million-crypto-exchange-wallets"
+      ],
+      "independent_sources": 3
+    },
+    {
+      "address": "0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+      "chain": "arbitrum",
+      "etherscan_label": "Bitget Exploiter 6",
+      "role": "attacker (swapped 19.67M USDT0 for ETH on Arbitrum)",
+      "sources": [
+        "https://etherscan.io/address/0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+        "https://bitquery.io/investigations/bitget-hack"
+      ],
+      "independent_sources": 2
+    },
+    {
+      "address": "0x600cfedc6bd65fa79b604dc44964f419e45784b2",
+      "chain": "ethereum",
+      "etherscan_label": "Bitget Exploiter 4",
+      "role": "attacker holding / payout wallet",
+      "sources": [
+        "https://etherscan.io/address/0x600cfedc6bd65fa79b604dc44964f419e45784b2",
+        "https://bitquery.io/investigations/bitget-hack"
+      ],
+      "independent_sources": 2
+    },
+    {
+      "address": "0xd2c2f029eff5cacc686f24377cfddcfc82d9f899",
+      "chain": "ethereum",
+      "etherscan_label": "Bitget Exploiter 5",
+      "role": "attacker holding wallet (emptied 2026-09-27)",
+      "sources": [
+        "https://etherscan.io/address/0xd2c2f029eff5cacc686f24377cfddcfc82d9f899",
+        "https://bitquery.io/investigations/bitget-hack"
+      ],
+      "independent_sources": 2
+    },
+    {
+      "address": "0x94a43df7687a8494948be937400e9d5d33135da0",
+      "chain": "ethereum",
+      "etherscan_label": "Bitget Exploiter 7",
+      "role": "attacker (first-hours flow)",
+      "sources": [
+        "https://etherscan.io/address/0x94a43df7687a8494948be937400e9d5d33135da0",
+        "https://bitquery.io/investigations/bitget-hack"
+      ],
+      "independent_sources": 2
+    },
+    {
+      "address": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+      "chain": "ethereum",
+      "etherscan_label": "Bitget Exploiter 8",
+      "role": "attacker (USDT frozen by Tether)",
+      "sources": [
+        "https://etherscan.io/address/0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+        "https://bitquery.io/investigations/bitget-hack"
+      ],
+      "independent_sources": 2
+    },
+    {
+      "address": "0xdc2901f741b4003e32b8b752e97b8c4c1891dc63",
+      "chain": "ethereum",
+      "etherscan_label": "Bitget Exploiter 9",
+      "role": "attacker (first-hours flow)",
+      "sources": [
+        "https://etherscan.io/address/0xdc2901f741b4003e32b8b752e97b8c4c1891dc63",
+        "https://bitquery.io/investigations/bitget-hack"
+      ],
+      "independent_sources": 2
+    },
+    {
+      "address": "0x9fa39d62095302431d7d4167a7e80f8ec6ea4fa0",
+      "chain": "ethereum",
+      "etherscan_label": "Bitget Exploiter 10",
+      "role": "attacker (first-hours flow)",
+      "sources": [
+        "https://etherscan.io/address/0x9fa39d62095302431d7d4167a7e80f8ec6ea4fa0",
+        "https://bitquery.io/investigations/bitget-hack"
+      ],
+      "independent_sources": 2
+    },
+    {
+      "address": "0xa6bfd7fcaf4711da1f61d5e91d03a2c7c72db272",
+      "chain": "ethereum",
+      "etherscan_label": "Bitget Exploiter 11",
+      "role": "attacker (first-hours flow)",
+      "sources": [
+        "https://etherscan.io/address/0xa6bfd7fcaf4711da1f61d5e91d03a2c7c72db272",
+        "https://bitquery.io/investigations/bitget-hack"
+      ],
+      "independent_sources": 2
+    },
+    {
+      "address": "0xfd5ebe912e2061992437767e24e5bcb52a3f9e54",
+      "chain": "ethereum",
+      "etherscan_label": "Bitget Exploiter 12",
+      "role": "attacker holding wallet (7,023.58 ETH, paying out from 2026-09-29)",
+      "sources": [
+        "https://etherscan.io/address/0xfd5ebe912e2061992437767e24e5bcb52a3f9e54",
+        "https://bitquery.io/investigations/bitget-hack"
+      ],
+      "independent_sources": 2
+    },
+    {
+      "address": "0xed5a394a7558929112848b7e97b569de6bbe1a51",
+      "chain": "ethereum",
+      "etherscan_label": "Bitget Exploiter 13",
+      "role": "attacker (first-hours flow)",
+      "sources": [
+        "https://etherscan.io/address/0xed5a394a7558929112848b7e97b569de6bbe1a51",
+        "https://bitquery.io/investigations/bitget-hack"
+      ],
+      "independent_sources": 2
+    },
+    {
+      "address": "0x52f08feb1b0da609a5442514e2bb43c99d25d284",
+      "chain": "ethereum",
+      "etherscan_label": "Bitget Exploiter 14",
+      "role": "attacker (first-hours flow)",
+      "sources": [
+        "https://etherscan.io/address/0x52f08feb1b0da609a5442514e2bb43c99d25d284",
+        "https://bitquery.io/investigations/bitget-hack"
+      ],
+      "independent_sources": 2
+    },
+    {
+      "address": "0x48857fc6b57ac0c60360568279c8ac90a5427c8e",
+      "chain": "ethereum",
+      "etherscan_label": null,
+      "role": "intermediate, attribution uncertain (Binance-funded wallet that sent 457.896 ETH to the attacker hub; Bitquery says either attacker or someone else)",
+      "sources": ["https://bitquery.io/investigations/bitget-hack"],
+      "independent_sources": 1
+    }
+  ],
+  "test_transfers": [
+    {
+      "tx": "0xc19560f5fe5308c9ec8aa5721d7acb9a713cbf6166e2a8e34b6ecd5327c37be6",
+      "chain": "ethereum",
+      "utc": "2026-09-24T18:31:11Z",
+      "from": "0x1ab4973a48dc892cd9971ece8e01dcc7688f8f23",
+      "to": "0x770b10b273fc44fe9197d6bf20f145c2e98463ee",
+      "amount": "0.84 ETH",
+      "sources": [
+        "https://bitquery.io/investigations/bitget-hack",
+        "https://etherscan.io/tx/0xc19560f5fe5308c9ec8aa5721d7acb9a713cbf6166e2a8e34b6ecd5327c37be6"
+      ]
+    },
+    {
+      "tx": "0x37fa457faa6a82163dbcdddb7ad4cdbe424e04779a49b4bfa61f5ddcc7702ebe",
+      "chain": "ethereum",
+      "utc": "2026-09-24T19:03:23Z",
+      "from": "0xffa8db7b38579e6a2d14f9b347a9ace4d044cd54",
+      "to": "0x770b10b273fc44fe9197d6bf20f145c2e98463ee",
+      "amount": "0.65 ETH",
+      "sources": [
+        "https://bitquery.io/investigations/bitget-hack",
+        "https://etherscan.io/tx/0x37fa457faa6a82163dbcdddb7ad4cdbe424e04779a49b4bfa61f5ddcc7702ebe"
+      ]
+    },
+    {
+      "tx": "698c02a8549b96783bf16a6d61d279485ee8abb6f245e7a9c223d170795fec4b",
+      "chain": "tron",
+      "utc": "2026-09-24T18:31:00Z",
+      "from": "TJ7hhYhVhaxNx6BPyq7yFpqZrQULL3JSdb",
+      "to": null,
+      "amount": "93.00 TRX",
+      "sources": ["https://bitquery.io/investigations/bitget-hack"]
+    }
+  ],
+  "ethereum_theft_transfers": [
+    {
+      "utc": "2026-09-24T18:58:59Z",
+      "tx": "0xa3ae35a0006ff4299f8f18614c2c21750eb8e0f5c047df4a526e1cc6ae599ce5",
+      "from": "0x1ab4973a48dc892cd9971ece8e01dcc7688f8f23",
+      "amount": "34.75M USDT"
+    },
+    {
+      "utc": "2026-09-24T19:01:23Z",
+      "tx": "0x40903fbeb10a17b198293543e7dd70c5862b4dcdf438522d2f3708043b7ad7ae",
+      "from": "0x1ab4973a48dc892cd9971ece8e01dcc7688f8f23",
+      "amount": "12.85M USDC"
+    },
+    {
+      "utc": "2026-09-24T19:01:23Z",
+      "tx": "0xa976f0400bfb866162306c68ce7195cca9606b1f8c68d1af98da01632f5a9d29",
+      "from": "0x5bdf85216ec1e38d6458c870992a69e38e03f7ef",
+      "amount": "3,000.32 XAUt"
+    },
+    {
+      "utc": "2026-09-24T19:01:35Z",
+      "tx": "0x67a7ac52e0de05aa3e9a3901cbd6315d3317c8ec191e175067d49c709b48930c",
+      "from": "0x1ab4973a48dc892cd9971ece8e01dcc7688f8f23",
+      "amount": "7,130.86 ETH"
+    },
+    {
+      "utc": "2026-09-24T19:16:23Z",
+      "tx": "0x8469803a082c4d106c642874509ffb8b7a730cd52934ccd44af0c479d8f60bfa",
+      "from": "0xffa8db7b38579e6a2d14f9b347a9ace4d044cd54",
+      "amount": "13,965.93 ETH"
+    },
+    {
+      "utc": "2026-09-24T20:09:11Z",
+      "tx": "0xdd07e8803db0fe31c4935399737d389442228a1b2d595545a7cd0e41625af606",
+      "from": "0x1ab4973a48dc892cd9971ece8e01dcc7688f8f23",
+      "amount": "1,879.20 ETH"
+    },
+    {
+      "utc": "2026-09-24T20:09:23Z",
+      "tx": "0x0c63cd7d8244419cf7e172da394cc98ed37d8d3965a1a20227ba962a84f2e97e",
+      "from": "0xffa8db7b38579e6a2d14f9b347a9ace4d044cd54",
+      "amount": "1,395.90 ETH"
+    },
+    {
+      "utc": "2026-09-24T21:23:11Z",
+      "tx": "0x230558293435e59d693438867995b6398a9b9cc8d30291d0c07d68f0ca449afb",
+      "from": "0x1ab4973a48dc892cd9971ece8e01dcc7688f8f23",
+      "amount": "223.20 ETH"
+    }
+  ],
+  "ethereum_theft_transfers_note": "All to 0x770b10b273fc44fe9197d6bf20f145c2e98463ee. Each confirmed on its Etherscan tx page (from/to label, amount, UTC time) and listed in Bitquery's transfer table: 2 independent sources each.",
+  "bitget_labelled_unconfirmed": [
+    {
+      "address": "0x51971c86b04516062c1e708cdc048cb04fbe959f",
+      "chain": "ethereum",
+      "etherscan_label": "Bitget 2",
+      "role": "Bitget-labelled, involvement not confirmed",
+      "sources": ["https://etherscan.io/address/0x51971c86b04516062c1e708cdc048cb04fbe959f"],
+      "independent_sources": 1
+    },
+    {
+      "address": "0x0639556f03714a74a5feeaf5736a4a64ff70d206",
+      "chain": "ethereum",
+      "etherscan_label": "Bitget 4",
+      "role": "Bitget-labelled, involvement not confirmed",
+      "sources": ["https://etherscan.io/address/0x0639556f03714a74a5feeaf5736a4a64ff70d206"],
+      "independent_sources": 1
+    }
+  ],
+  "timeline": [
+    {
+      "utc": "2026-09-24T18:31:00Z",
+      "event": "First test transfer, 93 TRX on Tron",
+      "source": "https://bitquery.io/investigations/bitget-hack"
+    },
+    {
+      "utc": "2026-09-24T18:31:11Z",
+      "event": "Test transfer 0.84 ETH, Bitget 6 to Bitget Exploiter 1",
+      "source": "https://etherscan.io/tx/0xc19560f5fe5308c9ec8aa5721d7acb9a713cbf6166e2a8e34b6ecd5327c37be6"
+    },
+    {
+      "utc": "2026-09-24T18:58:59Z",
+      "event": "First large outflow, 34.75M USDT from Bitget 6",
+      "source": "https://etherscan.io/tx/0xa3ae35a0006ff4299f8f18614c2c21750eb8e0f5c047df4a526e1cc6ae599ce5"
+    },
+    {
+      "utc": "2026-09-24T19:01:20Z",
+      "event": "First burst starts: five chains within 15 seconds (to 19:01:35)",
+      "source": "https://bitquery.io/investigations/bitget-hack"
+    },
+    {
+      "utc": "2026-09-24T19:03:23Z",
+      "event": "Test transfer 0.65 ETH, Bitget 35 to Bitget Exploiter 1",
+      "source": "https://etherscan.io/tx/0x37fa457faa6a82163dbcdddb7ad4cdbe424e04779a49b4bfa61f5ddcc7702ebe"
+    },
+    {
+      "utc": "2026-09-24T19:05:00Z",
+      "event": "Bitget monitoring flags discrepancy; customer withdrawals blocked",
+      "source": "https://bitquery.io/investigations/bitget-hack"
+    },
+    {
+      "utc": "2026-09-24T19:16:14Z",
+      "event": "Second burst: five chains within 9 seconds (to 19:16:23, 13,965.93 ETH from Bitget 35)",
+      "source": "https://bitquery.io/investigations/bitget-hack"
+    },
+    {
+      "utc": "2026-09-24T20:09:11Z",
+      "event": "Two more Ethereum transfers 12 seconds apart (1,879.20 ETH, 1,395.90 ETH)",
+      "source": "https://bitquery.io/investigations/bitget-hack"
+    },
+    {
+      "utc": "2026-09-24T21:23:11Z",
+      "event": "Last transfer, 223.20 ETH from Bitget 6",
+      "source": "https://etherscan.io/tx/0x230558293435e59d693438867995b6398a9b9cc8d30291d0c07d68f0ca449afb"
+    },
+    {
+      "utc": "2026-09-24T21:44:00Z",
+      "event": "Wallet service shut down (approximate)",
+      "source": "https://bitquery.io/investigations/bitget-hack"
+    }
+  ]
+}

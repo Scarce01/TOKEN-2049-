@@ -176,19 +176,18 @@ export function readEvents(): Promise<ChainEvent[]> {
 }
 async function fetchEvents(): Promise<ChainEvent[]> {
   const head = await client.getBlock()
-  if (cache.to >= D.startBlock) {
+  // toHash is unset while a read is part way (saved per slice); the reset/reorg check runs once it has caught up
+  if (cache.to >= D.startBlock && cache.toHash) {
     const at = head.number >= cache.to ? await safe<{ hash: Hex | null } | null>(client.getBlock({ blockNumber: cache.to }), null) : null
     if (!at || at.hash !== cache.toHash) cache = { to: D.startBlock - 1n, events: [] }
   }
-  if (head.number > cache.to) {
-    const addresses = [...ORGS.flatMap((o) => [o.receiver, o.hot, o.warm, o.cold]), D.threatRegistry, D.patrolState]
-    // Public RPCs refuse wide windows (sepolia.base.org answers 413 above about 200 blocks), so read in slices.
-    const logs: Log[] = []
-    for (let from = cache.to + 1n; from <= head.number; from += LOG_WINDOW) {
-      const to = from + LOG_WINDOW - 1n < head.number ? from + LOG_WINDOW - 1n : head.number
-      logs.push(...((await client.getLogs({ address: addresses, fromBlock: from, toBlock: to })) as Log[]))
-    }
-    const parsed = parseEventLogs({ abi: EVENT_ABI as never, logs: logs as Log[], strict: false }) as unknown as (Log & { eventName: string; args: Record<string, unknown> })[]
+  const addresses = [...ORGS.flatMap((o) => [o.receiver, o.hot, o.warm, o.cold]), D.threatRegistry, D.patrolState]
+  // Public RPCs refuse wide windows (sepolia.base.org answers 413 above about 200 blocks), so read in slices, and keep
+  // each slice: a rate-limited slice (429) then resumes from there on the next poll instead of from the start block.
+  for (let from = cache.to + 1n; from <= head.number; from += LOG_WINDOW) {
+    const to = from + LOG_WINDOW - 1n < head.number ? from + LOG_WINDOW - 1n : head.number
+    const logs = (await client.getLogs({ address: addresses, fromBlock: from, toBlock: to })) as Log[]
+    const parsed = parseEventLogs({ abi: EVENT_ABI as never, logs, strict: false }) as unknown as (Log & { eventName: string; args: Record<string, unknown> })[]
     const keep = parsed.filter((l) => SHOWN.has(l.eventName))
     const missing = [...new Set(keep.map((l) => l.blockHash!).filter((h) => !blockTime.has(h)))]
     await Promise.all(missing.map(async (h) => blockTime.set(h, Number((await client.getBlock({ blockHash: h })).timestamp))))
@@ -200,7 +199,7 @@ async function fetchEvents(): Promise<ChainEvent[]> {
       return { name: l.eventName, org: byId ?? byAddr, tier, args: a, block: Number(l.blockNumber), time: blockTime.get(l.blockHash!) ?? 0, tx: l.transactionHash!, logIndex: l.logIndex! }
     })
     const seen = new Set(cache.events.map((e) => `${e.tx}:${e.logIndex}`))
-    cache = { to: head.number, toHash: head.hash, events: [...cache.events, ...fresh.filter((e) => !seen.has(`${e.tx}:${e.logIndex}`))] }
+    cache = { to, toHash: to === head.number ? head.hash : undefined, events: [...cache.events, ...fresh.filter((e) => !seen.has(`${e.tx}:${e.logIndex}`))] }
   }
   return cache.events
 }

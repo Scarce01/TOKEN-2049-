@@ -1,0 +1,138 @@
+{
+ "cached": {
+  "addresses": 1256,
+  "edges": 32690
+ },
+ "dwell": {
+  "count_by_hop": {
+   "1": 20,
+   "2": 433,
+   "3": 375,
+   "4": 344
+  },
+  "forwarded": 1172,
+  "median_by_hop_seconds": {
+   "1": 251496.0,
+   "2": 300,
+   "3": 132,
+   "4": 132.0
+  },
+  "parked_in_window": 37,
+  "seconds_p10_median_p90": [
+   84,
+   168.0,
+   1500
+  ],
+  "share_forwarded_within": {
+   "12s": 0.0,
+   "3600s": 96.1,
+   "600s": 79.9,
+   "60s": 7.4
+  },
+  "share_forwarded_within_hop2plus": {
+   "12s": 0.0,
+   "3600s": 97.6,
+   "600s": 81.2,
+   "60s": 7.6
+  },
+  "tainted_addresses_fetched": 1209
+ },
+ "first_reach_of_a_breakpoint_minutes": {
+  "count": 11,
+  "earliest": 29,
+  "median": 72
+ },
+ "floor": {
+  "edges >= 0.01, cumulative floor 0.1": {
+   "flagged": 4107,
+   "found_fbi": 51,
+   "of": 51
+  },
+  "edges >= 0.01, no floor": {
+   "flagged": 4136,
+   "found_fbi": 51,
+   "of": 51
+  },
+  "edges_at_0.01": 37497,
+  "edges_at_0.1": 32690,
+  "per-edge floor 0.1 (published)": {
+   "flagged": 4105,
+   "found_fbi": 51,
+   "of": 51
+  }
+ },
+ "models": {
+  "FIFO (plain)": {
+   "k1": {
+    "flagged": 41,
+    "found": 40,
+    "of": 51
+   },
+   "k2": {
+    "flagged": 963,
+    "found": 40,
+    "of": 51
+   },
+   "k3": {
+    "flagged": 3135,
+    "found": 40,
+    "of": 51
+   },
+   "k4": {
+    "flagged": 3993,
+    "found": 40,
+    "of": 51
+   }
+  },
+  "haircut (plain)": {
+   "k1": {
+    "flagged": 41,
+    "found": 40,
+    "of": 51
+   },
+   "k2": {
+    "flagged": 965,
+    "found": 41,
+    "of": 51
+   },
+   "k3": {
+    "flagged": 3162,
+    "found": 50,
+    "of": 51
+   },
+   "k4": {
+    "flagged": 4024,
+    "found": 50,
+    "of": 51
+   }
+  },
+  "haircut + swap (current)": {
+   "k1": {
+    "flagged": 42,
+    "found": 41,
+    "of": 51
+   },
+   "k2": {
+    "flagged": 973,
+    "found": 42,
+    "of": 51
+   },
+   "k3": {
+    "flagged": 3239,
+    "found": 51,
+    "of": 51
+   },
+   "k4": {
+    "flagged": 4105,
+    "found": 51,
+    "of": 51
+   }
+  }
+ },
+ "overlap": {
+  "fifo_only": 6,
+  "fifo_only_on_fbi": 0,
+  "haircut_only": 69,
+  "haircut_only_on_fbi": 10
+ }
+}

@@ -4,55 +4,120 @@
     {
       "name": "anvil",
       "runtimeExecutable": "C:/Users/xuziy/bin/anvil.exe",
-      "runtimeArgs": ["--gas-limit", "100000000"],
+      "runtimeArgs": [
+        "--gas-limit",
+        "100000000"
+      ],
+      "port": 8545
+    },
+    {
+      "name": "anvil-fork",
+      "runtimeExecutable": "C:/Users/xuziy/bin/anvil.exe",
+      "runtimeArgs": [
+        "--fork-url",
+        "https://sepolia.base.org",
+        "--fork-block-number",
+        "47786035",
+        "--gas-limit",
+        "100000000",
+        "--state",
+        ".tmp/fork-state-live.json",
+        "--state-interval",
+        "60",
+        "--silent"
+      ],
       "port": 8545
     },
     {
       "name": "console",
       "runtimeExecutable": "C:/Users/xuziy/AppData/Roaming/npm/pnpm.cmd",
-      "runtimeArgs": ["-C", "apps/console", "dev"],
+      "runtimeArgs": [
+        "-C",
+        "apps/console",
+        "dev"
+      ],
       "port": 3001
     },
     {
       "name": "figma-ui",
       "runtimeExecutable": "C:/Users/xuziy/AppData/Roaming/npm/pnpm.cmd",
-      "runtimeArgs": ["-C", "apps/observatory", "dev"],
+      "runtimeArgs": [
+        "-C",
+        "apps/observatory",
+        "dev"
+      ],
       "port": 8443
+    },
+    {
+      "name": "figma-ui-public",
+      "runtimeExecutable": "C:/Users/xuziy/AppData/Roaming/npm/pnpm.cmd",
+      "runtimeArgs": [
+        "-C",
+        "apps/observatory",
+        "dev"
+      ],
+      "env": {
+        "QUORUM_NET": "public",
+        "PORT": "8444"
+      },
+      "port": 8444
     },
     {
       "name": "user-app",
       "runtimeExecutable": "C:/Users/xuziy/AppData/Roaming/npm/pnpm.cmd",
-      "runtimeArgs": ["-C", "apps/user-app", "dev"],
+      "runtimeArgs": [
+        "-C",
+        "apps/user-app",
+        "dev"
+      ],
       "port": 3002
     },
     {
       "name": "exchange-db",
       "runtimeExecutable": "C:/Users/xuziy/bin/bun.exe",
-      "runtimeArgs": ["scripts/round3-pg.ts"],
+      "runtimeArgs": [
+        "scripts/round3-pg.ts"
+      ],
       "port": 54329
     },
     {
       "name": "exchange-api-fork",
       "runtimeExecutable": "C:/Users/xuziy/bin/bun.exe",
-      "runtimeArgs": ["--env-file=apps/exchange-api/.env.fork", "apps/exchange-api/src/index.ts"],
+      "runtimeArgs": [
+        "--env-file=apps/exchange-api/.env.fork",
+        "apps/exchange-api/src/index.ts"
+      ],
       "port": 8797
     },
     {
       "name": "fork-bridge",
       "runtimeExecutable": "C:/Users/xuziy/bin/bun.exe",
-      "runtimeArgs": ["packages/offchain/scripts/fork-demo/bridge.ts"],
+      "runtimeArgs": [
+        "packages/offchain/scripts/fork-demo/bridge.ts"
+      ],
       "port": 8790
     },
     {
       "name": "decoygen-live",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["analysis/decoygen/serve.py", "--org", "a", "--tick", "30"],
+      "runtimeArgs": [
+        "analysis/decoygen/serve.py",
+        "--org",
+        "a",
+        "--tick",
+        "30"
+      ],
       "port": 8791
     },
     {
       "name": "trace-market",
       "runtimeExecutable": "C:/Users/xuziy/bin/bun.exe",
-      "runtimeArgs": ["--cwd", "services/trace-market", "--env-file=.env", "src/server.ts"],
+      "runtimeArgs": [
+        "--cwd",
+        "services/trace-market",
+        "--env-file=.env",
+        "src/server.ts"
+      ],
       "port": 4021
     }
   ]

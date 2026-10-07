@@ -70,7 +70,7 @@ export default function Replay() {
         eyebrow="Incident replay · public on-chain"
         title={<>{c.exchange} {c.when} <span className="ml-2 align-middle text-[12px] font-mono tracking-[0.14em] text-honey border border-honey/40 rounded px-1.5 py-0.5">REPLAY</span></>}
         desc="Historical replay against public on-chain transfers. This is known-ground-truth recovery, not a live incident."
-        actions={<Link to="/cases" className="text-[13px] text-dim hover:text-cream">All incidents</Link>}
+        actions={<Link to="/cases?tab=history" className="text-[13px] text-dim hover:text-cream">All incidents</Link>}
       />
       <div className="flex flex-wrap gap-2 mb-4">
         {CASES.map((x) => (

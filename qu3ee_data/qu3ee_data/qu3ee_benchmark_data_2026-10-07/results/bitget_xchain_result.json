@@ -1,0 +1,4133 @@
+{
+ "by_tau": {
+  "500000": {
+   "attacker_like": {
+    "count": 79,
+    "fbi_recall_pct": 21.43,
+    "on_fbi": 3,
+    "precision_lower_bound_pct": 3.8
+   },
+   "breakpoint_addresses": {
+    "bridge": 1,
+    "burn / redeem": 1,
+    "contract (Adapter)": 1,
+    "contract (AllowanceHolder)": 1,
+    "contract (Deposit)": 1,
+    "contract (LZMultiCall)": 1,
+    "contract (MayanForwarder2)": 1,
+    "contract (OnchainGateway)": 1,
+    "contract (Umbra)": 1,
+    "contract (WETH9)": 1,
+    "contract (unlabeled)": 5,
+    "dex": 3,
+    "dex/bridge router": 3,
+    "dex/pool": 1,
+    "proxy contract": 4,
+    "service (many senders)": 5
+   },
+   "breakpoint_totals": {
+    "bridge": 2684.14,
+    "burn / redeem": 833416.18,
+    "contract (Adapter)": 325281.6,
+    "contract (AllowanceHolder)": 155756.08,
+    "contract (Deposit)": 2682.69,
+    "contract (LZMultiCall)": 15291795.17,
+    "contract (MayanForwarder2)": 236354.52,
+    "contract (OnchainGateway)": 397271.21,
+    "contract (Umbra)": 405086.35,
+    "contract (WETH9)": 260139.98,
+    "contract (unlabeled)": 41710175.36,
+    "dex": 11026262.73,
+    "dex/bridge router": 14921336.69,
+    "dex/pool": 1501561.82,
+    "proxy contract": 6574384.99,
+    "service (many senders)": 24615266.32
+   },
+   "breakpoint_unit": "USD",
+   "by_hop": {
+    "k1": {
+     "flagged": 6,
+     "found_fbi": [
+      "0x469ac1406de92f82c0563477240a3627057425dc",
+      "0x600cfedc6bd65fa79b604dc44964f419e45784b2",
+      "0x7c96279ec1e888aa56b9b836e0db26ca48573e1c",
+      "0xd2c2f029eff5cacc686f24377cfddcfc82d9f899",
+      "0xdc2901f741b4003e32b8b752e97b8c4c1891dc63",
+      "0xe07bd590e1198666230932bad5db3dbbe21e7d57"
+     ],
+     "max_hop": 1,
+     "min_tainted": "0",
+     "precision_lower_bound_pct": 100.0,
+     "recall": "3/7",
+     "recall_denominator": 14,
+     "recall_pct": 42.86,
+     "tau_ppm": 500000
+    },
+    "k2": {
+     "flagged": 62,
+     "found_fbi": [
+      "0x469ac1406de92f82c0563477240a3627057425dc",
+      "0x600cfedc6bd65fa79b604dc44964f419e45784b2",
+      "0x7c96279ec1e888aa56b9b836e0db26ca48573e1c",
+      "0xd2c2f029eff5cacc686f24377cfddcfc82d9f899",
+      "0xdc2901f741b4003e32b8b752e97b8c4c1891dc63",
+      "0xe07bd590e1198666230932bad5db3dbbe21e7d57"
+     ],
+     "max_hop": 2,
+     "min_tainted": "0",
+     "precision_lower_bound_pct": 9.68,
+     "recall": "3/7",
+     "recall_denominator": 14,
+     "recall_pct": 42.86,
+     "tau_ppm": 500000
+    },
+    "k3": {
+     "flagged": 119,
+     "found_fbi": [
+      "0x469ac1406de92f82c0563477240a3627057425dc",
+      "0x600cfedc6bd65fa79b604dc44964f419e45784b2",
+      "0x7c96279ec1e888aa56b9b836e0db26ca48573e1c",
+      "0x9fa39d62095302431d7d4167a7e80f8ec6ea4fa0",
+      "0xa6bfd7fcaf4711da1f61d5e91d03a2c7c72db272",
+      "0xd2c2f029eff5cacc686f24377cfddcfc82d9f899",
+      "0xdc2901f741b4003e32b8b752e97b8c4c1891dc63",
+      "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+      "0xfd5ebe912e2061992437767e24e5bcb52a3f9e54"
+     ],
+     "max_hop": 3,
+     "min_tainted": "0",
+     "precision_lower_bound_pct": 7.56,
+     "recall": "9/14",
+     "recall_denominator": 14,
+     "recall_pct": 64.29,
+     "tau_ppm": 500000
+    },
+    "k4": {
+     "flagged": 143,
+     "found_fbi": [
+      "0x469ac1406de92f82c0563477240a3627057425dc",
+      "0x600cfedc6bd65fa79b604dc44964f419e45784b2",
+      "0x7c96279ec1e888aa56b9b836e0db26ca48573e1c",
+      "0x9fa39d62095302431d7d4167a7e80f8ec6ea4fa0",
+      "0xa6bfd7fcaf4711da1f61d5e91d03a2c7c72db272",
+      "0xd2c2f029eff5cacc686f24377cfddcfc82d9f899",
+      "0xdc2901f741b4003e32b8b752e97b8c4c1891dc63",
+      "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+      "0xfd5ebe912e2061992437767e24e5bcb52a3f9e54"
+     ],
+     "max_hop": 4,
+     "min_tainted": "0",
+     "precision_lower_bound_pct": 6.29,
+     "recall": "9/14",
+     "recall_denominator": 14,
+     "recall_pct": 64.29,
+     "tau_ppm": 500000
+    }
+   },
+   "class_counts": {
+    "attacker-like": 79,
+    "seed": 7,
+    "service": 31,
+    "touched": 98,
+    "unknown (not fetched)": 27
+   },
+   "fbi_missed": [
+    "0x52f08feb1b0da609a5442514e2bb43c99d25d284",
+    "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "0xa6dd3f218b65e32ccc37be30f74884133c655545",
+    "0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+    "0xed5a394a7558929112848b7e97b569de6bbe1a51"
+   ],
+   "minutes_after_attack_to_first_taint": {
+    "0x469ac1406de92f82c0563477240a3627057425dc": 80,
+    "0x600cfedc6bd65fa79b604dc44964f419e45784b2": 108,
+    "0x7c96279ec1e888aa56b9b836e0db26ca48573e1c": 34,
+    "0x9fa39d62095302431d7d4167a7e80f8ec6ea4fa0": 206,
+    "0xa6bfd7fcaf4711da1f61d5e91d03a2c7c72db272": 207,
+    "0xd2c2f029eff5cacc686f24377cfddcfc82d9f899": 102,
+    "0xdc2901f741b4003e32b8b752e97b8c4c1891dc63": 190,
+    "0xe07bd590e1198666230932bad5db3dbbe21e7d57": 192,
+    "0xfd5ebe912e2061992437767e24e5bcb52a3f9e54": 209
+   },
+   "nodes": null
+  },
+  "700000": {
+   "attacker_like": {
+    "count": 79,
+    "fbi_recall_pct": 21.43,
+    "on_fbi": 3,
+    "precision_lower_bound_pct": 3.8
+   },
+   "breakpoint_addresses": {
+    "bridge": 1,
+    "burn / redeem": 1,
+    "contract (Adapter)": 1,
+    "contract (AllowanceHolder)": 1,
+    "contract (Deposit)": 1,
+    "contract (LZMultiCall)": 1,
+    "contract (MayanForwarder2)": 1,
+    "contract (OnchainGateway)": 1,
+    "contract (Umbra)": 1,
+    "contract (WETH9)": 1,
+    "contract (unlabeled)": 5,
+    "dex": 3,
+    "dex/bridge router": 3,
+    "dex/pool": 1,
+    "proxy contract": 4,
+    "service (many senders)": 5
+   },
+   "breakpoint_totals": {
+    "bridge": 2684.14,
+    "burn / redeem": 833416.18,
+    "contract (Adapter)": 325281.6,
+    "contract (AllowanceHolder)": 155756.08,
+    "contract (Deposit)": 2682.69,
+    "contract (LZMultiCall)": 15291795.17,
+    "contract (MayanForwarder2)": 236354.52,
+    "contract (OnchainGateway)": 397271.21,
+    "contract (Umbra)": 405086.35,
+    "contract (WETH9)": 260139.98,
+    "contract (unlabeled)": 41710175.36,
+    "dex": 11026262.73,
+    "dex/bridge router": 14921336.69,
+    "dex/pool": 1501561.82,
+    "proxy contract": 6574384.99,
+    "service (many senders)": 24615266.32
+   },
+   "breakpoint_unit": "USD",
+   "by_hop": {
+    "k1": {
+     "flagged": 4,
+     "found_fbi": [
+      "0x469ac1406de92f82c0563477240a3627057425dc",
+      "0x7c96279ec1e888aa56b9b836e0db26ca48573e1c",
+      "0xd2c2f029eff5cacc686f24377cfddcfc82d9f899",
+      "0xdc2901f741b4003e32b8b752e97b8c4c1891dc63"
+     ],
+     "max_hop": 1,
+     "min_tainted": "0",
+     "precision_lower_bound_pct": 100.0,
+     "recall": "2/7",
+     "recall_denominator": 14,
+     "recall_pct": 28.57,
+     "tau_ppm": 700000
+    },
+    "k2": {
+     "flagged": 46,
+     "found_fbi": [
+      "0x469ac1406de92f82c0563477240a3627057425dc",
+      "0x7c96279ec1e888aa56b9b836e0db26ca48573e1c",
+      "0xd2c2f029eff5cacc686f24377cfddcfc82d9f899",
+      "0xdc2901f741b4003e32b8b752e97b8c4c1891dc63"
+     ],
+     "max_hop": 2,
+     "min_tainted": "0",
+     "precision_lower_bound_pct": 8.7,
+     "recall": "2/7",
+     "recall_denominator": 14,
+     "recall_pct": 28.57,
+     "tau_ppm": 700000
+    },
+    "k3": {
+     "flagged": 76,
+     "found_fbi": [
+      "0x469ac1406de92f82c0563477240a3627057425dc",
+      "0x7c96279ec1e888aa56b9b836e0db26ca48573e1c",
+      "0xd2c2f029eff5cacc686f24377cfddcfc82d9f899",
+      "0xdc2901f741b4003e32b8b752e97b8c4c1891dc63"
+     ],
+     "max_hop": 3,
+     "min_tainted": "0",
+     "precision_lower_bound_pct": 5.26,
+     "recall": "2/7",
+     "recall_denominator": 14,
+     "recall_pct": 28.57,
+     "tau_ppm": 700000
+    },
+    "k4": {
+     "flagged": 97,
+     "found_fbi": [
+      "0x469ac1406de92f82c0563477240a3627057425dc",
+      "0x7c96279ec1e888aa56b9b836e0db26ca48573e1c",
+      "0xd2c2f029eff5cacc686f24377cfddcfc82d9f899",
+      "0xdc2901f741b4003e32b8b752e97b8c4c1891dc63"
+     ],
+     "max_hop": 4,
+     "min_tainted": "0",
+     "precision_lower_bound_pct": 4.12,
+     "recall": "2/7",
+     "recall_denominator": 14,
+     "recall_pct": 28.57,
+     "tau_ppm": 700000
+    }
+   },
+   "class_counts": {
+    "attacker-like": 79,
+    "seed": 7,
+    "service": 31,
+    "touched": 98,
+    "unknown (not fetched)": 27
+   },
+   "fbi_missed": [
+    "0x52f08feb1b0da609a5442514e2bb43c99d25d284",
+    "0x600cfedc6bd65fa79b604dc44964f419e45784b2",
+    "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "0x9fa39d62095302431d7d4167a7e80f8ec6ea4fa0",
+    "0xa6bfd7fcaf4711da1f61d5e91d03a2c7c72db272",
+    "0xa6dd3f218b65e32ccc37be30f74884133c655545",
+    "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+    "0xed5a394a7558929112848b7e97b569de6bbe1a51",
+    "0xfd5ebe912e2061992437767e24e5bcb52a3f9e54"
+   ],
+   "minutes_after_attack_to_first_taint": {
+    "0x469ac1406de92f82c0563477240a3627057425dc": 80,
+    "0x7c96279ec1e888aa56b9b836e0db26ca48573e1c": 34,
+    "0xd2c2f029eff5cacc686f24377cfddcfc82d9f899": 102,
+    "0xdc2901f741b4003e32b8b752e97b8c4c1891dc63": 190
+   },
+   "nodes": null
+  },
+  "900000": {
+   "attacker_like": {
+    "count": 79,
+    "fbi_recall_pct": 21.43,
+    "on_fbi": 3,
+    "precision_lower_bound_pct": 3.8
+   },
+   "breakpoint_addresses": {
+    "bridge": 1,
+    "burn / redeem": 1,
+    "contract (Adapter)": 1,
+    "contract (AllowanceHolder)": 1,
+    "contract (Deposit)": 1,
+    "contract (LZMultiCall)": 1,
+    "contract (MayanForwarder2)": 1,
+    "contract (OnchainGateway)": 1,
+    "contract (Umbra)": 1,
+    "contract (WETH9)": 1,
+    "contract (unlabeled)": 5,
+    "dex": 3,
+    "dex/bridge router": 3,
+    "dex/pool": 1,
+    "proxy contract": 4,
+    "service (many senders)": 5
+   },
+   "breakpoint_totals": {
+    "bridge": 2684.14,
+    "burn / redeem": 833416.18,
+    "contract (Adapter)": 325281.6,
+    "contract (AllowanceHolder)": 155756.08,
+    "contract (Deposit)": 2682.69,
+    "contract (LZMultiCall)": 15291795.17,
+    "contract (MayanForwarder2)": 236354.52,
+    "contract (OnchainGateway)": 397271.21,
+    "contract (Umbra)": 405086.35,
+    "contract (WETH9)": 260139.98,
+    "contract (unlabeled)": 41710175.36,
+    "dex": 11026262.73,
+    "dex/bridge router": 14921336.69,
+    "dex/pool": 1501561.82,
+    "proxy contract": 6574384.99,
+    "service (many senders)": 24615266.32
+   },
+   "breakpoint_unit": "USD",
+   "by_hop": {
+    "k1": {
+     "flagged": 3,
+     "found_fbi": [
+      "0x469ac1406de92f82c0563477240a3627057425dc",
+      "0xd2c2f029eff5cacc686f24377cfddcfc82d9f899",
+      "0xdc2901f741b4003e32b8b752e97b8c4c1891dc63"
+     ],
+     "max_hop": 1,
+     "min_tainted": "0",
+     "precision_lower_bound_pct": 100.0,
+     "recall": "3/14",
+     "recall_denominator": 14,
+     "recall_pct": 21.43,
+     "tau_ppm": 900000
+    },
+    "k2": {
+     "flagged": 42,
+     "found_fbi": [
+      "0x469ac1406de92f82c0563477240a3627057425dc",
+      "0xd2c2f029eff5cacc686f24377cfddcfc82d9f899",
+      "0xdc2901f741b4003e32b8b752e97b8c4c1891dc63"
+     ],
+     "max_hop": 2,
+     "min_tainted": "0",
+     "precision_lower_bound_pct": 7.14,
+     "recall": "3/14",
+     "recall_denominator": 14,
+     "recall_pct": 21.43,
+     "tau_ppm": 900000
+    },
+    "k3": {
+     "flagged": 64,
+     "found_fbi": [
+      "0x469ac1406de92f82c0563477240a3627057425dc",
+      "0xd2c2f029eff5cacc686f24377cfddcfc82d9f899",
+      "0xdc2901f741b4003e32b8b752e97b8c4c1891dc63"
+     ],
+     "max_hop": 3,
+     "min_tainted": "0",
+     "precision_lower_bound_pct": 4.69,
+     "recall": "3/14",
+     "recall_denominator": 14,
+     "recall_pct": 21.43,
+     "tau_ppm": 900000
+    },
+    "k4": {
+     "flagged": 79,
+     "found_fbi": [
+      "0x469ac1406de92f82c0563477240a3627057425dc",
+      "0xd2c2f029eff5cacc686f24377cfddcfc82d9f899",
+      "0xdc2901f741b4003e32b8b752e97b8c4c1891dc63"
+     ],
+     "max_hop": 4,
+     "min_tainted": "0",
+     "precision_lower_bound_pct": 3.8,
+     "recall": "3/14",
+     "recall_denominator": 14,
+     "recall_pct": 21.43,
+     "tau_ppm": 900000
+    }
+   },
+   "class_counts": {
+    "attacker-like": 79,
+    "seed": 7,
+    "service": 31,
+    "touched": 98,
+    "unknown (not fetched)": 27
+   },
+   "fbi_missed": [
+    "0x52f08feb1b0da609a5442514e2bb43c99d25d284",
+    "0x600cfedc6bd65fa79b604dc44964f419e45784b2",
+    "0x7c96279ec1e888aa56b9b836e0db26ca48573e1c",
+    "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "0x9fa39d62095302431d7d4167a7e80f8ec6ea4fa0",
+    "0xa6bfd7fcaf4711da1f61d5e91d03a2c7c72db272",
+    "0xa6dd3f218b65e32ccc37be30f74884133c655545",
+    "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+    "0xed5a394a7558929112848b7e97b569de6bbe1a51",
+    "0xfd5ebe912e2061992437767e24e5bcb52a3f9e54"
+   ],
+   "minutes_after_attack_to_first_taint": {
+    "0x469ac1406de92f82c0563477240a3627057425dc": 80,
+    "0xd2c2f029eff5cacc686f24377cfddcfc82d9f899": 102,
+    "0xdc2901f741b4003e32b8b752e97b8c4c1891dc63": 190
+   },
+   "nodes": {
+    "0x0000000000000000000000000000000000000000": {
+     "breakpoint": "burn / redeem",
+     "class": "service",
+     "first_tainted_block": 26049358,
+     "first_tainted_ts": 1790277587,
+     "hop": 2,
+     "taint_ppm": 2610,
+     "tainted_in": "833416180684",
+     "total_in": "319294794696535"
+    },
+    "0x000000000004444c5dc75cb358380d2e3de08a90": {
+     "breakpoint": "dex/pool",
+     "class": "service",
+     "first_tainted_block": 26049320,
+     "first_tainted_ts": 1790277131,
+     "hop": 2,
+     "taint_ppm": 50792,
+     "tainted_in": "1501561820868",
+     "total_in": "29562484888295"
+    },
+    "0x0000000000bbf5c5fd284e657f01bd000933c96d": {
+     "breakpoint": "contract (Adapter)",
+     "class": "service",
+     "first_tainted_block": 26068539,
+     "first_tainted_ts": 1790509043,
+     "hop": 3,
+     "taint_ppm": 612817,
+     "tainted_in": "325281600775",
+     "total_in": "530796750059"
+    },
+    "0x00de4d8658ab249627286fcf9f920b3078aea4fe": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26067422,
+     "first_tainted_ts": 1790495555,
+     "hop": 3,
+     "taint_ppm": 15707,
+     "tainted_in": "29509601825",
+     "total_in": "1878735138010"
+    },
+    "0x020dd06ddcf2207f2a8e0cbcdebf8551d72cb7fd": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26071064,
+     "first_tainted_ts": 1790539571,
+     "hop": 3,
+     "taint_ppm": 499256,
+     "tainted_in": "333183665227",
+     "total_in": "667360108690"
+    },
+    "0x030f43ce321210f5eb25c8601528cf4cb5597050": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26071358,
+     "first_tainted_ts": 1790543159,
+     "hop": 2,
+     "taint_ppm": 657271,
+     "tainted_in": "127851840595",
+     "total_in": "194519124066"
+    },
+    "0x035d3fd294357c41274f28206eee95a2efe24911": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26068487,
+     "first_tainted_ts": 1790508419,
+     "hop": 2,
+     "taint_ppm": 1000000,
+     "tainted_in": "61666761783",
+     "total_in": "61666761783"
+    },
+    "0x04065ccf52929dce58d9c7659de6ddac2316e84e": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26080187,
+     "first_tainted_ts": 1790649539,
+     "hop": 4,
+     "taint_ppm": 228671,
+     "tainted_in": "2350441080333",
+     "total_in": "10278674313526"
+    },
+    "0x0439e60f02a8900a951603950d8d4527f400c3f1": {
+     "breakpoint": "bridge",
+     "class": "service",
+     "first_tainted_block": 26049310,
+     "first_tainted_ts": 1790277011,
+     "hop": 2,
+     "taint_ppm": 715555,
+     "tainted_in": "2684140670",
+     "total_in": "3751128188"
+    },
+    "0x0510d3917bd1886f9773dc92b96a259b33b6e5e6": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26075275,
+     "first_tainted_ts": 1790590319,
+     "hop": 4,
+     "taint_ppm": 999999,
+     "tainted_in": "170649588501",
+     "total_in": "170649591798"
+    },
+    "0x07d25beb43c63048b309bf7e63fb73a23e79a90d": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26078228,
+     "first_tainted_ts": 1790625911,
+     "hop": 3,
+     "taint_ppm": 683807,
+     "tainted_in": "9172227233",
+     "total_in": "13413455375"
+    },
+    "0x08dc03cab2b2f04d31cc45ca457ab476cb5d50e8": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26074857,
+     "first_tainted_ts": 1790585303,
+     "hop": 2,
+     "taint_ppm": 999999,
+     "tainted_in": "1097136542866",
+     "total_in": "1097136564055"
+    },
+    "0x09db2ba96eec500ba384804efd9f6c6362d40b0a": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26074308,
+     "first_tainted_ts": 1790578703,
+     "hop": 2,
+     "taint_ppm": 444833,
+     "tainted_in": "2356658036294",
+     "total_in": "5297841712861"
+    },
+    "0x0dac1fb302bc428d8dc272a511e7c2f0d2a1c128": {
+     "breakpoint": "service (many senders)",
+     "class": "service",
+     "first_tainted_block": 26073395,
+     "first_tainted_ts": 1790567723,
+     "hop": 3,
+     "taint_ppm": 158037,
+     "tainted_in": "4514684427450",
+     "total_in": "28567151987742"
+    },
+    "0x0db14a0288f4637f60b46690f1971b756c58a47e": {
+     "breakpoint": "service (many senders)",
+     "class": "service",
+     "first_tainted_block": 26073610,
+     "first_tainted_ts": 1790570327,
+     "hop": 3,
+     "taint_ppm": 176658,
+     "tainted_in": "5844827406003",
+     "total_in": "33085405551522"
+    },
+    "0x0de89ff804b7b5df87132bbde17a5f5d6e6fb503": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26072596,
+     "first_tainted_ts": 1790558123,
+     "hop": 4,
+     "taint_ppm": 523837,
+     "tainted_in": "443541191561",
+     "total_in": "846715842228"
+    },
+    "0x10532ecc22300da32c9c586c1187a25876b8b057": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26071220,
+     "first_tainted_ts": 1790541491,
+     "hop": 2,
+     "taint_ppm": 999999,
+     "tainted_in": "66612247375",
+     "total_in": "66612248662"
+    },
+    "0x11ccc1c01db56851860d58575e0359ffd71a3e0a": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26073622,
+     "first_tainted_ts": 1790570471,
+     "hop": 3,
+     "taint_ppm": 584279,
+     "tainted_in": "2360258693627",
+     "total_in": "4039608292836"
+    },
+    "0x128d4a55e559dc3baa4e5067019efd26da4e41b4": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26074307,
+     "first_tainted_ts": 1790578691,
+     "hop": 4,
+     "taint_ppm": 988483,
+     "tainted_in": "253456085581",
+     "total_in": "256408908256"
+    },
+    "0x1297cedc5da2ff7bd094589d5745a2a0bb0054ee": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26074875,
+     "first_tainted_ts": 1790585519,
+     "hop": 4,
+     "taint_ppm": 979224,
+     "tainted_in": "167387141511",
+     "total_in": "170938392607"
+    },
+    "0x12eec4ca707b76518ebca5f5b8338e5c52e43a11": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26071067,
+     "first_tainted_ts": 1790539619,
+     "hop": 3,
+     "taint_ppm": 499201,
+     "tainted_in": "149587595833",
+     "total_in": "299653620209"
+    },
+    "0x132e00d513dc406342d2661cc74fb8542117afdd": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26073631,
+     "first_tainted_ts": 1790570579,
+     "hop": 2,
+     "taint_ppm": 407772,
+     "tainted_in": "8600550226703",
+     "total_in": "21091526483197"
+    },
+    "0x135d04cba00bc7ff713894180cf55461c8010f0d": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26077342,
+     "first_tainted_ts": 1790615255,
+     "hop": 2,
+     "taint_ppm": 772697,
+     "tainted_in": "243185270173",
+     "total_in": "314722579290"
+    },
+    "0x1450db30a34a270d1bc4dd4521faf0c9d12a8b99": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26069023,
+     "first_tainted_ts": 1790514875,
+     "hop": 2,
+     "taint_ppm": 1000000,
+     "tainted_in": "101497766592",
+     "total_in": "101497766592"
+    },
+    "0x18d1af94f9f9d6d23a13568117f5d4133b95ec19": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26068584,
+     "first_tainted_ts": 1790509583,
+     "hop": 3,
+     "taint_ppm": 991792,
+     "tainted_in": "100010913538",
+     "total_in": "100838537761"
+    },
+    "0x1c1bfe68ff459601ab4366cc7f1d471b2f574413": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26069651,
+     "first_tainted_ts": 1790522459,
+     "hop": 2,
+     "taint_ppm": 1000000,
+     "tainted_in": "204240134890",
+     "total_in": "204240134890"
+    },
+    "0x1caeeb24f1d8f3f315ae0d5d89b152f556ce5785": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26068859,
+     "first_tainted_ts": 1790512895,
+     "hop": 3,
+     "taint_ppm": 497161,
+     "tainted_in": "118639209548",
+     "total_in": "238632919108"
+    },
+    "0x1cdac13e0962e8987e516dead9cd1396d2a4ddb7": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26073618,
+     "first_tainted_ts": 1790570423,
+     "hop": 3,
+     "taint_ppm": 619658,
+     "tainted_in": "1242539425875",
+     "total_in": "2005201588215"
+    },
+    "0x1d0eda1758eb38dbb412d71014df444db7dbfbb4": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26068586,
+     "first_tainted_ts": 1790509607,
+     "hop": 3,
+     "taint_ppm": 1000000,
+     "tainted_in": "61666584667",
+     "total_in": "61666584667"
+    },
+    "0x1dc0a05a3ec72f878f7bd444c20a2c70fc0052fa": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26074232,
+     "first_tainted_ts": 1790577791,
+     "hop": 4,
+     "taint_ppm": 999999,
+     "tainted_in": "85467826507",
+     "total_in": "85467828159"
+    },
+    "0x20f3afe8feb485790194e608d88b60b050452c8a": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26075048,
+     "first_tainted_ts": 1790587595,
+     "hop": 3,
+     "taint_ppm": 174772,
+     "tainted_in": "827486428163",
+     "total_in": "4734645525098"
+    },
+    "0x216643281dcde30dfe0fb9d0e983d8bf4cdd1c1d": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26076824,
+     "first_tainted_ts": 1790608991,
+     "hop": 4,
+     "taint_ppm": 772733,
+     "tainted_in": "132309293175",
+     "total_in": "171222363085"
+    },
+    "0x222a1be3039811ed2a54013e7bcfa05fa56610c1": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26072719,
+     "first_tainted_ts": 1790559599,
+     "hop": 3,
+     "taint_ppm": 466543,
+     "tainted_in": "753615832129",
+     "total_in": "1615317247514"
+    },
+    "0x225a38bc71102999dd13478bfabd7c4d53f2dc17": {
+     "breakpoint": "contract (unlabeled)",
+     "class": "service",
+     "first_tainted_block": 26049304,
+     "first_tainted_ts": 1790276939,
+     "hop": 2,
+     "taint_ppm": 267937,
+     "tainted_in": "31024269935734",
+     "total_in": "115789005836590"
+    },
+    "0x23617e59a5925b2a4bf75d73ff6711cd0b29de85": {
+     "breakpoint": "dex/bridge router",
+     "class": "service",
+     "first_tainted_block": 26049320,
+     "first_tainted_ts": 1790277131,
+     "hop": 2,
+     "taint_ppm": 221735,
+     "tainted_in": "6303137239594",
+     "total_in": "28426420738223"
+    },
+    "0x25554f4af81a82b09b42d872cd5edc7b334bdd7f": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26080519,
+     "first_tainted_ts": 1790653547,
+     "hop": 3,
+     "taint_ppm": 548615,
+     "tainted_in": "438865684856",
+     "total_in": "799951651653"
+    },
+    "0x255f1a905972d98a1e85eaf4a5adc983c68a5206": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26072823,
+     "first_tainted_ts": 1790560847,
+     "hop": 2,
+     "taint_ppm": 999999,
+     "tainted_in": "590304621839",
+     "total_in": "590304633240"
+    },
+    "0x258d1151034d3c7ba4dc4e6389ac905b0e84a5c8": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26068941,
+     "first_tainted_ts": 1790513879,
+     "hop": 3,
+     "taint_ppm": 595545,
+     "tainted_in": "969903640717",
+     "total_in": "1628597999140"
+    },
+    "0x29717c8bb45c12b36ffd252c038213d17ae76932": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26073941,
+     "first_tainted_ts": 1790574299,
+     "hop": 2,
+     "taint_ppm": 373254,
+     "tainted_in": "3712853548466",
+     "total_in": "9947235601553"
+    },
+    "0x2b3547a21e84e55a9f029d45383c64e1c5ff0d8c": {
+     "breakpoint": "contract (unlabeled)",
+     "class": "service",
+     "first_tainted_block": 26075688,
+     "first_tainted_ts": 1790595311,
+     "hop": 4,
+     "taint_ppm": 53,
+     "tainted_in": "7210581",
+     "total_in": "134126878424"
+    },
+    "0x2bca667d37afe8d065ca46e3261e9442e77cbeae": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26049765,
+     "first_tainted_ts": 1790282495,
+     "hop": 1,
+     "taint_ppm": 114,
+     "tainted_in": "2694366298",
+     "total_in": "23454518830324"
+    },
+    "0x328763072e3ce351ec29318df971b534ca45a0f7": {
+     "breakpoint": "service (many senders)",
+     "class": "service",
+     "first_tainted_block": 26073463,
+     "first_tainted_ts": 1790568563,
+     "hop": 3,
+     "taint_ppm": 187090,
+     "tainted_in": "5163235961459",
+     "total_in": "27597479803183"
+    },
+    "0x3302cd93a0e22f3bfa7b46b48c27d5428ba93201": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26075694,
+     "first_tainted_ts": 1790595383,
+     "hop": 4,
+     "taint_ppm": 895923,
+     "tainted_in": "1107499931162",
+     "total_in": "1236154269489"
+    },
+    "0x330f2b5df5352696f5e4f3a1a3ed684fc04391a4": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26067363,
+     "first_tainted_ts": 1790494847,
+     "hop": 2,
+     "taint_ppm": 810968,
+     "tainted_in": "924531091608",
+     "total_in": "1140033118945"
+    },
+    "0x333903624f32f3689815c0f1efd1e2ea5b47c597": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26075350,
+     "first_tainted_ts": 1790591219,
+     "hop": 4,
+     "taint_ppm": 999999,
+     "tainted_in": "42923056370",
+     "total_in": "42923057200"
+    },
+    "0x337685fdab40d39bd02028545a4ffa7d287cc3e2": {
+     "breakpoint": "contract (MayanForwarder2)",
+     "class": "service",
+     "first_tainted_block": 26068786,
+     "first_tainted_ts": 1790512007,
+     "hop": 3,
+     "taint_ppm": 15978,
+     "tainted_in": "236354524671",
+     "total_in": "14791885089417"
+    },
+    "0x3465a39a25e6e939a7fa8225f901b74a63c9b39c": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26082293,
+     "first_tainted_ts": 1790674907,
+     "hop": 3,
+     "taint_ppm": 243670,
+     "tainted_in": "205017881908",
+     "total_in": "841372606864"
+    },
+    "0x35bd7e790026477fb2a08482226ac86a8ac97169": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26073274,
+     "first_tainted_ts": 1790566271,
+     "hop": 3,
+     "taint_ppm": 1000000,
+     "tainted_in": "405086352325",
+     "total_in": "405086352325"
+    },
+    "0x36e3877e9acb8fa56f8cf3e95567aa93abe5db74": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26079592,
+     "first_tainted_ts": 1790642363,
+     "hop": 3,
+     "taint_ppm": 222631,
+     "tainted_in": "245935243959",
+     "total_in": "1104673359659"
+    },
+    "0x37305b1cd40574e4c5ce33f8e8306be057fd7341": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26049358,
+     "first_tainted_ts": 1790277587,
+     "hop": 2,
+     "taint_ppm": 3464,
+     "tainted_in": "833416180684",
+     "total_in": "240583429533322"
+    },
+    "0x39370afa0ddf77871c0bb088c3073706622c5133": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26070825,
+     "first_tainted_ts": 1790536691,
+     "hop": 3,
+     "taint_ppm": 307866,
+     "tainted_in": "503349619317",
+     "total_in": "1634962808849"
+    },
+    "0x3a9b20e81355403cff18c227eda590e4bc2ee7db": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26076992,
+     "first_tainted_ts": 1790611019,
+     "hop": 4,
+     "taint_ppm": 262824,
+     "tainted_in": "105761357878",
+     "total_in": "402403661250"
+    },
+    "0x401bae4ef3eebdf34e75b6cf3755ba69b238db85": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26075026,
+     "first_tainted_ts": 1790587331,
+     "hop": 3,
+     "taint_ppm": 503086,
+     "tainted_in": "497317261877",
+     "total_in": "988532048617"
+    },
+    "0x41c4f3c546d6fb5610bf146f58e70f866cd11e58": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26073594,
+     "first_tainted_ts": 1790570135,
+     "hop": 2,
+     "taint_ppm": 661778,
+     "tainted_in": "259475418888",
+     "total_in": "392087955682"
+    },
+    "0x41c88d3c0eda3f4df0bb4e5d0f4c81cc0232902c": {
+     "breakpoint": "service (many senders)",
+     "class": "service",
+     "first_tainted_block": 26073559,
+     "first_tainted_ts": 1790569715,
+     "hop": 3,
+     "taint_ppm": 179352,
+     "tainted_in": "4497408126057",
+     "total_in": "25075833243128"
+    },
+    "0x41e73f25472426a256bc2a848c017b0dd07f6886": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26082758,
+     "first_tainted_ts": 1790680523,
+     "hop": 3,
+     "taint_ppm": 500960,
+     "tainted_in": "656142923836",
+     "total_in": "1309769363572"
+    },
+    "0x425775ddda26ea78d0822c17ce39251d94a0a47c": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26070600,
+     "first_tainted_ts": 1790533943,
+     "hop": 2,
+     "taint_ppm": 998157,
+     "tainted_in": "293738417273",
+     "total_in": "294280523414"
+    },
+    "0x426874600f34edc1eecb63aee383ddc0b9a42293": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26070603,
+     "first_tainted_ts": 1790533979,
+     "hop": 2,
+     "taint_ppm": 998223,
+     "tainted_in": "131497676447",
+     "total_in": "131731761761"
+    },
+    "0x43848aa5a092a9f4382c3e6eacc0bc47fe2a979c": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26069864,
+     "first_tainted_ts": 1790525039,
+     "hop": 2,
+     "taint_ppm": 1000000,
+     "tainted_in": "1265284161118",
+     "total_in": "1265284161118"
+    },
+    "0x45b4419050f38177358eb67571d90846c57210c5": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26069351,
+     "first_tainted_ts": 1790518847,
+     "hop": 3,
+     "taint_ppm": 996855,
+     "tainted_in": "242595753912",
+     "total_in": "243360901593"
+    },
+    "0x469ac1406de92f82c0563477240a3627057425dc": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26049515,
+     "first_tainted_ts": 1790279471,
+     "hop": 1,
+     "taint_ppm": 996785,
+     "tainted_in": "4122103905832",
+     "total_in": "4135397183522"
+    },
+    "0x4838b106fce9647bdf1e7877bf73ce8b0bad5f97": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26049336,
+     "first_tainted_ts": 1790277323,
+     "hop": 2,
+     "taint_ppm": 569239,
+     "tainted_in": "2058231243",
+     "total_in": "3615753367"
+    },
+    "0x4969741f4e33172a3eea54f8ea2df3779a04ac34": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26070522,
+     "first_tainted_ts": 1790533007,
+     "hop": 2,
+     "taint_ppm": 1000000,
+     "tainted_in": "692276854066",
+     "total_in": "692276854066"
+    },
+    "0x49ca79103c1cb1a6f48dcc0710b33a129b556765": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26073537,
+     "first_tainted_ts": 1790569451,
+     "hop": 3,
+     "taint_ppm": 999999,
+     "tainted_in": "171233485316",
+     "total_in": "171233488625"
+    },
+    "0x4a777646417b0fd34715d2b21d4a132c06aed330": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26069351,
+     "first_tainted_ts": 1790518847,
+     "hop": 2,
+     "taint_ppm": 551116,
+     "tainted_in": "13653709135443",
+     "total_in": "24774626393670"
+    },
+    "0x4bd41f44577def74f532b0c3b3a94fd50e7c5e6e": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26069754,
+     "first_tainted_ts": 1790523719,
+     "hop": 2,
+     "taint_ppm": 1000000,
+     "tainted_in": "50870260171",
+     "total_in": "50870260171"
+    },
+    "0x4e68ccd3e89f51c3074ca5072bbac773960dfa36": {
+     "breakpoint": "dex",
+     "class": "service",
+     "first_tainted_block": 26049320,
+     "first_tainted_ts": 1790277131,
+     "hop": 2,
+     "taint_ppm": 505118,
+     "tainted_in": "3003123641738",
+     "total_in": "5945387485194"
+    },
+    "0x4f152feccb7b0574661555fa54a24c820624522b": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26075062,
+     "first_tainted_ts": 1790587763,
+     "hop": 4,
+     "taint_ppm": 985150,
+     "tainted_in": "168083693414",
+     "total_in": "170617274486"
+    },
+    "0x4f1d3df2c94b2ca6943edb8be34c83e899087d23": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26081490,
+     "first_tainted_ts": 1790665223,
+     "hop": 4,
+     "taint_ppm": 216098,
+     "tainted_in": "289863395455",
+     "total_in": "1341345537500"
+    },
+    "0x4f69ab60f8b8a1ac1ca739b99113bfcdefbff3ec": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26067417,
+     "first_tainted_ts": 1790495495,
+     "hop": 2,
+     "taint_ppm": 1000000,
+     "tainted_in": "29767170249",
+     "total_in": "29767170249"
+    },
+    "0x4f889d6842b006ad973a019bc875dfb8eca36035": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26071251,
+     "first_tainted_ts": 1790541863,
+     "hop": 3,
+     "taint_ppm": 499332,
+     "tainted_in": "828913894002",
+     "total_in": "1660044876527"
+    },
+    "0x4feb8dd18f442ff67b521b5a5bc4c3824e3288ab": {
+     "breakpoint": "service (many senders)",
+     "class": "service",
+     "first_tainted_block": 26073454,
+     "first_tainted_ts": 1790568455,
+     "hop": 3,
+     "taint_ppm": 179048,
+     "tainted_in": "4595110398647",
+     "total_in": "25663988649354"
+    },
+    "0x50c4e75a512f2a14a7b304787adf79c4531a5909": {
+     "breakpoint": "contract (AllowanceHolder)",
+     "class": "service",
+     "first_tainted_block": 26070081,
+     "first_tainted_ts": 1790527655,
+     "hop": 3,
+     "taint_ppm": 993070,
+     "tainted_in": "155756084320",
+     "total_in": "156842918419"
+    },
+    "0x50cfe7c1938db66a1a6d2e86d36f39fbef3d5c4a": {
+     "breakpoint": "dex/bridge router",
+     "class": "service",
+     "first_tainted_block": 26070098,
+     "first_tainted_ts": 1790527871,
+     "hop": 3,
+     "taint_ppm": 903535,
+     "tainted_in": "9992245441",
+     "total_in": "11059047694"
+    },
+    "0x5115c5f6ae81872d2c208c35730d1650e8072e83": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26071936,
+     "first_tainted_ts": 1790550155,
+     "hop": 2,
+     "taint_ppm": 449268,
+     "tainted_in": "4355155110296",
+     "total_in": "9693882282857"
+    },
+    "0x51190be1bac64a48f28043598f4c16c564e84e6c": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26073784,
+     "first_tainted_ts": 1790572415,
+     "hop": 2,
+     "taint_ppm": 511438,
+     "tainted_in": "4793168970786",
+     "total_in": "9371931997492"
+    },
+    "0x52b335fd4d229c4b4ffa6190526e4b5fb8e3fb09": {
+     "breakpoint": "contract (unlabeled)",
+     "class": "service",
+     "first_tainted_block": 26049344,
+     "first_tainted_ts": 1790277419,
+     "hop": 2,
+     "taint_ppm": 307636,
+     "tainted_in": "7906131557791",
+     "total_in": "25699585380423"
+    },
+    "0x52dd53a1b8ce7b2dfddd4aea4e3c9909a46431df": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26075324,
+     "first_tainted_ts": 1790590907,
+     "hop": 3,
+     "taint_ppm": 999999,
+     "tainted_in": "170430824164",
+     "total_in": "170430827456"
+    },
+    "0x5357386545e4734a6d4751ea85cc16725ba3764c": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26082414,
+     "first_tainted_ts": 1790676371,
+     "hop": 3,
+     "taint_ppm": 359987,
+     "tainted_in": "41462963705",
+     "total_in": "115179037995"
+    },
+    "0x54328634060788df7d98b3b3b1e347235c4eb113": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26071323,
+     "first_tainted_ts": 1790542739,
+     "hop": 2,
+     "taint_ppm": 483854,
+     "tainted_in": "151899515361",
+     "total_in": "313936545549"
+    },
+    "0x54c541a353c635115ce39712d8a3aefc61ad0e81": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26072012,
+     "first_tainted_ts": 1790551067,
+     "hop": 3,
+     "taint_ppm": 325521,
+     "tainted_in": "1659060134448",
+     "total_in": "5096616635187"
+    },
+    "0x5648b985f91616470edf7bba8775a3a5f7caf70c": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26068490,
+     "first_tainted_ts": 1790508455,
+     "hop": 2,
+     "taint_ppm": 594051,
+     "tainted_in": "14811874248971",
+     "total_in": "24933644170777"
+    },
+    "0x56534741cd8b152df6d48adf7ac51f75169a83b2": {
+     "breakpoint": "dex",
+     "class": "service",
+     "first_tainted_block": 26049320,
+     "first_tainted_ts": 1790277131,
+     "hop": 2,
+     "taint_ppm": 285195,
+     "tainted_in": "500520606956",
+     "total_in": "1755008010111"
+    },
+    "0x56a25c4c1e78ead001339566b352fb5469bbf9c7": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26071314,
+     "first_tainted_ts": 1790542619,
+     "hop": 3,
+     "taint_ppm": 499791,
+     "tainted_in": "395613606065",
+     "total_in": "791557193957"
+    },
+    "0x56f952eaa98400eaf904afc5977aaf39345dcedc": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26074225,
+     "first_tainted_ts": 1790577707,
+     "hop": 4,
+     "taint_ppm": 999999,
+     "tainted_in": "85577843638",
+     "total_in": "85577845292"
+    },
+    "0x5724cbd56f6e731d70f9d31d75da49c5807c8cc9": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26082746,
+     "first_tainted_ts": 1790680379,
+     "hop": 4,
+     "taint_ppm": 235307,
+     "tainted_in": "126250633347",
+     "total_in": "536535624303"
+    },
+    "0x5760b4cda53b20974c4b733e9f6849c537e703c2": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26073054,
+     "first_tainted_ts": 1790563631,
+     "hop": 3,
+     "taint_ppm": 503299,
+     "tainted_in": "104862811812",
+     "total_in": "208350744919"
+    },
+    "0x57b9d68ac4d8a21fa72d59a6f0ac7cbfe6ae2c5e": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26081035,
+     "first_tainted_ts": 1790659739,
+     "hop": 3,
+     "taint_ppm": 730193,
+     "tainted_in": "783553213068",
+     "total_in": "1073076430000"
+    },
+    "0x5889433b754324089d4b6f168840fe5b13fe25df": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26082153,
+     "first_tainted_ts": 1790673215,
+     "hop": 4,
+     "taint_ppm": 157235,
+     "tainted_in": "871906730919",
+     "total_in": "5545235783215"
+    },
+    "0x59ea064a7375a78f93eff1180d133c106b05de92": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26073748,
+     "first_tainted_ts": 1790571983,
+     "hop": 3,
+     "taint_ppm": 896211,
+     "tainted_in": "347428465069",
+     "total_in": "387663438820"
+    },
+    "0x5c768bf29923f221bba75f2f3baab32d793eaea0": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26073766,
+     "first_tainted_ts": 1790572199,
+     "hop": 4,
+     "taint_ppm": 140296,
+     "tainted_in": "749375173956",
+     "total_in": "5341354904108"
+    },
+    "0x5d8971bf1608d9f98e427c51eb7cb07edca9db51": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26082501,
+     "first_tainted_ts": 1790677415,
+     "hop": 3,
+     "taint_ppm": 674304,
+     "tainted_in": "651222520133",
+     "total_in": "965768787000"
+    },
+    "0x5db27adef2d71ead7a8457b08ef135fc5f7c4215": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26078741,
+     "first_tainted_ts": 1790632127,
+     "hop": 3,
+     "taint_ppm": 680879,
+     "tainted_in": "9311892136",
+     "total_in": "13676273525"
+    },
+    "0x5ecba5d6e97bf6152c256457df53ed1dbd27e513": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26069068,
+     "first_tainted_ts": 1790515415,
+     "hop": 2,
+     "taint_ppm": 1000000,
+     "tainted_in": "581869379775",
+     "total_in": "581869379775"
+    },
+    "0x600cfedc6bd65fa79b604dc44964f419e45784b2": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26049654,
+     "first_tainted_ts": 1790281151,
+     "hop": 1,
+     "taint_ppm": 676877,
+     "tainted_in": "70879819163339",
+     "total_in": "104715946176267"
+    },
+    "0x606dcf693bbed7631872281e42ac7718e8fe8841": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26073598,
+     "first_tainted_ts": 1790570183,
+     "hop": 2,
+     "taint_ppm": 999999,
+     "tainted_in": "259134395075",
+     "total_in": "259134400080"
+    },
+    "0x60aab5fe32eef8c4949ff1a88273b12d3a7c2e29": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26079811,
+     "first_tainted_ts": 1790644991,
+     "hop": 3,
+     "taint_ppm": 507046,
+     "tainted_in": "594428310854",
+     "total_in": "1172335999775"
+    },
+    "0x6204d3df99c67b61ce539a782d2cafc0737fcced": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26069654,
+     "first_tainted_ts": 1790522495,
+     "hop": 3,
+     "taint_ppm": 645917,
+     "tainted_in": "521020157302",
+     "total_in": "806635542332"
+    },
+    "0x629561ef022a19c605a8a6d72bc20021c2806fe9": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26075995,
+     "first_tainted_ts": 1790598995,
+     "hop": 4,
+     "taint_ppm": 585339,
+     "tainted_in": "260810723555",
+     "total_in": "445571548721"
+    },
+    "0x637fec3327c6e94e8cd4691b911161acf6fed63c": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26080090,
+     "first_tainted_ts": 1790648363,
+     "hop": 3,
+     "taint_ppm": 661153,
+     "tainted_in": "740538376714",
+     "total_in": "1120070734397"
+    },
+    "0x64480b5d7bbe3dd7a87a9456534ffacc158724fa": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26069488,
+     "first_tainted_ts": 1790520491,
+     "hop": 4,
+     "taint_ppm": 589635,
+     "tainted_in": "258522946037",
+     "total_in": "438445667574"
+    },
+    "0x6889ccf82fb7ec674110f8028e98a0a2b8dda7d7": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26070641,
+     "first_tainted_ts": 1790534447,
+     "hop": 3,
+     "taint_ppm": 996456,
+     "tainted_in": "65748969063",
+     "total_in": "65982792698"
+    },
+    "0x69331d88a80aa17636b136913e03a665e788e752": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26069133,
+     "first_tainted_ts": 1790516195,
+     "hop": 2,
+     "taint_ppm": 1000000,
+     "tainted_in": "121353405218",
+     "total_in": "121353405218"
+    },
+    "0x6a9c20cbba53ee576f8bf9230586d7ff1c69b420": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26079942,
+     "first_tainted_ts": 1790646587,
+     "hop": 3,
+     "taint_ppm": 334740,
+     "tainted_in": "370572420411",
+     "total_in": "1107044072325"
+    },
+    "0x6d01b0ba62a96c1989a11c8592e4daf5a4f1d726": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26073068,
+     "first_tainted_ts": 1790563799,
+     "hop": 2,
+     "taint_ppm": 503134,
+     "tainted_in": "114122226982",
+     "total_in": "226822658468"
+    },
+    "0x6d7d5c555addf1cb59a69abb05cc5d453bc2c8e8": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26068476,
+     "first_tainted_ts": 1790508287,
+     "hop": 2,
+     "taint_ppm": 995235,
+     "tainted_in": "199893850358",
+     "total_in": "200850824766"
+    },
+    "0x6dabc5a2e5554718028a72c0337043c2126efe5f": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26081252,
+     "first_tainted_ts": 1790662367,
+     "hop": 3,
+     "taint_ppm": 541758,
+     "tainted_in": "901627774212",
+     "total_in": "1664261062197"
+    },
+    "0x6f1c2223b833ff7405877d760f057f1aac73302b": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26081993,
+     "first_tainted_ts": 1790671295,
+     "hop": 3,
+     "taint_ppm": 631919,
+     "tainted_in": "84762217988",
+     "total_in": "134134553750"
+    },
+    "0x710e89c15a1c55cdf4614c7e43178ebf2e20ce7d": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26074756,
+     "first_tainted_ts": 1790584091,
+     "hop": 2,
+     "taint_ppm": 999999,
+     "tainted_in": "163663621129",
+     "total_in": "163663624290"
+    },
+    "0x721e30553ed11792432694208ad52736d330f82f": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26071117,
+     "first_tainted_ts": 1790540243,
+     "hop": 4,
+     "taint_ppm": 8629,
+     "tainted_in": "2569534660",
+     "total_in": "297776875824"
+    },
+    "0x7381800cb1ae92a50aaee4e164a5598da24f56f2": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26070052,
+     "first_tainted_ts": 1790527295,
+     "hop": 2,
+     "taint_ppm": 939007,
+     "tainted_in": "311622032439",
+     "total_in": "331863052407"
+    },
+    "0x7487884fda806b123a725212170306dae8a901fa": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26073149,
+     "first_tainted_ts": 1790564771,
+     "hop": 2,
+     "taint_ppm": 500884,
+     "tainted_in": "218770086950",
+     "total_in": "436767528921"
+    },
+    "0x75fba9c9738b8ef80e79faaceef374878328f9e4": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26068479,
+     "first_tainted_ts": 1790508323,
+     "hop": 2,
+     "taint_ppm": 1000000,
+     "tainted_in": "118639385442",
+     "total_in": "118639385442"
+    },
+    "0x770b10b273fc44fe9197d6bf20f145c2e98463ee": {
+     "breakpoint": null,
+     "class": "seed",
+     "first_tainted_block": null,
+     "first_tainted_ts": null,
+     "hop": 0,
+     "taint_ppm": 1000000,
+     "tainted_in": "0",
+     "total_in": "113588229114949"
+    },
+    "0x7766d2fcaa60eb3219e750182b80fcbe38b916a5": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26076006,
+     "first_tainted_ts": 1790599127,
+     "hop": 2,
+     "taint_ppm": 93667,
+     "tainted_in": "53630189888",
+     "total_in": "572558214457"
+    },
+    "0x77ddb38d38569f74b47fefcec2ab5cb57dcf86fe": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26082548,
+     "first_tainted_ts": 1790677991,
+     "hop": 4,
+     "taint_ppm": 366782,
+     "tainted_in": "98395031616",
+     "total_in": "268265604076"
+    },
+    "0x7900c23e65741a18fe9c0b6dff984dd11a6084c1": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26069629,
+     "first_tainted_ts": 1790522195,
+     "hop": 2,
+     "taint_ppm": 1000000,
+     "tainted_in": "103621498293",
+     "total_in": "103621498293"
+    },
+    "0x7c96279ec1e888aa56b9b836e0db26ca48573e1c": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26049285,
+     "first_tainted_ts": 1790276711,
+     "hop": 1,
+     "taint_ppm": 799933,
+     "tainted_in": "86607921982207",
+     "total_in": "108268906100350"
+    },
+    "0x7cf6465cdffb584f74941e8c1fdaed6388de45da": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26079482,
+     "first_tainted_ts": 1790641031,
+     "hop": 3,
+     "taint_ppm": 14294,
+     "tainted_in": "9137133817",
+     "total_in": "639205312982"
+    },
+    "0x7d301870042e52455444a30f4e3fb7aef6522268": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26071013,
+     "first_tainted_ts": 1790538947,
+     "hop": 2,
+     "taint_ppm": 1000000,
+     "tainted_in": "333183799461",
+     "total_in": "333183799461"
+    },
+    "0x7e0e5e5e2f03b57114d67ae6d1f6c788a1fbbc37": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26069071,
+     "first_tainted_ts": 1790515451,
+     "hop": 2,
+     "taint_ppm": 497468,
+     "tainted_in": "62757036756",
+     "total_in": "126152696508"
+    },
+    "0x7f28eea527c3ed387574e19018742e62e6a94201": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26074165,
+     "first_tainted_ts": 1790576987,
+     "hop": 3,
+     "taint_ppm": 999999,
+     "tainted_in": "171045696945",
+     "total_in": "171045700250"
+    },
+    "0x8150a1fc457f1e789e6d35ad3947d13751da7597": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26078816,
+     "first_tainted_ts": 1790633027,
+     "hop": 3,
+     "taint_ppm": 643314,
+     "tainted_in": "2790657712893",
+     "total_in": "4337935420772"
+    },
+    "0x846267082e7c92d9f488d238f01082a44c869788": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26075397,
+     "first_tainted_ts": 1790591807,
+     "hop": 3,
+     "taint_ppm": 999999,
+     "tainted_in": "170374487652",
+     "total_in": "170374490943"
+    },
+    "0x85263712671f6ea45bb06333c26e60e9e3205026": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26074031,
+     "first_tainted_ts": 1790575379,
+     "hop": 3,
+     "taint_ppm": 156628,
+     "tainted_in": "21007979677",
+     "total_in": "134126401301"
+    },
+    "0x858abaf459dbaf42c2b13291b1b53898cb8fbe0e": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26073282,
+     "first_tainted_ts": 1790566367,
+     "hop": 4,
+     "taint_ppm": 770400,
+     "tainted_in": "405086255671",
+     "total_in": "525812403193"
+    },
+    "0x86742b4272eff78e3f74b4bcf55ed907e752738b": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26073012,
+     "first_tainted_ts": 1790563127,
+     "hop": 2,
+     "taint_ppm": 560086,
+     "tainted_in": "742763980234",
+     "total_in": "1326158430173"
+    },
+    "0x868dd5fccc52bfdbf32d8f835000947266c34428": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26068500,
+     "first_tainted_ts": 1790508575,
+     "hop": 3,
+     "taint_ppm": 144884,
+     "tainted_in": "391178639176",
+     "total_in": "2699928084266"
+    },
+    "0x8719fcbfcb3f9caeb198c8910ffeecc1e321e61c": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26070721,
+     "first_tainted_ts": 1790535431,
+     "hop": 2,
+     "taint_ppm": 999308,
+     "tainted_in": "779054923609",
+     "total_in": "779593737747"
+    },
+    "0x89c6340b1a1f4b25d36cd8b063d49045caf3f818": {
+     "breakpoint": "proxy contract",
+     "class": "service",
+     "first_tainted_block": 26070118,
+     "first_tainted_ts": 1790528111,
+     "hop": 3,
+     "taint_ppm": 999224,
+     "tainted_in": "19984490882",
+     "total_in": "20000000000"
+    },
+    "0x8b9c04fe94b60fc45ac026ea9d00b0f1daf77125": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26081056,
+     "first_tainted_ts": 1790659991,
+     "hop": 3,
+     "taint_ppm": 672013,
+     "tainted_in": "18028048904",
+     "total_in": "26826910750"
+    },
+    "0x8c5b52c238f67f079296bdc17f4b25057c6344e5": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26078058,
+     "first_tainted_ts": 1790623859,
+     "hop": 2,
+     "taint_ppm": 285034,
+     "tainted_in": "1478883044070",
+     "total_in": "5188426857072"
+    },
+    "0x8c8887d30d70e5dfb22796d92afb20d93252b00c": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26072686,
+     "first_tainted_ts": 1790559203,
+     "hop": 2,
+     "taint_ppm": 999999,
+     "tainted_in": "753561806178",
+     "total_in": "753561820732"
+    },
+    "0x8cd81d5132fb50f3c51e1bf377aee8a0da9988cf": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26070818,
+     "first_tainted_ts": 1790536607,
+     "hop": 2,
+     "taint_ppm": 669675,
+     "tainted_in": "815692778763",
+     "total_in": "1218042522994"
+    },
+    "0x8eec4bca3d6e119fbe1778a0eae6b78c36a754c9": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26079944,
+     "first_tainted_ts": 1790646611,
+     "hop": 4,
+     "taint_ppm": 68849,
+     "tainted_in": "418132565102",
+     "total_in": "6073180861637"
+    },
+    "0x90757bbbc408db91d9bb7c856bc126f022566476": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26076747,
+     "first_tainted_ts": 1790608067,
+     "hop": 3,
+     "taint_ppm": 772733,
+     "tainted_in": "264619196465",
+     "total_in": "342445515723"
+    },
+    "0x944f912055ed2a1096f71fd16e89631de6422edf": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26073706,
+     "first_tainted_ts": 1790571479,
+     "hop": 4,
+     "taint_ppm": 980071,
+     "tainted_in": "525846044467",
+     "total_in": "536538215000"
+    },
+    "0x94a43df7687a8494948be937400e9d5d33135da0": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26049495,
+     "first_tainted_ts": 1790279231,
+     "hop": 1,
+     "taint_ppm": 337166,
+     "tainted_in": "7404876046195",
+     "total_in": "21962104780953"
+    },
+    "0x9579532446054b8b0b0c6444c5c99dafde640594": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26074029,
+     "first_tainted_ts": 1790575355,
+     "hop": 3,
+     "taint_ppm": 142348,
+     "tainted_in": "166926488635",
+     "total_in": "1172661876827"
+    },
+    "0x975139dab149f56c9d81256f051c8f4228b01cc6": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26081273,
+     "first_tainted_ts": 1790662619,
+     "hop": 3,
+     "taint_ppm": 672013,
+     "tainted_in": "252392684665",
+     "total_in": "375576750500"
+    },
+    "0x9836dbd8c7b99cb8c64dc1bd3798dec53687a9ee": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26069759,
+     "first_tainted_ts": 1790523779,
+     "hop": 2,
+     "taint_ppm": 999796,
+     "tainted_in": "653141197693",
+     "total_in": "653274046250"
+    },
+    "0x9843257c050bd0a803dd3836e3dd6a47ca01ca40": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26069721,
+     "first_tainted_ts": 1790523323,
+     "hop": 3,
+     "taint_ppm": 999474,
+     "tainted_in": "207198971987",
+     "total_in": "207307884654"
+    },
+    "0x989111c544ecc47ede54a1191dab46ac8db98a1f": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26073067,
+     "first_tainted_ts": 1790563787,
+     "hop": 3,
+     "taint_ppm": 330643,
+     "tainted_in": "40286296634",
+     "total_in": "121842181039"
+    },
+    "0x9c4c490ac643daa1b432a38073025441a9ccbeb3": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26074373,
+     "first_tainted_ts": 1790579483,
+     "hop": 3,
+     "taint_ppm": 999999,
+     "tainted_in": "171099350767",
+     "total_in": "171099354072"
+    },
+    "0x9d1c9710b3394f2287ae9d0cc6b7b8b599f05ce2": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26073737,
+     "first_tainted_ts": 1790571851,
+     "hop": 4,
+     "taint_ppm": 999999,
+     "tainted_in": "80480730694",
+     "total_in": "80480732250"
+    },
+    "0x9ea12e0bfb370a8f9acd0bd833381d17b1522ee9": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26071016,
+     "first_tainted_ts": 1790538983,
+     "hop": 2,
+     "taint_ppm": 1000000,
+     "tainted_in": "149587733605",
+     "total_in": "149587733605"
+    },
+    "0x9eff976b031b0b846ee249c92c23743f0d650d07": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26081431,
+     "first_tainted_ts": 1790664515,
+     "hop": 3,
+     "taint_ppm": 729975,
+     "tainted_in": "195829950892",
+     "total_in": "268269107500"
+    },
+    "0x9f281ea7f89a1417f397b6128d985b922bde990b": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26071217,
+     "first_tainted_ts": 1790541455,
+     "hop": 2,
+     "taint_ppm": 999999,
+     "tainted_in": "395613799393",
+     "total_in": "395613807034"
+    },
+    "0x9fa39d62095302431d7d4167a7e80f8ec6ea4fa0": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26050142,
+     "first_tainted_ts": 1790287067,
+     "hop": 3,
+     "taint_ppm": 585685,
+     "tainted_in": "15712128807026",
+     "total_in": "26826910750000"
+    },
+    "0xa04620dc5d0aac18af64363847be9ab762f608bf": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26068525,
+     "first_tainted_ts": 1790508875,
+     "hop": 3,
+     "taint_ppm": 628993,
+     "tainted_in": "15283857022532",
+     "total_in": "24298897886165"
+    },
+    "0xa19820d9db8c7d015ef75f612b52e0ecc7347779": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26070658,
+     "first_tainted_ts": 1790534651,
+     "hop": 3,
+     "taint_ppm": 1000000,
+     "tainted_in": "53653821500",
+     "total_in": "53653821500"
+    },
+    "0xa2638c9e25fb12b1edbc8e8fb270e8890382d58d": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26073859,
+     "first_tainted_ts": 1790573315,
+     "hop": 2,
+     "taint_ppm": 616909,
+     "tainted_in": "2946736726688",
+     "total_in": "4776607300734"
+    },
+    "0xa34e6599c38b131f32c84f623b77cf283c9a178f": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26070208,
+     "first_tainted_ts": 1790529191,
+     "hop": 2,
+     "taint_ppm": 999067,
+     "tainted_in": "129684653070",
+     "total_in": "129805706809"
+    },
+    "0xa3763269fe8e8b24d40dfec0da256574fe2d0340": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26076061,
+     "first_tainted_ts": 1790599787,
+     "hop": 4,
+     "taint_ppm": 59287,
+     "tainted_in": "10075852975",
+     "total_in": "169948479601"
+    },
+    "0xa406a6465853791ffaf4278b6a4ff6e37eef9aa8": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26073409,
+     "first_tainted_ts": 1790567891,
+     "hop": 2,
+     "taint_ppm": 701496,
+     "tainted_in": "2404111930881",
+     "total_in": "3427121222101"
+    },
+    "0xa49eb41c2dc4b489e45b52225f83027055edc436": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26082105,
+     "first_tainted_ts": 1790672639,
+     "hop": 4,
+     "taint_ppm": 147742,
+     "tainted_in": "119489621791",
+     "total_in": "808769027435"
+    },
+    "0xa509b37c42cc0df5cd0ad76599888faf4bd1889f": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26070195,
+     "first_tainted_ts": 1790529035,
+     "hop": 2,
+     "taint_ppm": 1000468,
+     "tainted_in": "771809182781",
+     "total_in": "771447681782"
+    },
+    "0xa585e7589b861b94f8ef9cc30e03c96163e6de76": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26077954,
+     "first_tainted_ts": 1790622611,
+     "hop": 2,
+     "taint_ppm": 447655,
+     "tainted_in": "1673496781576",
+     "total_in": "3738357350519"
+    },
+    "0xa683f5a3514b863089adccfc3ebb1553ae61ec59": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26069472,
+     "first_tainted_ts": 1790520299,
+     "hop": 3,
+     "taint_ppm": 589703,
+     "tainted_in": "516946125943",
+     "total_in": "876620418801"
+    },
+    "0xa6bfd7fcaf4711da1f61d5e91d03a2c7c72db272": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26050148,
+     "first_tainted_ts": 1790287139,
+     "hop": 3,
+     "taint_ppm": 585685,
+     "tainted_in": "15712128807026",
+     "total_in": "26826910750000"
+    },
+    "0xa6dd3f218b65e32ccc37be30f74884133c655545": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26049412,
+     "first_tainted_ts": 1790278235,
+     "hop": 2,
+     "taint_ppm": 399367,
+     "tainted_in": "47490451882724",
+     "total_in": "118914208678696"
+    },
+    "0xa8d8401b0d1798c95e4d5c0d37c1aabb25730cb0": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26070198,
+     "first_tainted_ts": 1790529071,
+     "hop": 2,
+     "taint_ppm": 1000461,
+     "tainted_in": "660857915542",
+     "total_in": "660553226672"
+    },
+    "0xa8ec64915b12b866110a5fd991f0ee271eec9598": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26069846,
+     "first_tainted_ts": 1790524823,
+     "hop": 3,
+     "taint_ppm": 998286,
+     "tainted_in": "64033628390",
+     "total_in": "64143529680"
+    },
+    "0xaabc969707b2a5d1d39d3ba24c60a0cd79dbe451": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26077529,
+     "first_tainted_ts": 1790617511,
+     "hop": 2,
+     "taint_ppm": 422713,
+     "tainted_in": "4092270554158",
+     "total_in": "9680952772837"
+    },
+    "0xacddac6c77318b615f7f6fb9bb67c6833e9c05f1": {
+     "breakpoint": "contract (LZMultiCall)",
+     "class": "service",
+     "first_tainted_block": 26069022,
+     "first_tainted_ts": 1790514863,
+     "hop": 3,
+     "taint_ppm": 747565,
+     "tainted_in": "15291795166539",
+     "total_in": "20455445430385"
+    },
+    "0xad200146726edbf5df11e9b0117b4ee34892ffa2": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26081160,
+     "first_tainted_ts": 1790661239,
+     "hop": 4,
+     "taint_ppm": 759379,
+     "tainted_in": "611154419875",
+     "total_in": "804807322500"
+    },
+    "0xad8e89766d35255fbcd82e90d25f64cf108fc1ab": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26082978,
+     "first_tainted_ts": 1790683163,
+     "hop": 3,
+     "taint_ppm": 451571,
+     "tainted_in": "386294159168",
+     "total_in": "855443670760"
+    },
+    "0xaf19c2c32b73868a4a76d350df21551ed5b78752": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26073984,
+     "first_tainted_ts": 1790574815,
+     "hop": 3,
+     "taint_ppm": 305252,
+     "tainted_in": "133395755028",
+     "total_in": "437000790833"
+    },
+    "0xafb33a6123a4c61e2fb7c2795057692d4bc8d2b9": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26082761,
+     "first_tainted_ts": 1790680559,
+     "hop": 3,
+     "taint_ppm": 620392,
+     "tainted_in": "166432113495",
+     "total_in": "268269107500"
+    },
+    "0xb02a4e75ec319be51a7db3684fe9d786a4fa44eb": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26068503,
+     "first_tainted_ts": 1790508611,
+     "hop": 3,
+     "taint_ppm": 497723,
+     "tainted_in": "573135486645",
+     "total_in": "1151512821217"
+    },
+    "0xb0e821e2ae1aabf74c2ceadf7a9d47097067f9f0": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26074065,
+     "first_tainted_ts": 1790575787,
+     "hop": 3,
+     "taint_ppm": 985150,
+     "tainted_in": "589303893768",
+     "total_in": "598186666156"
+    },
+    "0xb181bd118ea6de186b40861e3fcae7d51ef6e98d": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26069888,
+     "first_tainted_ts": 1790525327,
+     "hop": 3,
+     "taint_ppm": 999027,
+     "tainted_in": "851266346081",
+     "total_in": "852094615204"
+    },
+    "0xb3bb9f35d7c6c9a629ea2c9e159927d5c811074e": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26068481,
+     "first_tainted_ts": 1790508347,
+     "hop": 2,
+     "taint_ppm": 1000000,
+     "tainted_in": "391178816953",
+     "total_in": "391178816953"
+    },
+    "0xb488886d0bc487e4d1547a5281722ab257b1a17f": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26069776,
+     "first_tainted_ts": 1790523983,
+     "hop": 2,
+     "taint_ppm": 999055,
+     "tainted_in": "128056050894",
+     "total_in": "128177158070"
+    },
+    "0xb4ed84bd0980d3562dcd850a2d4a1883da3a2b19": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26075404,
+     "first_tainted_ts": 1790591891,
+     "hop": 4,
+     "taint_ppm": 999999,
+     "tainted_in": "85175439985",
+     "total_in": "85175441631"
+    },
+    "0xb55cbbb58f8c040bd3a06c065d99f9fd5d6a4193": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26075681,
+     "first_tainted_ts": 1790595227,
+     "hop": 3,
+     "taint_ppm": 470211,
+     "tainted_in": "126516684086",
+     "total_in": "269063154401"
+    },
+    "0xb666fd9b55572a3cf6d42b16fb550787670a000f": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26049344,
+     "first_tainted_ts": 1790277419,
+     "hop": 2,
+     "taint_ppm": 131301,
+     "tainted_in": "7082074308",
+     "total_in": "53937476130"
+    },
+    "0xb81f2e952d954ae914591db4d9e421eb7fc6a7a1": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26073169,
+     "first_tainted_ts": 1790565011,
+     "hop": 2,
+     "taint_ppm": 999999,
+     "tainted_in": "227840996025",
+     "total_in": "227841000427"
+    },
+    "0xb92ddd9d69c6aff1fe026007944b19dafb3c840b": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26082614,
+     "first_tainted_ts": 1790678795,
+     "hop": 3,
+     "taint_ppm": 357444,
+     "tainted_in": "300277469720",
+     "total_in": "840068393861"
+    },
+    "0xba3cb449bd2b4adddbc894d8697f5170800eadec": {
+     "breakpoint": "dex",
+     "class": "service",
+     "first_tainted_block": 26068514,
+     "first_tainted_ts": 1790508743,
+     "hop": 3,
+     "taint_ppm": 810217,
+     "tainted_in": "7522618478929",
+     "total_in": "9284687696332"
+    },
+    "0xbc3b7250cc94c70d0b56bf4bcf83fd0bf0ef2508": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26070811,
+     "first_tainted_ts": 1790536511,
+     "hop": 2,
+     "taint_ppm": 999999,
+     "tainted_in": "1621258242584",
+     "total_in": "1621258262340"
+    },
+    "0xbc7c0f10eb697dbe156b0b62ef77a9bd2573757e": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26068535,
+     "first_tainted_ts": 1790508995,
+     "hop": 3,
+     "taint_ppm": 870697,
+     "tainted_in": "10268351820637",
+     "total_in": "11793246652111"
+    },
+    "0xbee3211ab312a8d065c4fef0247448e17a8da000": {
+     "breakpoint": "contract (unlabeled)",
+     "class": "service",
+     "first_tainted_block": 26049353,
+     "first_tainted_ts": 1790277527,
+     "hop": 2,
+     "taint_ppm": 166008,
+     "tainted_in": "2777708422207",
+     "total_in": "16732321308171"
+    },
+    "0xbf3071a89a61c4cab078100a3ea2d8d2503ac7d0": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26073940,
+     "first_tainted_ts": 1790574287,
+     "hop": 4,
+     "taint_ppm": 469465,
+     "tainted_in": "113931564858",
+     "total_in": "242683467570"
+    },
+    "0xbf3509ae5ce23072e9af4334b6059dc2fe10264f": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26081697,
+     "first_tainted_ts": 1790667731,
+     "hop": 3,
+     "taint_ppm": 730591,
+     "tainted_in": "230290116784",
+     "total_in": "315210418868"
+    },
+    "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": {
+     "breakpoint": "contract (WETH9)",
+     "class": "service",
+     "first_tainted_block": 26069772,
+     "first_tainted_ts": 1790523935,
+     "hop": 3,
+     "taint_ppm": 18332,
+     "tainted_in": "260139976721",
+     "total_in": "14190377545506"
+    },
+    "0xc62ce8962bfe11005be7039b70e1599ea5e1dd76": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26074750,
+     "first_tainted_ts": 1790584019,
+     "hop": 2,
+     "taint_ppm": 42290,
+     "tainted_in": "102276800806",
+     "total_in": "2418432296895"
+    },
+    "0xc8b86c7d9e600b524f91f95ff48cc07d6413214f": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26077622,
+     "first_tainted_ts": 1790618627,
+     "hop": 2,
+     "taint_ppm": 476386,
+     "tainted_in": "312140228519",
+     "total_in": "655224116220"
+    },
+    "0xc9a693ab09b1a6a8320919105d62c0f754bc592c": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26070264,
+     "first_tainted_ts": 1790529875,
+     "hop": 2,
+     "taint_ppm": 999999,
+     "tainted_in": "2163608225516",
+     "total_in": "2163608231322"
+    },
+    "0xcc6d35845a3e535b39a5713daa4c781184258105": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26074518,
+     "first_tainted_ts": 1790581223,
+     "hop": 4,
+     "taint_ppm": 999999,
+     "tainted_in": "171045673372",
+     "total_in": "171045676676"
+    },
+    "0xcc902b6e13607f479c33e8c2dbaf703c3050be6e": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26070249,
+     "first_tainted_ts": 1790529695,
+     "hop": 3,
+     "taint_ppm": 998136,
+     "tainted_in": "64842326535",
+     "total_in": "64963380274"
+    },
+    "0xcec0732545112a5ece0462239dc0e87fc9c5a677": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26071237,
+     "first_tainted_ts": 1790541695,
+     "hop": 2,
+     "taint_ppm": 999999,
+     "tainted_in": "828913907461",
+     "total_in": "828913923470"
+    },
+    "0xcf775e9c73886e85d69e01f80fe4fa3b1f52164c": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26073604,
+     "first_tainted_ts": 1790570255,
+     "hop": 2,
+     "taint_ppm": 575214,
+     "tainted_in": "3869895414722",
+     "total_in": "6727744021249"
+    },
+    "0xcfe25e689d37254c392ad683e9fcf9b9faa8adcc": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26074753,
+     "first_tainted_ts": 1790584055,
+     "hop": 2,
+     "taint_ppm": 999999,
+     "tainted_in": "497360438380",
+     "total_in": "497360447986"
+    },
+    "0xd19d4b5d358258f05d7b411e21a1460d11b0876f": {
+     "breakpoint": "proxy contract",
+     "class": "service",
+     "first_tainted_block": 26074545,
+     "first_tainted_ts": 1790581547,
+     "hop": 3,
+     "taint_ppm": 930996,
+     "tainted_in": "57444265794",
+     "total_in": "61701894725"
+    },
+    "0xd1ee705d774d59541d3d395e72a16e48389df7c7": {
+     "breakpoint": "proxy contract",
+     "class": "service",
+     "first_tainted_block": 26068946,
+     "first_tainted_ts": 1790513939,
+     "hop": 3,
+     "taint_ppm": 421274,
+     "tainted_in": "3440535071528",
+     "total_in": "8166976558464"
+    },
+    "0xd2c2f029eff5cacc686f24377cfddcfc82d9f899": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26049624,
+     "first_tainted_ts": 1790280791,
+     "hop": 1,
+     "taint_ppm": 1000000,
+     "tainted_in": "26826910750000",
+     "total_in": "26826910750000"
+    },
+    "0xd2c85609c3ee79fb4631d39fb84cb53fa7ef759c": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26074451,
+     "first_tainted_ts": 1790580419,
+     "hop": 3,
+     "taint_ppm": 999999,
+     "tainted_in": "341695428697",
+     "total_in": "341695435298"
+    },
+    "0xd37bbe5744d730a1d98d8dc97c42f0ca46ad7146": {
+     "breakpoint": "dex/bridge router",
+     "class": "service",
+     "first_tainted_block": 26070286,
+     "first_tainted_ts": 1790530151,
+     "hop": 3,
+     "taint_ppm": 92852,
+     "tainted_in": "8608207202125",
+     "total_in": "92708495797408"
+    },
+    "0xd8d798d5cefdc58f0450a2885add5c1d40776c49": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26068484,
+     "first_tainted_ts": 1790508383,
+     "hop": 2,
+     "taint_ppm": 1000000,
+     "tainted_in": "573135897729",
+     "total_in": "573135897729"
+    },
+    "0xd9154200c6a4ec3bab1e4a36a98a9346d800b424": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26068940,
+     "first_tainted_ts": 1790513867,
+     "hop": 3,
+     "taint_ppm": 654529,
+     "tainted_in": "606788015470",
+     "total_in": "927059515239"
+    },
+    "0xd9640f69122dee72357242a532eca69f2976dcfd": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26069183,
+     "first_tainted_ts": 1790516795,
+     "hop": 3,
+     "taint_ppm": 498216,
+     "tainted_in": "101497204290",
+     "total_in": "203721156385"
+    },
+    "0xdc18d3515664189a5d08aed4d15fe4308ac025ff": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26075632,
+     "first_tainted_ts": 1790594639,
+     "hop": 3,
+     "taint_ppm": 515316,
+     "tainted_in": "350666772760",
+     "total_in": "680488467123"
+    },
+    "0xdc2901f741b4003e32b8b752e97b8c4c1891dc63": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26050061,
+     "first_tainted_ts": 1790286071,
+     "hop": 1,
+     "taint_ppm": 1000000,
+     "tainted_in": "12330909045505",
+     "total_in": "12330909045505"
+    },
+    "0xdc5e46f803d686e679ab55b7deb259cf1556aad6": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26069347,
+     "first_tainted_ts": 1790518799,
+     "hop": 3,
+     "taint_ppm": 1000000,
+     "tainted_in": "8499873608",
+     "total_in": "8499873608"
+    },
+    "0xdd5f713e597227059d8c1713414a798f296ecb11": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26076816,
+     "first_tainted_ts": 1790608895,
+     "hop": 4,
+     "taint_ppm": 772733,
+     "tainted_in": "132309598232",
+     "total_in": "171222757861"
+    },
+    "0xdeb93e9f402e3e689a599bdd73769bbc59aef2c0": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26068612,
+     "first_tainted_ts": 1790509919,
+     "hop": 4,
+     "taint_ppm": 498025,
+     "tainted_in": "61666406491",
+     "total_in": "123821862289"
+    },
+    "0xdf07effaf24ee932fea6512892cee17e671baeb6": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26069123,
+     "first_tainted_ts": 1790516075,
+     "hop": 3,
+     "taint_ppm": 1000000,
+     "tainted_in": "581848867256",
+     "total_in": "581848867256"
+    },
+    "0xe07bd590e1198666230932bad5db3dbbe21e7d57": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26050070,
+     "first_tainted_ts": 1790286191,
+     "hop": 1,
+     "taint_ppm": 588402,
+     "tainted_in": "3731597195920",
+     "total_in": "6341907884615"
+    },
+    "0xe1665ac8b7befa8731829951fe9be468ccb77230": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26073067,
+     "first_tainted_ts": 1790563787,
+     "hop": 4,
+     "taint_ppm": 358,
+     "tainted_in": "76899494",
+     "total_in": "214618409817"
+    },
+    "0xe18ada91f76dd0c9acdfcd4d58ec20861b55d634": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26075639,
+     "first_tainted_ts": 1790594723,
+     "hop": 4,
+     "taint_ppm": 999999,
+     "tainted_in": "340590919785",
+     "total_in": "340590926364"
+    },
+    "0xe3d560ae5d374c90ab6097fddf67ed1a4fb6acc7": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26080592,
+     "first_tainted_ts": 1790654423,
+     "hop": 3,
+     "taint_ppm": 732590,
+     "tainted_in": "786125747250",
+     "total_in": "1073076430000"
+    },
+    "0xe410a2e5710ee787bcaa63f52a3943ff71f0d946": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26049486,
+     "first_tainted_ts": 1790279123,
+     "hop": 1,
+     "taint_ppm": 123587,
+     "tainted_in": "4291242075397",
+     "total_in": "34722343803008"
+    },
+    "0xe43bbe3e457ccddce2f0877baed85043e2da41be": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26075340,
+     "first_tainted_ts": 1790591099,
+     "hop": 4,
+     "taint_ppm": 999999,
+     "tainted_in": "85846112741",
+     "total_in": "85846114400"
+    },
+    "0xe4499f9c4ee291a9f05d1d605050d8e128181328": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26074767,
+     "first_tainted_ts": 1790584223,
+     "hop": 3,
+     "taint_ppm": 988781,
+     "tainted_in": "163663539219",
+     "total_in": "165520490205"
+    },
+    "0xe524580bfdf8eb04f4da8d2176c6186c553915b4": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26068716,
+     "first_tainted_ts": 1790511167,
+     "hop": 2,
+     "taint_ppm": 646380,
+     "tainted_in": "1894776416258",
+     "total_in": "2931363571355"
+    },
+    "0xe58b5b0b434fdaa0e9f7b7e98a6f402e545f2420": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26073224,
+     "first_tainted_ts": 1790565671,
+     "hop": 3,
+     "taint_ppm": 999999,
+     "tainted_in": "227812901980",
+     "total_in": "227812906383"
+    },
+    "0xe64caf5f921ad10336a524f49d060352513253be": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26069368,
+     "first_tainted_ts": 1790519051,
+     "hop": 4,
+     "taint_ppm": 994389,
+     "tainted_in": "121338117322",
+     "total_in": "122022784271"
+    },
+    "0xe7e68d336f90f98d22a479253eafa5f2424acad8": {
+     "breakpoint": "contract (OnchainGateway)",
+     "class": "service",
+     "first_tainted_block": 26073465,
+     "first_tainted_ts": 1790568587,
+     "hop": 4,
+     "taint_ppm": 320987,
+     "tainted_in": "397271206271",
+     "total_in": "1237651345235"
+    },
+    "0xe8736af1926e9d8f5a6602fbbb0893b26436d710": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26049344,
+     "first_tainted_ts": 1790277419,
+     "hop": 2,
+     "taint_ppm": 60882,
+     "tainted_in": "540386623311",
+     "total_in": "8875845140681"
+    },
+    "0xe89b2d25053301ff2429239d1ee56485d119c134": {
+     "breakpoint": "contract (Deposit)",
+     "class": "service",
+     "first_tainted_block": 26068590,
+     "first_tainted_ts": 1790509655,
+     "hop": 4,
+     "taint_ppm": 1000000,
+     "tainted_in": "2682691075",
+     "total_in": "2682691075"
+    },
+    "0xe914285247353847810f4ccc851578deb77c9978": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26075515,
+     "first_tainted_ts": 1790593235,
+     "hop": 4,
+     "taint_ppm": 999438,
+     "tainted_in": "41661655053",
+     "total_in": "41685065767"
+    },
+    "0xe93d025fa7441b8978fbd3099faa71bb0564a886": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26074759,
+     "first_tainted_ts": 1790584127,
+     "hop": 2,
+     "taint_ppm": 475246,
+     "tainted_in": "419600399098",
+     "total_in": "882911724126"
+    },
+    "0xed5a394a7558929112848b7e97b569de6bbe1a51": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26082875,
+     "first_tainted_ts": 1790681927,
+     "hop": 4,
+     "taint_ppm": 2196,
+     "tainted_in": "59181900248",
+     "total_in": "26939401953998"
+    },
+    "0xed78164d9341e6b7d309a70cd185e0165b6801f2": {
+     "breakpoint": null,
+     "class": "unknown (not fetched)",
+     "first_tainted_block": 26081747,
+     "first_tainted_ts": 1790668343,
+     "hop": 3,
+     "taint_ppm": 117966,
+     "tainted_in": "37976140638",
+     "total_in": "321922929000"
+    },
+    "0xee45a8d27b62e201a94d762915bd15686e5ce4af": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26075348,
+     "first_tainted_ts": 1790591195,
+     "hop": 2,
+     "taint_ppm": 999999,
+     "tainted_in": "278907991552",
+     "total_in": "278907996939"
+    },
+    "0xf33e750336e9c0d4e2f4c0d450d753030693cc71": {
+     "breakpoint": "proxy contract",
+     "class": "service",
+     "first_tainted_block": 26068599,
+     "first_tainted_ts": 1790509763,
+     "hop": 3,
+     "taint_ppm": 796774,
+     "tainted_in": "3056421158788",
+     "total_in": "3835991417914"
+    },
+    "0xf59485d238bc8d055c00c05d9fa4694ad7990ac9": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26069228,
+     "first_tainted_ts": 1790517335,
+     "hop": 4,
+     "taint_ppm": 741862,
+     "tainted_in": "581848616631",
+     "total_in": "784307501934"
+    },
+    "0xf7bc92103f23ef312658cd9b81dc2713f7b396c3": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26067572,
+     "first_tainted_ts": 1790497379,
+     "hop": 2,
+     "taint_ppm": 553917,
+     "tainted_in": "35059157544437",
+     "total_in": "63293151080211"
+    },
+    "0xfb2dc580eed955b528407b4d36ffafe3da685401": {
+     "breakpoint": "contract (Umbra)",
+     "class": "service",
+     "first_tainted_block": 26073274,
+     "first_tainted_ts": 1790566271,
+     "hop": 3,
+     "taint_ppm": 1000000,
+     "tainted_in": "405086352325",
+     "total_in": "405086352325"
+    },
+    "0xfb546a60931876ae49e463d3666ff0dd27e40b44": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26072577,
+     "first_tainted_ts": 1790557895,
+     "hop": 3,
+     "taint_ppm": 677918,
+     "tainted_in": "848627539297",
+     "total_in": "1251814075709"
+    },
+    "0xfbbb34332cfd438716316d096ef4af10b4653841": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26077057,
+     "first_tainted_ts": 1790611811,
+     "hop": 3,
+     "taint_ppm": 776379,
+     "tainted_in": "397270663078",
+     "total_in": "511696495645"
+    },
+    "0xfd5ebe912e2061992437767e24e5bcb52a3f9e54": {
+     "breakpoint": null,
+     "class": "touched",
+     "first_tainted_block": 26050154,
+     "first_tainted_ts": 1790287211,
+     "hop": 3,
+     "taint_ppm": 527023,
+     "tainted_in": "14140915926323",
+     "total_in": "26831645699747"
+    },
+    "0xfeeeeee44046c3f61a8cc081e0918ef0de0a7ffc": {
+     "breakpoint": "contract (unlabeled)",
+     "class": "service",
+     "first_tainted_block": 26049336,
+     "first_tainted_ts": 1790277323,
+     "hop": 3,
+     "taint_ppm": 85336,
+     "tainted_in": "2058231243",
+     "total_in": "24118920260"
+    },
+    "0xff0b3b1e7f2e1628c05dbf9a7bf612757e6f6187": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26069619,
+     "first_tainted_ts": 1790522075,
+     "hop": 2,
+     "taint_ppm": 999999,
+     "tainted_in": "104862995470",
+     "total_in": "104862996541"
+    },
+    "0xffeee7518c15f785a096eb7c4445f2ac6ea52599": {
+     "breakpoint": null,
+     "class": "attacker-like",
+     "first_tainted_block": 26073426,
+     "first_tainted_ts": 1790568107,
+     "hop": 3,
+     "taint_ppm": 982728,
+     "tainted_in": "168014008108",
+     "total_in": "170966829133"
+    },
+    "arbitrum:0x2bca667d37afe8d065ca46e3261e9442e77cbeae": {
+     "breakpoint": null,
+     "class": "seed",
+     "first_tainted_block": null,
+     "first_tainted_ts": null,
+     "hop": 0,
+     "taint_ppm": 1000000,
+     "tainted_in": "0",
+     "total_in": "0"
+    },
+    "arbitrum:0xe410a2e5710ee787bcaa63f52a3943ff71f0d946": {
+     "breakpoint": null,
+     "class": "seed",
+     "first_tainted_block": null,
+     "first_tainted_ts": null,
+     "hop": 0,
+     "taint_ppm": 1000000,
+     "tainted_in": "0",
+     "total_in": "0"
+    },
+    "base:0x469ac1406de92f82c0563477240a3627057425dc": {
+     "breakpoint": null,
+     "class": "seed",
+     "first_tainted_block": null,
+     "first_tainted_ts": null,
+     "hop": 0,
+     "taint_ppm": 1000000,
+     "tainted_in": "0",
+     "total_in": "0"
+    },
+    "bsc:0x7c96279ec1e888aa56b9b836e0db26ca48573e1c": {
+     "breakpoint": null,
+     "class": "seed",
+     "first_tainted_block": null,
+     "first_tainted_ts": null,
+     "hop": 0,
+     "taint_ppm": 1000000,
+     "tainted_in": "0",
+     "total_in": "0"
+    },
+    "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57": {
+     "breakpoint": null,
+     "class": "seed",
+     "first_tainted_block": null,
+     "first_tainted_ts": null,
+     "hop": 0,
+     "taint_ppm": 1000000,
+     "tainted_in": "0",
+     "total_in": "0"
+    },
+    "optimism:0x94a43df7687a8494948be937400e9d5d33135da0": {
+     "breakpoint": null,
+     "class": "seed",
+     "first_tainted_block": null,
+     "first_tainted_ts": null,
+     "hop": 0,
+     "taint_ppm": 1000000,
+     "tainted_in": "0",
+     "total_in": "0"
+    }
+   }
+  }
+ },
+ "edges": 12239,
+ "fetched_addresses": 185,
+ "ranking": {
+  "candidates": 192,
+  "found_anywhere": 12,
+  "hits_in_top_100": 12,
+  "hits_in_top_14": 8,
+  "hits_in_top_28": 12,
+  "min_taint_ppm": 100000,
+  "missed": [
+   "0x52f08feb1b0da609a5442514e2bb43c99d25d284",
+   "0xed5a394a7558929112848b7e97b569de6bbe1a51"
+  ],
+  "precision_at_truth_size_pct": 57.14,
+  "recall_pct": 85.71,
+  "truth_size": 14
+ },
+ "seeds": [
+  "0x770b10b273fc44fe9197d6bf20f145c2e98463ee",
+  "arbitrum:0x2bca667d37afe8d065ca46e3261e9442e77cbeae",
+  "arbitrum:0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+  "base:0x469ac1406de92f82c0563477240a3627057425dc",
+  "bsc:0x7c96279ec1e888aa56b9b836e0db26ca48573e1c",
+  "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+  "optimism:0x94a43df7687a8494948be937400e9d5d33135da0"
+ ],
+ "seeds_on_fbi": [],
+ "seeds_set": "A+xchain",
+ "window": [
+  26049114,
+  26084928
+ ],
+ "xchain": {
+  "chains": {
+   "arbitrum": {
+    "blocks": [
+     508524581,
+     510111228
+    ],
+    "deposits_to_ethereum": 5,
+    "matched_fills": 5,
+    "reached": {
+     "0x202e8cfcfeae53b5050935a5e926ebb9679d28cd": 2,
+     "0x2bca667d37afe8d065ca46e3261e9442e77cbeae": 2,
+     "0x770b10b273fc44fe9197d6bf20f145c2e98463ee": 0,
+     "0xe410a2e5710ee787bcaa63f52a3943ff71f0d946": 1
+    },
+    "tokens": {
+     "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": "WETH",
+     "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9": "USD\u20ae0",
+     "0xaf88d065e77c8cC2239327C5EDb3A432268e5831": "USDC"
+    }
+   },
+   "avalanche": {
+    "skipped": "avalanche eth_getTransactionCount: {'code': -32000, 'message': 'missing trie node 94924ea780423df25b66b7f0ebd5358e1a42867d1ac2e29ca11f4d37ee4998f7 (path ) state 0x94924ea780423df25b66b7f0ebd5358e1a428"
+   },
+   "base": {
+    "blocks": [
+     51742657,
+     51958656
+    ],
+    "deposits_to_ethereum": 4,
+    "matched_fills": 4,
+    "reached": {
+     "0x469ac1406de92f82c0563477240a3627057425dc": 1,
+     "0x770b10b273fc44fe9197d6bf20f145c2e98463ee": 0
+    },
+    "tokens": {
+     "0x4200000000000000000000000000000000000006": "WETH",
+     "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913": "USDC"
+    }
+   },
+   "bsc": {
+    "blocks": [
+     123805304,
+     124764984
+    ],
+    "deposits_to_ethereum": 49,
+    "matched_fills": 49,
+    "reached": {
+     "0x770b10b273fc44fe9197d6bf20f145c2e98463ee": 0,
+     "0x7c96279ec1e888aa56b9b836e0db26ca48573e1c": 1,
+     "0xe07bd590e1198666230932bad5db3dbbe21e7d57": 2
+    },
+    "tokens": {
+     "0x2170Ed0880ac9A755fd29B2688956BD959F933F8": "ETH",
+     "0x55d398326f99059fF775485246999027B3197955": "USDT",
+     "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d": "USDC",
+     "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c": "WBNB"
+    }
+   },
+   "optimism": {
+    "blocks": [
+     157337942,
+     157553941
+    ],
+    "deposits_to_ethereum": 8,
+    "matched_fills": 7,
+    "reached": {
+     "0x770b10b273fc44fe9197d6bf20f145c2e98463ee": 0,
+     "0x94a43df7687a8494948be937400e9d5d33135da0": 1,
+     "0xa0ec0de60b51db8d850e79a112ab6222f7d2772a": 2
+    },
+    "tokens": {
+     "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85": "USDC",
+     "0x4200000000000000000000000000000000000006": "WETH",
+     "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58": "USDT"
+    }
+   }
+  },
+  "cross_edges": [
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0x9bbdc0c9ae69879b2620387d6623f47f1397c48001a9f9581bfe47790a7fbb7a",
+    "from": "arbitrum:0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+    "log_index": 1013,
+    "to": "0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+    "usd": 268203
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0x9cf47d5d3d07992d7c47fcb8f1188addb4668f48814e40b6f6920f906a3afe2c",
+    "from": "bsc:0x7c96279ec1e888aa56b9b836e0db26ca48573e1c",
+    "log_index": 492,
+    "to": "0x7c96279ec1e888aa56b9b836e0db26ca48573e1c",
+    "usd": 767265
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0x83154d8f5040d1876b2cddee33bd52ee4af7cbcb58bc07c91e3f2785711a478f",
+    "from": "arbitrum:0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+    "log_index": 771,
+    "to": "0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+    "usd": 1341012
+   },
+   {
+    "asset": "ETH",
+    "ethereum_fill_tx": "0xb66cbc8e405e2ac5730c210dd98353ebc3f9ae88cb1fcb4ae702431ef0503448",
+    "from": "optimism:0x94a43df7687a8494948be937400e9d5d33135da0",
+    "log_index": 211,
+    "to": "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "usd": 1329475
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0x0ac56a69135b9bee411072dc23356c6ce98f23b6486619587d14cf3a820488ae",
+    "from": "arbitrum:0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+    "log_index": 519,
+    "to": "0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+    "usd": 1341012
+   },
+   {
+    "asset": "ETH",
+    "ethereum_fill_tx": "0x4e0e6916a9f97c5a64ddd20805437902ef34792cd496253ad7ef97e58558e169",
+    "from": "base:0x469ac1406de92f82c0563477240a3627057425dc",
+    "log_index": 458,
+    "to": "0x469ac1406de92f82c0563477240a3627057425dc",
+    "usd": 536480
+   },
+   {
+    "asset": "ETH",
+    "ethereum_fill_tx": "0x88e94f4eb830b73e8ff3820943df2f07cfc9b69add4f25694451f36555cabbe2",
+    "from": "base:0x469ac1406de92f82c0563477240a3627057425dc",
+    "log_index": 506,
+    "to": "0x469ac1406de92f82c0563477240a3627057425dc",
+    "usd": 1207081
+   },
+   {
+    "asset": "ETH",
+    "ethereum_fill_tx": "0x190a4d2e086597ed5385c5f7642850e8198ca1a4043f6208ee8a551b7ee12d20",
+    "from": "base:0x469ac1406de92f82c0563477240a3627057425dc",
+    "log_index": 371,
+    "to": "0x469ac1406de92f82c0563477240a3627057425dc",
+    "usd": 1207081
+   },
+   {
+    "asset": "ETH",
+    "ethereum_fill_tx": "0xa75cac5df4c509140928101226dc6ebde5f3a9fa01b9082c9d522f4cab7e2a89",
+    "from": "optimism:0x94a43df7687a8494948be937400e9d5d33135da0",
+    "log_index": 108,
+    "to": "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "usd": 1072969
+   },
+   {
+    "asset": "ETH",
+    "ethereum_fill_tx": "0xc5f7a53e3c38ae1bce3763d1b87a8e6f2332a704212e558807334bbf7d1a0dbb",
+    "from": "optimism:0x94a43df7687a8494948be937400e9d5d33135da0",
+    "log_index": 389,
+    "to": "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "usd": 402363
+   },
+   {
+    "asset": "ETH",
+    "ethereum_fill_tx": "0x86bdc7adf80330aa3512e9aedbf8601bfea5b3af92a31921f7a65922d9129cc7",
+    "from": "base:0x469ac1406de92f82c0563477240a3627057425dc",
+    "log_index": 781,
+    "to": "0x469ac1406de92f82c0563477240a3627057425dc",
+    "usd": 1171459
+   },
+   {
+    "asset": "ETH",
+    "ethereum_fill_tx": "0x411fd1fe8059c4b70445ce0a85cfd17fd8ad7499990f3e434ff848eb7494e3dd",
+    "from": "optimism:0x94a43df7687a8494948be937400e9d5d33135da0",
+    "log_index": 448,
+    "to": "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "usd": 804726
+   },
+   {
+    "asset": "ETH",
+    "ethereum_fill_tx": "0xe3b2a1835158a6431d55ede5fac98e77264ef9a8ab92246697d9fe67aec6b2ca",
+    "from": "optimism:0x94a43df7687a8494948be937400e9d5d33135da0",
+    "log_index": 544,
+    "to": "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "usd": 268242
+   },
+   {
+    "asset": "ETH",
+    "ethereum_fill_tx": "0xb56b2220a43a2a08a2a9b0b082fff67221e035e9a832c880f0a38374a2dbd4b6",
+    "from": "optimism:0x94a43df7687a8494948be937400e9d5d33135da0",
+    "log_index": 94,
+    "to": "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "usd": 402363
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0xfd0694c371695f63008fd61cc00acda61c3928d761a7c40e9cef5a6450d75f92",
+    "from": "arbitrum:0x2bca667d37afe8d065ca46e3261e9442e77cbeae",
+    "log_index": 203,
+    "to": "0x2bca667d37afe8d065ca46e3261e9442e77cbeae",
+    "usd": 2694
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0x2279d8c1d1fbd51f6dd4aaaaebfc966590b17adb83234bb2f973ba4f69485bff",
+    "from": "optimism:0x94a43df7687a8494948be937400e9d5d33135da0",
+    "log_index": 820,
+    "to": "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "usd": 1341012
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0xf45b54c96ac91a1c847ae86c767307ac9200d813d5f295857c5983af2216f561",
+    "from": "arbitrum:0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+    "log_index": 823,
+    "to": "0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+    "usd": 1341012
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0x1cbf8520a3f7ba32cee040dffed37dc40a250d9b83dd190f938c47b9a841a5a5",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 659,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 77750
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0x7a2b1a480078204023d797b24f1714072004fc5a4ec641e80dfa53ded479f9ff",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 718,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 388077
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0x4e6bcc390346e82f5829a0c76930b578915ffa8c56ea506f2f7df328355fbf66",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 633,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 542670
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0xcd775f232136e5369b45d7f6a6f7e269eb70953fcd5b638eb3c57b74e03ee556",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 532,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 77651
+   },
+   {
+    "asset": "USDT",
+    "ethereum_fill_tx": "0x62fd7ec62dfef62ef84de6f6c1ce722f14d4f971f6005f1c9a4230d207909b76",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 956,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 99988
+   },
+   {
+    "asset": "USDT",
+    "ethereum_fill_tx": "0x570f731d712e18edd74c12bd1bcf0e788d3a8e644f03b8fe81f5a4d18e6268e1",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 950,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 99989
+   },
+   {
+    "asset": "USDT",
+    "ethereum_fill_tx": "0x8fd4e99b95dcd71a810066c3abbd550911d4be978174acb6f1f3254fafec8509",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 1201,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 99989
+   },
+   {
+    "asset": "USDT",
+    "ethereum_fill_tx": "0xb8ac270100c5af4e83c1e48f3e92f4535dd8e01ca77fa4ed1b815f57f5c635f3",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 741,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 44995
+   },
+   {
+    "asset": "USDT",
+    "ethereum_fill_tx": "0x75bdd7fae5e7d493ac54fb1977755ce5f18096f37fb3d601d5c536ab9da2199f",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 609,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 40873
+   },
+   {
+    "asset": "USDC",
+    "ethereum_fill_tx": "0xd301dbe2340fa518293f1037aeedfe369688513e851980c88e2ad1d6c53bc4c3",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 378,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 99989
+   },
+   {
+    "asset": "USDC",
+    "ethereum_fill_tx": "0xad1c5fe8348d6e2eb195f6326a6867ab7249984fa79eafbd8099167397919ff9",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 534,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 99989
+   },
+   {
+    "asset": "USDC",
+    "ethereum_fill_tx": "0x628066e2ac39097d2334c132a0a1d54bef1df4e1eba01a943d49c18364cd476d",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 1097,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 99989
+   },
+   {
+    "asset": "USDC",
+    "ethereum_fill_tx": "0x7b6eaf7b7744b61cfabf1e0ffbc77137bdf2d80c014e6d3f687da6be4871d7fc",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 795,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 99989
+   },
+   {
+    "asset": "USDC",
+    "ethereum_fill_tx": "0xe4e8787ebb08ebc8103e45199adc851c98c6510aa052fc107499557afe87fe5e",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 779,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 49994
+   },
+   {
+    "asset": "USDC",
+    "ethereum_fill_tx": "0x059e6eea260eeee33f530dbf8ac6e4aeea57aa55facc733d8b10f6654162e468",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 1581,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 9998
+   },
+   {
+    "asset": "USDC",
+    "ethereum_fill_tx": "0xc6a71e17182b2492e31730e925d53f140743c322a93e169123a048a9a9338476",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 1519,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 10187
+   },
+   {
+    "asset": "USDC",
+    "ethereum_fill_tx": "0x706cff5243e3d1f9c540339d39e26e52d7931408b2607cbaaf4c84dbf56d1c2a",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 1668,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 49994
+   },
+   {
+    "asset": "USDT",
+    "ethereum_fill_tx": "0xf6b85daa184d293f776cf470e7fa19425b511b5a5f0cd2784ee971f6274159d2",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 1849,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 99012
+   },
+   {
+    "asset": "USDC",
+    "ethereum_fill_tx": "0x95d31da22e48c4a1edd46d48c966628d3ec6558993a7bc234787822c7f0aa55d",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 720,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 49994
+   },
+   {
+    "asset": "USDC",
+    "ethereum_fill_tx": "0xc0d819b2d81979086a07ec1255fda28703e5d6394026c62495d263de1dfec6e0",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 724,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 49994
+   },
+   {
+    "asset": "USDC",
+    "ethereum_fill_tx": "0xc2fb9f571b9a414c94a9e96718d8f3edf96b6c52221318913beef550ec48b83d",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 716,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 49994
+   },
+   {
+    "asset": "USDT",
+    "ethereum_fill_tx": "0xe7f5125983e4b3986bcec74902e9e5ffd8bff07955b98fe873872717e5fe7758",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 1705,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 19997
+   },
+   {
+    "asset": "USDT",
+    "ethereum_fill_tx": "0x4dbe764643d25dd0bf56eaeeb1a21ee4049d9192c0f78869fddd6605fddaca25",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 301,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 3999
+   },
+   {
+    "asset": "USDT",
+    "ethereum_fill_tx": "0x0bb428a70d329507f97e18ff7d1649d36344cd87dbebc6c5599ade592a49a813",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 1466,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 3622
+   },
+   {
+    "asset": "USDT",
+    "ethereum_fill_tx": "0x39dd5255e94e04af635a397b9638c4bc957b5950a1f3a6f6c368b37c0f7bb9ed",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 943,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 19997
+   },
+   {
+    "asset": "USDT",
+    "ethereum_fill_tx": "0xfb3a4402bf0d7e5f2209ea0743868f5a8e79dce94379cc0483d0e4669a022472",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 939,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 19997
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0xc87c44c0a1e6e0aabea81d382723790071a044db97c177f784b1f83443b7b4f4",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 607,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 77622
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0x831abeaa615601834c437753a9263484abb9484147a968b289acfe45f4b445a8",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 931,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 77575
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0xfb9dc22de6b56d8fb760bf33871dcf46083c8d58b684ab64f2c9c542afee137f",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 436,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 77568
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0xc7b48738346f3ce47374264061fff1d2995799e4e4779a8fb847e3cf98ecac72",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 5441,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 77572
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0x0686032f547332675dc3c74901bbe7d61200048acbdbd0905a870b8056fc8f13",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 781,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 77544
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0x70d55c2d964a954e73193e6c46e8854eda2c999e326f8c49893115db24eefb23",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 1450,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 77509
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0xe17f1852c876d2100d7a841ed54fdb562d22c48e656cd60fdc92a070d35b90df",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 1445,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 77514
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0x525908832167c0932eccbb96502754825f03df0a992b886b164c678048278abd",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 2090,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 77501
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0x517625f50a3686c7f9cfe5d505d7e9bae04dd79f4307a1d04a5e5c691f4bce02",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 784,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 23255
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0x42a7d9d62c86b314d935b2c12e31df75c370c0ee4135a5f21fe1ac53caac5a2b",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 1331,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 3876
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0x07d2f5bf9f8470b59d3cbf0c42988343ba40c6d7b1db7fe5224a47866079dcaf",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 714,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 77551
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0x13bdbbd21d3db185d7453cff6e0be34867b6d71b1273d029662d394f0f89409f",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 755,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 23244
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0x1bc2aec92d1b51b392a63c7daf153ee13b46d4bf90804af99fe78fb9ae642d43",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 729,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 77492
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0x6249ba83b835ec8bd19632740507279187dc774a1869759c4023934430d6af21",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 739,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 77476
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0x71ffbb7ac18ab59e746e1baefeb5da00a9b0d464562e275bce467fc91a6fced3",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 750,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 23245
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0x864fcd993b02cfbdfbb97fc5127d197e3d438c6662ac7faa51aa1de6aca94150",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 745,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 23247
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0xa066f2ce364ba5396c317621112c21a860b36db06ea8c9af245c55071c53ffd5",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 719,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 77528
+   },
+   {
+    "asset": "WETH",
+    "ethereum_fill_tx": "0xd9a13d815502192e59dc4b964a0ce9b3aca5e90445f4b5dfed7921a895f99b23",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 724,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 77521
+   },
+   {
+    "asset": "USDT",
+    "ethereum_fill_tx": "0x3b3052ac5597216af31dc68e9b826af2c76e38b4aebf5b004a2da38c123c3b4a",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 610,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 19997
+   },
+   {
+    "asset": "USDC",
+    "ethereum_fill_tx": "0xad10a12f15aac1e5cae615d82c9fdd6ab05aa1d59e607995a32e8a5e1e116f96",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 673,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 99989
+   },
+   {
+    "asset": "USDT",
+    "ethereum_fill_tx": "0x3c28e95350aa1e83b54d735199df0931892883bb18f1e86ab30df7ee2009decb",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 654,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 99012
+   },
+   {
+    "asset": "USDT",
+    "ethereum_fill_tx": "0xaf63a4b802db76877abaca79d4dd24315ffbf16b9976f4bb1ae344155b49c590",
+    "from": "bsc:0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "log_index": 996,
+    "to": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "usd": 99012
+   }
+  ],
+  "hops": 2,
+  "links": [
+   {
+    "bridge": "across",
+    "chain": "arbitrum",
+    "fill_tx": "0x9bbdc0c9ae69879b2620387d6623f47f1397c48001a9f9581bfe47790a7fbb7a",
+    "origin_hop": 1,
+    "origin_tx": "0xfbf6309b7359559488cc4d4c4268fb63e19d5b7d795c5f6db1db6b9a3453636b",
+    "recipient": "0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+    "sender": "0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+    "via_contract": null
+   },
+   {
+    "bridge": "across",
+    "chain": "arbitrum",
+    "fill_tx": "0x83154d8f5040d1876b2cddee33bd52ee4af7cbcb58bc07c91e3f2785711a478f",
+    "origin_hop": 1,
+    "origin_tx": "0xb68d40422da5b071334dcd213308c62ed2cb6ab755d3f67b0151a481826cbed6",
+    "recipient": "0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+    "sender": "0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+    "via_contract": null
+   },
+   {
+    "bridge": "across",
+    "chain": "arbitrum",
+    "fill_tx": "0x0ac56a69135b9bee411072dc23356c6ce98f23b6486619587d14cf3a820488ae",
+    "origin_hop": 1,
+    "origin_tx": "0x78e27415fed7dc09acd6bd38b4d0ac66556d4fa28b6558b2bdf68b94826bb8ef",
+    "recipient": "0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+    "sender": "0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+    "via_contract": null
+   },
+   {
+    "bridge": "across",
+    "chain": "arbitrum",
+    "fill_tx": "0xf45b54c96ac91a1c847ae86c767307ac9200d813d5f295857c5983af2216f561",
+    "origin_hop": 1,
+    "origin_tx": "0x7725e4894f379fe96dcbbf52a2f2717c802f2f300314690547a4405801146a20",
+    "recipient": "0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+    "sender": "0xe410a2e5710ee787bcaa63f52a3943ff71f0d946",
+    "via_contract": null
+   },
+   {
+    "bridge": "across",
+    "chain": "arbitrum",
+    "fill_tx": "0xfd0694c371695f63008fd61cc00acda61c3928d761a7c40e9cef5a6450d75f92",
+    "origin_hop": 2,
+    "origin_tx": "0x90444d96118834bd819a0aad0b84a51e02e878c9da4d31241509182fdde95712",
+    "recipient": "0x2bca667d37afe8d065ca46e3261e9442e77cbeae",
+    "sender": "0x2bca667d37afe8d065ca46e3261e9442e77cbeae",
+    "via_contract": null
+   },
+   {
+    "bridge": "stargate",
+    "chain": "base",
+    "fill_tx": "0x4e0e6916a9f97c5a64ddd20805437902ef34792cd496253ad7ef97e58558e169",
+    "origin_hop": 1,
+    "origin_tx": "0x27a5fcc058cbc33f3b46f8b77b24bd54e7aac773ac844e6c3dfe899ca590537f",
+    "recipient": "0x469ac1406de92f82c0563477240a3627057425dc",
+    "sender": "0x469ac1406de92f82c0563477240a3627057425dc",
+    "via_contract": null
+   },
+   {
+    "bridge": "stargate",
+    "chain": "base",
+    "fill_tx": "0x88e94f4eb830b73e8ff3820943df2f07cfc9b69add4f25694451f36555cabbe2",
+    "origin_hop": 1,
+    "origin_tx": "0xb1639805dbbd7399f0015f0efbc09876c37e9d87007638bf0b9d9ce131a0042f",
+    "recipient": "0x469ac1406de92f82c0563477240a3627057425dc",
+    "sender": "0x469ac1406de92f82c0563477240a3627057425dc",
+    "via_contract": null
+   },
+   {
+    "bridge": "stargate",
+    "chain": "base",
+    "fill_tx": "0x190a4d2e086597ed5385c5f7642850e8198ca1a4043f6208ee8a551b7ee12d20",
+    "origin_hop": 1,
+    "origin_tx": "0x084b1c6f309a6eb13cf5bb5362aee488ce949d277ee9108f16fb3b90c1a48504",
+    "recipient": "0x469ac1406de92f82c0563477240a3627057425dc",
+    "sender": "0x469ac1406de92f82c0563477240a3627057425dc",
+    "via_contract": null
+   },
+   {
+    "bridge": "stargate",
+    "chain": "base",
+    "fill_tx": "0x86bdc7adf80330aa3512e9aedbf8601bfea5b3af92a31921f7a65922d9129cc7",
+    "origin_hop": 1,
+    "origin_tx": "0x1c19bbea724777705fd85e9b118806da9615f80530c1675d0e87f08ec62287b1",
+    "recipient": "0x469ac1406de92f82c0563477240a3627057425dc",
+    "sender": "0x469ac1406de92f82c0563477240a3627057425dc",
+    "via_contract": null
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x9cf47d5d3d07992d7c47fcb8f1188addb4668f48814e40b6f6920f906a3afe2c",
+    "origin_hop": 1,
+    "origin_tx": "0x48de91b145dc9fcb7051ea07f29884a17bfec833f4367d38e161175baefd8eff",
+    "recipient": "0x7c96279ec1e888aa56b9b836e0db26ca48573e1c",
+    "sender": "0x7c96279ec1e888aa56b9b836e0db26ca48573e1c",
+    "via_contract": null
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x1cbf8520a3f7ba32cee040dffed37dc40a250d9b83dd190f938c47b9a841a5a5",
+    "origin_hop": 2,
+    "origin_tx": "0x165a92ef3b62b0a9bb05439fd9021ce1778637637f6f2a054b90dbf0221f6196",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x7a2b1a480078204023d797b24f1714072004fc5a4ec641e80dfa53ded479f9ff",
+    "origin_hop": 2,
+    "origin_tx": "0x81c3127f6d3521d7416e115a4f004f4785fc2ecdebb0fd35120356c5c683fc3a",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x4e6bcc390346e82f5829a0c76930b578915ffa8c56ea506f2f7df328355fbf66",
+    "origin_hop": 2,
+    "origin_tx": "0x03fa2b55e555d264f0ede4ae5c7f171853093777fccf0d5fbd6bef50196260bf",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0xcd775f232136e5369b45d7f6a6f7e269eb70953fcd5b638eb3c57b74e03ee556",
+    "origin_hop": 2,
+    "origin_tx": "0x1013423bb196637320199a7d742c08be5f3b7d29eb9fc8b67784ad1202720e2c",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x62fd7ec62dfef62ef84de6f6c1ce722f14d4f971f6005f1c9a4230d207909b76",
+    "origin_hop": 2,
+    "origin_tx": "0x07f7c7ba0983d419a08ac39eed9f1dd975429c21d4c8b107e8152ed6274b968c",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x570f731d712e18edd74c12bd1bcf0e788d3a8e644f03b8fe81f5a4d18e6268e1",
+    "origin_hop": 2,
+    "origin_tx": "0xb6dc08e7a77e8720fc66702e1ab86d7f3ab1afb015a2b9b12275bf55fa2a72c7",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x8fd4e99b95dcd71a810066c3abbd550911d4be978174acb6f1f3254fafec8509",
+    "origin_hop": 2,
+    "origin_tx": "0x2dd47ee6a6e5455dea5b421e21746db33ba20719e49177e53dbb55f03f18692a",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0xb8ac270100c5af4e83c1e48f3e92f4535dd8e01ca77fa4ed1b815f57f5c635f3",
+    "origin_hop": 2,
+    "origin_tx": "0xa42cda36d1d9a23c79b31f18ab99b26421fd0c388b67a1425d87a15e0b1d43ac",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x75bdd7fae5e7d493ac54fb1977755ce5f18096f37fb3d601d5c536ab9da2199f",
+    "origin_hop": 2,
+    "origin_tx": "0x698bd3a56172e1faaa0ad07ee2be4351ddafd94332574843629c64258a025cb5",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0xd301dbe2340fa518293f1037aeedfe369688513e851980c88e2ad1d6c53bc4c3",
+    "origin_hop": 2,
+    "origin_tx": "0xf00dff94e9324a0aae2c1b654bfbec5fe70931b702a1d57377845a18dfe23892",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0xad1c5fe8348d6e2eb195f6326a6867ab7249984fa79eafbd8099167397919ff9",
+    "origin_hop": 2,
+    "origin_tx": "0xeedcaf937374a218985341e7737c137f9cbe7565d88d0d585e23e672bef22b5d",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x628066e2ac39097d2334c132a0a1d54bef1df4e1eba01a943d49c18364cd476d",
+    "origin_hop": 2,
+    "origin_tx": "0x8ec161b19826d9d0ee7c30d9232f067ce49a6519e0e11b20f179b624fd405ed8",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x7b6eaf7b7744b61cfabf1e0ffbc77137bdf2d80c014e6d3f687da6be4871d7fc",
+    "origin_hop": 2,
+    "origin_tx": "0x5e86a1ecdb624c961df4e584dfa923668b0d4a6f6d33a7da256fafb4f3d3e9e2",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0xad10a12f15aac1e5cae615d82c9fdd6ab05aa1d59e607995a32e8a5e1e116f96",
+    "origin_hop": 2,
+    "origin_tx": "0x3e1864a905b238f189cec25d0428d5799dc54ab0f03c996a1b25735967390f84",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0xe4e8787ebb08ebc8103e45199adc851c98c6510aa052fc107499557afe87fe5e",
+    "origin_hop": 2,
+    "origin_tx": "0x66842d0cbd4f71bf8b575aa668d76b58be054c533b76033847c60ea95a33695b",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x706cff5243e3d1f9c540339d39e26e52d7931408b2607cbaaf4c84dbf56d1c2a",
+    "origin_hop": 2,
+    "origin_tx": "0xfd7523212f2aa1be42756c99fc5e85aa6c28cab3bbe21aca0427d08de8d8c030",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0xc2fb9f571b9a414c94a9e96718d8f3edf96b6c52221318913beef550ec48b83d",
+    "origin_hop": 2,
+    "origin_tx": "0xa86d8140921ad61ea1005f69acdace873c69f2563490adb8df1e104c154a5fd9",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x95d31da22e48c4a1edd46d48c966628d3ec6558993a7bc234787822c7f0aa55d",
+    "origin_hop": 2,
+    "origin_tx": "0xa6e9bbf5bdcf1bc08c08d68d83d3c08e7989aba7d2ae33178e4e32d588d205e1",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0xc0d819b2d81979086a07ec1255fda28703e5d6394026c62495d263de1dfec6e0",
+    "origin_hop": 2,
+    "origin_tx": "0xe0029588fc139a86f97227891980de6d2f05f963d3a2ca5ddd12565e40a287db",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x059e6eea260eeee33f530dbf8ac6e4aeea57aa55facc733d8b10f6654162e468",
+    "origin_hop": 2,
+    "origin_tx": "0x2b89b42dd8ae7b5fa3d3e6fbc8acb0dda6072be57fa14fad14f9ceef7654b3ba",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0xc6a71e17182b2492e31730e925d53f140743c322a93e169123a048a9a9338476",
+    "origin_hop": 2,
+    "origin_tx": "0x675ab44c3a29735e61a8f8d96bdd3d7e9a5a367bc8d988494356d7267d3a581f",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0xf6b85daa184d293f776cf470e7fa19425b511b5a5f0cd2784ee971f6274159d2",
+    "origin_hop": 2,
+    "origin_tx": "0xa8f6b2b9d808d0ab087e2fd3edef5cd59d5e96ba18e480a9ce23728281e77992",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0xaf63a4b802db76877abaca79d4dd24315ffbf16b9976f4bb1ae344155b49c590",
+    "origin_hop": 2,
+    "origin_tx": "0xaa671eb15b713ff35050ce1e1ec0c86d9bc9c3f9897de8adc6dd19e80c1e8668",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x3c28e95350aa1e83b54d735199df0931892883bb18f1e86ab30df7ee2009decb",
+    "origin_hop": 2,
+    "origin_tx": "0x0c209ce97e9b8b2fceae068b4caa80a3b485c23aab443afe5e5fcfbdb7ec645b",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0xe7f5125983e4b3986bcec74902e9e5ffd8bff07955b98fe873872717e5fe7758",
+    "origin_hop": 2,
+    "origin_tx": "0x4f111019666680bd4be651e34c69cdb8964b9359194b39b109156d07d49f8c5a",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0xfb3a4402bf0d7e5f2209ea0743868f5a8e79dce94379cc0483d0e4669a022472",
+    "origin_hop": 2,
+    "origin_tx": "0x91f07f95b49ff66fd3d4f6fb31326e3f884e79dada76562bc3bdccd0ae5856f8",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x39dd5255e94e04af635a397b9638c4bc957b5950a1f3a6f6c368b37c0f7bb9ed",
+    "origin_hop": 2,
+    "origin_tx": "0xf0f5b1fe74a4a3936adc911f306e7423e8ab6628165bbaed16ff5c67c1f98b25",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x3b3052ac5597216af31dc68e9b826af2c76e38b4aebf5b004a2da38c123c3b4a",
+    "origin_hop": 2,
+    "origin_tx": "0xa8d0c386c033f4b1c13ab604e5b99902fd9aab4ee310ee0572c9ea16f2f268e7",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x4dbe764643d25dd0bf56eaeeb1a21ee4049d9192c0f78869fddd6605fddaca25",
+    "origin_hop": 2,
+    "origin_tx": "0x07765a029c5a5a64f02a93ede26a2019e48866eacff2651fd299e77f7e0ea260",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x0bb428a70d329507f97e18ff7d1649d36344cd87dbebc6c5599ade592a49a813",
+    "origin_hop": 2,
+    "origin_tx": "0x1c32d895cadccec9b44ba8caa1f0f6d8f8573f4a369b8ce142d0f03bc88831f8",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0xc87c44c0a1e6e0aabea81d382723790071a044db97c177f784b1f83443b7b4f4",
+    "origin_hop": 2,
+    "origin_tx": "0xc0a55d1b27b007972b98d1d6200cdd00fbadaa24c7bbde369fd54ca05ef29443",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x831abeaa615601834c437753a9263484abb9484147a968b289acfe45f4b445a8",
+    "origin_hop": 2,
+    "origin_tx": "0x619318e6860c35e4e6d9ba937e0f1529ecf53bd7e2ef87ed915f5af224c43dc5",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0xfb9dc22de6b56d8fb760bf33871dcf46083c8d58b684ab64f2c9c542afee137f",
+    "origin_hop": 2,
+    "origin_tx": "0xdb30bfaf87e35b7e45513d366fe38f8f1c7e7947f9bb46ada63da8bcab296288",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0xc7b48738346f3ce47374264061fff1d2995799e4e4779a8fb847e3cf98ecac72",
+    "origin_hop": 2,
+    "origin_tx": "0x14ba2b47996b919385b30e3d4ab460d7d00b6d611f19dd51c37225a1bf54a6fb",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x07d2f5bf9f8470b59d3cbf0c42988343ba40c6d7b1db7fe5224a47866079dcaf",
+    "origin_hop": 2,
+    "origin_tx": "0x41d1dbf8e5324802214ce2abbe7fc5a04f6596fc21541ed566e31678f9474fe1",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0xa066f2ce364ba5396c317621112c21a860b36db06ea8c9af245c55071c53ffd5",
+    "origin_hop": 2,
+    "origin_tx": "0xad2f8f1091e2947fc822b8021c68559b8b22568af91ec9cb7a6556dba50511c3",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0xd9a13d815502192e59dc4b964a0ce9b3aca5e90445f4b5dfed7921a895f99b23",
+    "origin_hop": 2,
+    "origin_tx": "0x31d8d29914ab82a937d1f140fcf94926407b2eb88586b8635b88feb6bfd66228",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x0686032f547332675dc3c74901bbe7d61200048acbdbd0905a870b8056fc8f13",
+    "origin_hop": 2,
+    "origin_tx": "0x4c5f483223f5704b95d6b3bc6791a8667a48f00fb8a095924166f11eefffbe79",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0xe17f1852c876d2100d7a841ed54fdb562d22c48e656cd60fdc92a070d35b90df",
+    "origin_hop": 2,
+    "origin_tx": "0x76a16a663d9783ca17811b9a5618d7382595345004c2bf25578f6c4ab0a27001",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x70d55c2d964a954e73193e6c46e8854eda2c999e326f8c49893115db24eefb23",
+    "origin_hop": 2,
+    "origin_tx": "0x621840cef0e48d2ecc2736a2c0a97646a78342d7bffb1f094bfe71ce727648c5",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x525908832167c0932eccbb96502754825f03df0a992b886b164c678048278abd",
+    "origin_hop": 2,
+    "origin_tx": "0xf5a90749cadf3dfab98707eb7e58bee29496bbaca149f5d0957f4edf27d7d616",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x1bc2aec92d1b51b392a63c7daf153ee13b46d4bf90804af99fe78fb9ae642d43",
+    "origin_hop": 2,
+    "origin_tx": "0xbf1be57dc1fad07ecb2559978fdbb8e6c2c744468c237ce298a06e3228bcca9a",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x6249ba83b835ec8bd19632740507279187dc774a1869759c4023934430d6af21",
+    "origin_hop": 2,
+    "origin_tx": "0x370ee56f79460fc124c7ed9449af6fac5dbbec6d881abbfecdb7db1f5e9d292f",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x517625f50a3686c7f9cfe5d505d7e9bae04dd79f4307a1d04a5e5c691f4bce02",
+    "origin_hop": 2,
+    "origin_tx": "0xf60cdfa899aafc98b2b791158b67ed14646a37b933850402d9de7e1999e92348",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x864fcd993b02cfbdfbb97fc5127d197e3d438c6662ac7faa51aa1de6aca94150",
+    "origin_hop": 2,
+    "origin_tx": "0x0eadefc254c9b0f7a61e51960d0f470e5d8b5ca0ec744d999fe81382fdc89b8f",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x71ffbb7ac18ab59e746e1baefeb5da00a9b0d464562e275bce467fc91a6fced3",
+    "origin_hop": 2,
+    "origin_tx": "0x8b107866ba60444c9fbc5b6ef47b7c9e45d4aab1d87a3803ad78286716ca8f1a",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x13bdbbd21d3db185d7453cff6e0be34867b6d71b1273d029662d394f0f89409f",
+    "origin_hop": 2,
+    "origin_tx": "0x727770b80addac6acc650a56c4e061ea731bc78f653d2985f0d43be10ec03895",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "across",
+    "chain": "bsc",
+    "fill_tx": "0x42a7d9d62c86b314d935b2c12e31df75c370c0ee4135a5f21fe1ac53caac5a2b",
+    "origin_hop": 2,
+    "origin_tx": "0x04a9917a7c70de467d59dad92a6341b108317521fa1b49603a6d797283d0b851",
+    "recipient": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "sender": "0xe07bd590e1198666230932bad5db3dbbe21e7d57",
+    "via_contract": "0x60ac95ec1153aa8199751917ede25d0ca49a36e2"
+   },
+   {
+    "bridge": "stargate",
+    "chain": "optimism",
+    "fill_tx": "0xb66cbc8e405e2ac5730c210dd98353ebc3f9ae88cb1fcb4ae702431ef0503448",
+    "origin_hop": 1,
+    "origin_tx": "0xfa82a87282faae6fc5cfdeed5c65c50280500155ee53e5b43e726b86f3f7ea5e",
+    "recipient": "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "sender": "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "via_contract": null
+   },
+   {
+    "bridge": "across",
+    "chain": "optimism",
+    "fill_tx": "0x2279d8c1d1fbd51f6dd4aaaaebfc966590b17adb83234bb2f973ba4f69485bff",
+    "origin_hop": 1,
+    "origin_tx": "0x719779bba51e1f4f3ba8cd31836c50bc9103158f386906f0e2d8fc5dfb8c859c",
+    "recipient": "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "sender": "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "via_contract": null
+   },
+   {
+    "bridge": "stargate",
+    "chain": "optimism",
+    "fill_tx": "0xa75cac5df4c509140928101226dc6ebde5f3a9fa01b9082c9d522f4cab7e2a89",
+    "origin_hop": 1,
+    "origin_tx": "0xa6856eee2a667b233387132523db5c1047b133852201862168d75a9211290bef",
+    "recipient": "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "sender": "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "via_contract": null
+   },
+   {
+    "bridge": "stargate",
+    "chain": "optimism",
+    "fill_tx": "0xc5f7a53e3c38ae1bce3763d1b87a8e6f2332a704212e558807334bbf7d1a0dbb",
+    "origin_hop": 1,
+    "origin_tx": "0x6868d431e1d43f4d60176e4a012c3395251f61c79889f52228576bf9144a13e2",
+    "recipient": "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "sender": "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "via_contract": null
+   },
+   {
+    "bridge": "stargate",
+    "chain": "optimism",
+    "fill_tx": "0x411fd1fe8059c4b70445ce0a85cfd17fd8ad7499990f3e434ff848eb7494e3dd",
+    "origin_hop": 1,
+    "origin_tx": "0x6998d24d94bd665a5cd7e3158391dcea7052104000802c2e2a4f104c21c255fa",
+    "recipient": "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "sender": "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "via_contract": null
+   },
+   {
+    "bridge": "stargate",
+    "chain": "optimism",
+    "fill_tx": "0xe3b2a1835158a6431d55ede5fac98e77264ef9a8ab92246697d9fe67aec6b2ca",
+    "origin_hop": 1,
+    "origin_tx": "0xa212a791de1586cb5a836a126918e1caba374d3b05f8932260c1ea6ceeef14a1",
+    "recipient": "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "sender": "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "via_contract": null
+   },
+   {
+    "bridge": "stargate",
+    "chain": "optimism",
+    "fill_tx": "0xb56b2220a43a2a08a2a9b0b082fff67221e035e9a832c880f0a38374a2dbd4b6",
+    "origin_hop": 1,
+    "origin_tx": "0x7129f0eb4058a70cd9f63a06af9691143dabf3501b1fb659ddc201c35582931f",
+    "recipient": "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "sender": "0x94a43df7687a8494948be937400e9d5d33135da0",
+    "via_contract": null
+   }
+  ],
+  "rpc": "NOWNodes (NOWNODES_KEY in analysis/trace_bybit/.env)"
+ }
+}

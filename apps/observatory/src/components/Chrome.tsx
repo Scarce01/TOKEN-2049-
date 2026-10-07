@@ -210,15 +210,15 @@ export function Header() {
   const [label, cls, dot] = RS[state]
   return (
     <header className="h-12 shrink-0 border-b border-white/[0.05] bg-[#0F1115] flex items-center gap-5 px-4">
-      <label className="flex items-center gap-2 h-8 w-[320px] px-2.5 rounded-md bg-white/[0.03] border border-white/[0.05] focus-within:border-[#D6A61F]/40 transition-colors">
+      <label className={`${controls ? "hidden min-w-0 sm:flex sm:max-w-[320px] sm:flex-1" : "flex w-[320px]"} items-center gap-2 h-8 px-2.5 rounded-md bg-white/[0.03] border border-white/[0.05] focus-within:border-[#D6A61F]/40 transition-colors`}>
         <Icon name="search" size={14} className="text-mute" />
         <input
           placeholder="Search address, tx, member…"
-          className="flex-1 bg-transparent text-[12.5px] text-cream placeholder:text-mute outline-none"
+          className="min-w-0 flex-1 bg-transparent text-[12.5px] text-cream placeholder:text-mute outline-none"
         />
         <kbd className="font-mono text-[9.5px] text-mute">⌘K</kbd>
       </label>
-      <div className="ml-auto flex items-center gap-5 font-mono text-[10.5px] uppercase tracking-[0.1em]">
+      <div className={`ml-auto flex shrink-0 items-center ${controls ? "gap-3 sm:gap-5" : "gap-5"} font-mono text-[10.5px] uppercase tracking-[0.1em]`}>
         {!controls && (
           <span className="flex items-center gap-2 text-mute">
             <span className="w-1.5 h-1.5 clip-hex bg-[#D6A61F]" />

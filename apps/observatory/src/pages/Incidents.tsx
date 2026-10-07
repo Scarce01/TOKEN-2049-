@@ -1,8 +1,9 @@
-import { useNavigate } from 'react-router'
+import { useNavigate, useSearchParams } from 'react-router'
 import { Kind } from '../shared/constants'
-import { DataTable, Metric, PageHeader, Panel, StateBadge } from '../components/ui'
+import { DataTable, Metric, PageHeader, Panel, StateBadge, Tabs } from '../components/ui'
 import { buildCases, CHAIN_LABEL, readEvents, readLive, useLive, type Case } from '../live/chain'
 import { CASES, proves } from './Replay'
+import { keyOf, readAttack, STAGES, type Key, type Status } from '../components/AttackTimeline'
 
 // Incidents, live from the fork. A case is a CRE report and every tightening it applied, grouped by caseId.
 const KIND_NAME = Object.fromEntries(Object.entries(Kind).map(([k, v]) => [v, k.toLowerCase().replace(/_/g, ' ')]))
@@ -21,10 +22,42 @@ function response(c: Case): string {
   return [...kinds].slice(0, 4).join(' · ') || '—'
 }
 
+const TABS = ['Live', 'History'] as const
+
+// The simulation started from the Overview, stage by stage, straight from the bridge (testnet fork, measured).
+function Simulation({ st }: { st: Status }) {
+  const seen = new Map<Key, number>()
+  for (const s of st.steps) { const k = keyOf(s); if (k && !seen.has(k)) seen.set(k, s.at) }
+  const t0 = st.steps.find((x) => x.type === 'start')?.at ?? st.steps[0]!.at
+  const err = st.steps.find((s) => s.type === 'error')
+  const org = st.steps.find((s) => s.type === 'start')?.org ?? 'A'
+  return (
+    <Panel className="mb-5" title={`Simulation · Org ${org}`}
+      action={<span className={`font-mono text-[11px] uppercase tracking-[0.12em] ${err ? 'text-red-400' : 'text-honey'}`}>{err ? 'Error' : st.running ? 'Running' : 'Complete'}</span>}>
+      <ol className="grid grid-cols-9 gap-2 px-5 py-4">
+        {STAGES.map((g) => {
+          const at = seen.get(g.key)
+          return (
+            <li key={g.key} className={`rounded-lg border px-2.5 py-2 ${at !== undefined ? 'border-honey/40 bg-honey/[0.05]' : 'border-white/[0.06]'}`}>
+              <div className={`text-[12px] font-medium leading-tight ${at !== undefined ? 'text-cream' : 'text-mute'}`}>{g.title}</div>
+              <div className="mt-1 font-mono text-[11px] text-mute">{at !== undefined ? `+${((at - t0) / 1000).toFixed(1)}s` : '…'}</div>
+            </li>
+          )
+        })}
+      </ol>
+      {err && <p className="px-5 pb-4 text-[12.5px] text-red-300">{err.message}</p>}
+    </Panel>
+  )
+}
+
 export default function Incidents() {
   const nav = useNavigate()
+  // tab lives in the URL so Back from a case returns to the same tab
+  const [params, setParams] = useSearchParams()
+  const tab = params.get('tab') === 'history' ? 'History' : 'Live'
   const live = useLive(readLive, 6000)
   const events = useLive(readEvents, 6000)
+  const attack = useLive(readAttack, 1000)
   const now = live.data?.chainTime ?? 0
   // an incident is a case that tightened or published a threat; patrol checkpoint cases are not incidents
   const TIGHTEN = ['Tightened', 'QuotaZeroed', 'FreezeSet', 'Swept', 'AlertSet', 'DelayRaised', 'ThreatAdded']
@@ -36,12 +69,32 @@ export default function Incidents() {
     <div className="max-w-[1480px]">
       <PageHeader eyebrow="Command center" title="Incidents"
         desc={`Every verified trap hit becomes a case with its full on-chain response: the CRE report and each tightening action it applied. Live from ${CHAIN_LABEL}.`} />
+      <div className="mb-5"><Tabs tabs={TABS} value={tab} onChange={(t) => setParams(t === 'History' ? { tab: 'history' } : {}, { replace: true })} /></div>
+      {tab === 'Live' && <>
       <div className="grid grid-cols-4 gap-4 mb-5">
         <Metric label="Cases" value={events.data ? cases.length : '…'} sub="on chain since deployment" status="active" />
         <Metric label="Active" value={active.length} sub="alert still in force" status={active.length ? 'threat' : 'active'} />
         <Metric label="Threats published" value={(events.data ?? []).filter((e) => e.name === 'ThreatAdded').length} sub="to the shared registry" status="warning" />
         <Metric label="Funds lost" value="$0" sub="drains reverted at the vault" />
       </div>
+      {attack.data?.steps.length ? <Simulation st={attack.data} /> : null}
+      <Panel title={`Live cases · ${CHAIN_LABEL}`}>
+        {cases.length === 0 ? (
+          <p className="px-5 py-8 text-[13px] text-mute">No cases on {CHAIN_LABEL} yet. Run an attack from the Overview to create one.</p>
+        ) : (
+          <DataTable rows={cases} rowKey={(c) => c.caseId} onSelect={(c) => nav(`/cases/${c.caseId}`)} cols={[
+            { key: 'id', label: 'Case', render: (c) => <span className="font-mono text-cream">{short(c.caseId)}</span> },
+            { key: 's', label: 'Exchange', render: (c) => <span className="text-dim">{c.org?.name ?? '—'}</span> },
+            { key: 'w', label: 'Workflow', render: () => <span className="text-dim">Trap</span> },
+            { key: 'r', label: 'Response', render: (c) => <span className="text-[12.5px] text-dim">{response(c)}</span> },
+            { key: 'b', label: 'Block', align: 'right', render: (c) => <span className="font-mono text-[12px] text-cream">{c.block.toLocaleString('en-US')}</span> },
+            { key: 't', label: 'Time', align: 'right', render: (c) => <span className="font-mono text-[12px] text-mute">{hhmmss(c.time)}</span> },
+            { key: 'st', label: 'Status', render: (c) => <StateBadge state={status(c)} /> },
+          ]} />
+        )}
+      </Panel>
+      </>}
+      {tab === 'History' && <>
       {/* historical attacks replayed against public on-chain data (known ground truth, not live) */}
       <div className="mb-3 flex items-end justify-between">
         <div>
@@ -64,7 +117,7 @@ export default function Incidents() {
           </button>
         ))}
       </div>
-      <Panel title="Historical cases" className="mb-8">
+      <Panel title="Historical cases">
         <DataTable rows={CASES} rowKey={(r) => r.id} onSelect={(r) => nav(`/cases/replay/${r.id}/incident`)} cols={[
           { key: 'c', label: 'Case', render: (r) => <span className="font-mono text-cream whitespace-nowrap">{r.id}</span> },
           { key: 'e', label: 'Exchange', render: (r) => <span className="text-dim">{r.exchange}</span> },
@@ -76,23 +129,8 @@ export default function Incidents() {
           { key: 's', label: 'Status', render: () => <span className="font-mono text-[11px] tracking-[0.12em] text-honey">REPLAY</span> },
         ]} />
       </Panel>
-      <Panel title={`Live cases · ${CHAIN_LABEL}`}>
-        {cases.length === 0 ? (
-          <p className="px-5 py-8 text-[13px] text-mute">No cases on {CHAIN_LABEL} yet. Run an attack from the Overview to create one.</p>
-        ) : (
-          <DataTable rows={cases} rowKey={(c) => c.caseId} onSelect={(c) => nav(`/cases/${c.caseId}`)} cols={[
-            { key: 'id', label: 'Case', render: (c) => <span className="font-mono text-cream">{short(c.caseId)}</span> },
-            { key: 's', label: 'Exchange', render: (c) => <span className="text-dim">{c.org?.name ?? '—'}</span> },
-            { key: 'w', label: 'Workflow', render: () => <span className="text-dim">Trap</span> },
-            { key: 'r', label: 'Response', render: (c) => <span className="text-[12.5px] text-dim">{response(c)}</span> },
-            { key: 'b', label: 'Block', align: 'right', render: (c) => <span className="font-mono text-[12px] text-cream">{c.block.toLocaleString('en-US')}</span> },
-            { key: 't', label: 'Time', align: 'right', render: (c) => <span className="font-mono text-[12px] text-mute">{hhmmss(c.time)}</span> },
-            { key: 'st', label: 'Status', render: (c) => <StateBadge state={status(c)} /> },
-          ]} />
-        )}
-      </Panel>
-
-      <p className="mt-3 text-[11px] text-mute">Replays: public on-chain transfers, scored against published ground truth (analysis/trace_bybit). Live cases: testnet fork, measured.</p>
+      </>}
+      <p className="mt-3 text-[11px] text-mute">{tab === 'Live' ? `Live cases: ${CHAIN_LABEL === 'Base Sepolia' ? 'testnet (Chainlink DON)' : 'testnet fork'}, measured.` : 'Replays: public on-chain transfers, scored against published ground truth (analysis/trace_bybit).'}</p>
     </div>
   )
 }
