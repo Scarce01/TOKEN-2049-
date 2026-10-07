@@ -11,9 +11,9 @@ RUN python3 -m venv /opt/py \
 ENV PATH="/opt/py/bin:${PATH}"
 COPY --from=bun /usr/local/bin/bun /usr/local/bin/bun
 RUN npm install --global pnpm@10.23.0
-# anvil (Foundry stable) and the CRE CLI (same release and checksum as saladbkp/quorum-2049 infra/runtime)
+# anvil (Foundry 1.8.4, the version that exported the fork state) and the CRE CLI (same release and checksum as saladbkp/quorum-2049 infra/runtime)
 RUN curl --fail --location --silent --show-error \
-      https://github.com/foundry-rs/foundry/releases/download/stable/foundry_stable_linux_amd64.tar.gz -o /tmp/foundry.tgz \
+      https://github.com/foundry-rs/foundry/releases/download/v1.8.4/foundry_v1.8.4_linux_amd64.tar.gz -o /tmp/foundry.tgz \
     && tar -xzf /tmp/foundry.tgz -C /usr/local/bin anvil && rm /tmp/foundry.tgz \
     && curl --fail --location --silent --show-error \
       https://github.com/smartcontractkit/cre-cli/releases/download/v1.37.0/cre_linux_amd64_ldd2-35.tar.gz -o /tmp/cre.tgz \
