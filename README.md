@@ -16,6 +16,8 @@
     <a href="docs/proposal_v4.md"><strong>Read the design »</strong></a>
     <br />
     <br />
+    <a href="docs/SUBMISSION.md"><strong>Submission links</strong></a>
+    &middot;
     <a href="docs/BENCHMARK.md">Benchmark report</a>
     &middot;
     <a href="docs/benchmark_whitepaper.html">Benchmark white paper (HTML)</a>
