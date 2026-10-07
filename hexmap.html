@@ -1006,12 +1006,13 @@ function followTrail(){
   if(Math.hypot(dx,dz)<.5)return;
   const step=new THREE.Vector3(dx*.08,0,dz*.08);camera.position.add(step);controls.target.add(step);controls.update();
 }
-// Temporary-lane reserve, built from the ground itself. After the blue trail settles back, a patch of terrain near the
-// decoy flattens; its middle columns rise into one big hexagon that turns gold and glows, a wall one hex thick rises
-// around it at the same time, and a coin floats above. Holds until the host resets (beat 0). Started by 'fund'.
-const FV={vault:2,plaza:3,wall:4,rise:64,wallH:28}; // rings from the centre: 0-2 vault, 3 plaza, 4 wall
-const FT={flat:1.0,rise:1.1,glow:[2.7,3.5],coin:[3.3,4.3],end:4.6};
-let fundFx=null,fundSite=null,fundGlow=0;
+// Temporary-lane reserve, built from the ground itself. After the blue trail settles back, a patch of terrain on the
+// decoy's island flattens and its middle columns rise into one big hexagon that turns gold and glows, with a 3D coin
+// above it. At the same time the island's river bank (land touching the river, one hex thick) rises as a red wall.
+// Holds until the host resets (beat 0). Started by 'fund'.
+const FV={vault:2,plaza:3,rise:64,wallH:30,towerGap:320}; // rings from the centre: 0-2 vault, 3 plaza
+const FT={flat:1.0,rise:1.1,wall:[1.1,2.6],glow:[2.7,3.5],coin:[3.3,4.3],end:4.6};
+let fundFx=null,fundSite=null,fundGlow=0,fundRed=0;
 function makeCoinTexture(){
   const cv=document.createElement('canvas');cv.width=cv.height=128;const x=cv.getContext('2d');
   const g=x.createRadialGradient(64,52,8,64,64,60);g.addColorStop(0,'#ffe9a8');g.addColorStop(.6,'#f5b21f');g.addColorStop(1,'#c7890f');
@@ -1020,16 +1021,24 @@ function makeCoinTexture(){
   x.fillStyle='#7a520a';x.font='bold 78px Arial';x.textAlign='center';x.textBaseline='middle';x.fillText('$',64,70);
   const t=new THREE.CanvasTexture(cv);t.colorSpace=THREE.SRGBColorSpace;return t;
 }
-const fundCoin=new THREE.Sprite(new THREE.SpriteMaterial({map:makeCoinTexture(),transparent:true,opacity:0,depthWrite:false,toneMapped:false}));fundCoin.visible=false;scene.add(fundCoin);
-/** Nearest open ground to the decoy (its left on screen preferred) whose footprint plus one ring is all land (no
- *  river gap), off the trail and the cage, with no decoy or vault in it, and clear of every building and tower. */
+// a real coin: a gold disc with the $ face on both sides, standing upright and spinning slowly
+const fundCoin=new THREE.Group(),_coinFace=makeCoinTexture();
+{const rim=new THREE.MeshStandardMaterial({color:'#f5b21f',metalness:.5,roughness:.32,emissive:'#a86c00',emissiveIntensity:.55});
+ const face=new THREE.MeshStandardMaterial({map:_coinFace,emissiveMap:_coinFace,emissive:'#ffffff',emissiveIntensity:.35,metalness:.45,roughness:.35});
+ const m=new THREE.Mesh(new THREE.CylinderGeometry(26,26,6,48),[rim,face,face]);m.rotation.x=Math.PI/2;m.castShadow=true;fundCoin.add(m);}
+fundCoin.visible=false;scene.add(fundCoin);
+/** Nearest open ground to the decoy on its own island (its left on screen preferred), at least FV.towerGap from every
+ *  tower, whose footprint plus one ring is all land (no river gap), off the trail and the cage, with no decoy or vault
+ *  in it, and clear of every building. */
 function pickFundSite(){
   if(!obstacles)buildObstacles();
   // account columns are plain columns (nothing stands on them), so the reserve may take them in; decoys and vaults never
-  const free=c=>c&&(c.kind==='terrain'||c.kind==='account')&&c.tier===undefined&&!c.trackHop&&!c.nodeAt&&!c.cageD&&c!==cashOut&&c!==hop1&&c!==coreCell;
-  const reach=FV.wall+1,need=1+3*reach*(reach+1),rad=(reach+.5)*26;
+  const free=c=>c&&(c.kind==='terrain'||c.kind==='account')&&c.exchange===threat.exchange&&c.tier===undefined&&!c.trackHop&&!c.nodeAt&&!c.cageD&&c!==cashOut&&c!==hop1&&c!==coreCell;
+  const reach=FV.plaza+1,need=1+3*reach*(reach+1),rad=(reach+.5)*26;
+  const towers=[...Object.values(nodeTowers).map(t=>({x:t.g.position.x,z:t.g.position.z})),{x:coreCell.x,z:coreCell.y}];
   const cand=cells.filter(free).map(c=>[Math.hypot(c.x-threat.x,c.y-threat.y)+(c.x>threat.x?120:0),c]).sort((a,b)=>a[0]-b[0]||a[1].index-b[1].index);
   for(const [,c] of cand){
+    if(towers.some(t=>Math.hypot(t.x-c.x,t.z-c.y)<FV.towerGap))continue;
     if(obstacles.some(o=>Math.hypot(o.x-c.x,o.z-c.y)<o.r+rad))continue;
     const near=cells.filter(k=>Math.abs(k.x-c.x)<rad+30&&Math.abs(k.y-c.y)<rad+30&&hexDistance(k.q,k.r,c.q,c.r)<=reach);
     if(near.length===need&&near.every(free))return c;
@@ -1040,25 +1049,36 @@ function startFundFx(){
   if(fundFx)return;
   fundSite=fundSite||pickFundSite();if(!fundSite)return;
   const s=fundSite,reg=[];
-  for(const c of cells){const d=hexDistance(c.q,c.r,s.q,s.r);if(d<=FV.wall){c.fundD=d;c.fundA=(Math.atan2(c.y-s.y,c.x-s.x)/(2*Math.PI)+1)%1;reg.push(c);}}
+  for(const c of cells){const d=hexDistance(c.q,c.r,s.q,s.r);if(d<=FV.plaza){c.fundD=d;reg.push(c);}}
   s.fundFlat=Math.round(reg.reduce((a,c)=>a+c.height,0)/reg.length);
-  const span=Math.hypot(s.x-threat.x,s.y-threat.y)+2*(FV.wall+1)*26;
-  fundFx={t0:performance.now(),reg,settled:false,zoom:clamp((camera.right-camera.left)/(span*1.6),.8,2),from:{tgt:controls.target.clone(),off:camera.position.clone().sub(controls.target),zoom:camera.zoom}};
+  // the wall: this island's land touching the river, one hex thick; it rises outward from the reserve
+  const towerSpots=Object.values(nodeTowers).map(t=>t.g.position),bank=[];
+  for(const c of cells){
+    if(c.exchange!==threat.exchange||!(c.kind==='terrain'||c.kind==='account')||c.tier!==undefined||c.trackHop||c.nodeAt||c.cageD||c.fundD!==undefined)continue;
+    if(towerSpots.some(t=>Math.hypot(t.x-c.x,t.z-c.y)<30))continue;
+    let wet=false;for(let dq=-1;dq<=1&&!wet;dq++)for(let dr=-1;dr<=1&&!wet;dr++){const k=`${c.q+dq}:${c.r+dr}`;if(riverKeys.has(k)&&hexDistance(c.q,c.r,c.q+dq,c.r+dr)===1)wet=true;}
+    if(wet)bank.push(c);
+  }
+  const far=Math.max(1,...bank.map(c=>Math.hypot(c.x-s.x,c.y-s.y)));for(const c of bank)c.fundBank=Math.hypot(c.x-s.x,c.y-s.y)/far;
+  const span=Math.hypot(s.x-threat.x,s.y-threat.y)+2*(FV.plaza+1)*26;
+  fundFx={t0:performance.now(),reg,bank,settled:false,zoom:clamp((camera.right-camera.left)/(span*1.6),.8,2),from:{tgt:controls.target.clone(),off:camera.position.clone().sub(controls.target),zoom:camera.zoom}};
   fundCoin.visible=true;follow=false;camAnim=null;terrainTime=-1;invalidate();
 }
 function clearFund(){
   if(!fundFx)return;
-  for(const c of fundFx.reg)c.fundD=undefined;
+  for(const c of fundFx.reg)c.fundD=undefined;for(const c of fundFx.bank)c.fundBank=undefined;
   fundFx=null;fundCoin.visible=false;follow=true;terrainTime=-1;invalidate();
 }
-/** Height of a reserve column at this moment (the terrain flattens, then the vault and the wall rise); sets fundGlow. */
+/** Height of a reserve column at this moment (the terrain flattens, then the vault and the bank wall rise); sets
+ *  fundGlow (vault, yellow) and fundRed (wall). */
 function fundHeight(c,h){
-  fundGlow=0;
-  if(!fundFx||c.fundD===undefined)return h;
+  fundGlow=fundRed=0;
+  if(!fundFx)return h;
+  if(c.fundBank!==undefined){const el=(performance.now()-fundFx.t0)/1000,u=easeC((el-FT.wall[0]-c.fundBank*(FT.wall[1]-FT.wall[0]))/.8);fundRed=.85*u;return h+FV.wallH*u;}
+  if(c.fundD===undefined)return h;
   const el=(performance.now()-fundFx.t0)/1000,d=c.fundD;
   h+=(fundSite.fundFlat-h)*easeC(el/FT.flat);
   if(d<=FV.vault){h+=FV.rise*easeC((el-FT.rise-d*.3)/.9);fundGlow=.9*clamp((el-FT.glow[0])/(FT.glow[1]-FT.glow[0]),0,1);}
-  else if(d===FV.wall)h+=FV.wallH*easeC((el-FT.rise-c.fundA*.6)/1.2);
   return h;
 }
 function drawFundFx(){
@@ -1067,21 +1087,21 @@ function drawFundFx(){
   if(el<FT.end)terrainTime=-1; // columns still moving: rebuild the terrain next frame
   else if(!fundFx.settled){fundFx.settled=true;terrainTime=-1;dirty=true;} // one last rebuild at the final heights
   else{const g=.78+.14*Math.sin(el*2.2);for(const c of fundFx.reg)if(c.fundD<=FV.vault)fxAttr.array[(c.index-1)*4]=g;fxAttr.needsUpdate=true;} // hold: the vault glow breathes
-  const cU=easeC((el-FT.coin[0])/(FT.coin[1]-FT.coin[0])),cs=56*(.5+.5*cU);
-  fundCoin.material.opacity=cU;fundCoin.scale.set(cs,cs,1);fundCoin.position.set(s.x,s.fundFlat+FV.rise+48+Math.sin(el*2.4)*4,s.y);
+  const cU=easeC((el-FT.coin[0])/(FT.coin[1]-FT.coin[0]));
+  fundCoin.scale.setScalar(Math.max(.001,cU));fundCoin.rotation.y=el*1.4;fundCoin.position.set(s.x,s.fundFlat+FV.rise+50+Math.sin(el*2.4)*4,s.y);
   if(el<1.4){ // frame the reserve and the decoy at the attack angle, then hand the camera back
     const ie=easeC(el/1.4),f=fundFx.from,off=f.off.clone().lerp(ATK_OFF,ie),tx=(s.x+threat.x)/2,tz=(s.y+threat.y)/2;
     controls.target.set(f.tgt.x+(tx-f.tgt.x)*ie,0,f.tgt.z+(tz-f.tgt.z)*ie);
     camera.position.copy(controls.target).add(off);camera.zoom=f.zoom+(fundFx.zoom-f.zoom)*ie;camera.updateProjectionMatrix();controls.update();
   }
 }
-window.hexmapBees.probeFund=(el)=>{if(el<0){clearFund();return {cleared:!fundFx};}startFundFx();if(!fundFx)return {site:null};fundFx.t0=performance.now()-el*1000;fundFx.settled=el>=FT.end;const s=fundSite,at=d=>{const c=fundFx.reg.find(k=>k.fundD===d);return c?Math.round(heightAt(c)):null;},out=cells.find(k=>hexDistance(k.q,k.r,s.q,s.r)===FV.wall+2);const centre=Math.round(heightAt(s));return {site:[Math.round(s.x),Math.round(s.y)],key:s.key,flat:s.fundFlat,centre,glow:+fundGlow.toFixed(2),plaza:at(FV.plaza),wall:at(FV.wall),outside:out?Math.round(heightAt(out)):null,decoyDist:Math.round(Math.hypot(s.x-threat.x,s.y-threat.y))};};
+window.hexmapBees.probeFund=(el)=>{if(el<0){clearFund();return {cleared:!fundFx};}startFundFx();if(!fundFx)return {site:null};fundFx.t0=performance.now()-el*1000;fundFx.settled=el>=FT.end;const s=fundSite,at=d=>{const c=fundFx.reg.find(k=>k.fundD===d);return c?Math.round(heightAt(c)):null;},out=cells.find(k=>hexDistance(k.q,k.r,s.q,s.r)===FV.plaza+2);const centre=Math.round(heightAt(s));return {site:[Math.round(s.x),Math.round(s.y)],key:s.key,flat:s.fundFlat,centre,glow:+fundGlow.toFixed(2),plaza:at(FV.plaza),bank:fundFx.bank.length,bankRise:fundFx.bank.length?Math.round(heightAt(fundFx.bank[0])-fundFx.bank[0].height):null,red:fundFx.bank.length?(heightAt(fundFx.bank[0]),+fundRed.toFixed(2)):0,towerGap:Math.round(Math.min(...Object.values(nodeTowers).map(t=>Math.hypot(t.g.position.x-s.x,t.g.position.z-s.y)),Math.hypot(coreCell.x-s.x,coreCell.y-s.y))),outside:out?Math.round(heightAt(out)):null,decoyDist:Math.round(Math.hypot(s.x-threat.x,s.y-threat.y))};};
 function heightAt(c){return Math.max(2,fundHeight(c,c.height+waveAt(c)+trackAt(c)+verifyWaveAt(c)));}
 let terrainTime=-1;
 function draw(){
   dirty=false;const state=stateAt(time);renderer.shadowMap.needsUpdate=true;
   if(terrainTime!==time||verifyWaving){
-  for(const c of cells){const h=heightAt(c),i=(c.index-1)*4;dummy.position.set(c.x,0,c.y);dummy.scale.set(1,h,1);dummy.updateMatrix();columns.setMatrixAt(c.index-1,dummy.matrix);fxAttr.array[i]=Math.max(waveGlow,fxYellow,verifyGlow,fundGlow);fxAttr.array[i+1]=fxHeat;fxAttr.array[i+2]=fxRed;baseBlue[c.index-1]=fxBlue;fxAttr.array[i+3]=Math.max(fxBlue,glowOf(c.index-1,performance.now()/1000));}
+  for(const c of cells){const h=heightAt(c),i=(c.index-1)*4;dummy.position.set(c.x,0,c.y);dummy.scale.set(1,h,1);dummy.updateMatrix();columns.setMatrixAt(c.index-1,dummy.matrix);fxAttr.array[i]=Math.max(waveGlow,fxYellow,verifyGlow,fundGlow);fxAttr.array[i+1]=fxHeat;fxAttr.array[i+2]=Math.max(fxRed,fundRed);baseBlue[c.index-1]=fxBlue;fxAttr.array[i+3]=Math.max(fxBlue,glowOf(c.index-1,performance.now()/1000));}
   fxAttr.needsUpdate=true;
   columns.instanceMatrix.needsUpdate=true;terrainTime=time;
   }
