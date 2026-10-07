@@ -10,6 +10,7 @@ Everything a judge needs, per track. Status as of 2026-10-07. Every link here op
 | Benchmark report | [docs/BENCHMARK.md](BENCHMARK.md) |
 | Benchmark white paper (HTML, download and open) | [docs/benchmark_whitepaper.html](benchmark_whitepaper.html) |
 | Live deployment: addresses, workflow IDs, how it was deployed | [docs/DEPLOY_BASE_SEPOLIA.md](DEPLOY_BASE_SEPOLIA.md) |
+| Chainlink proof page (live) | https://qu3ee-chainlink-proof.vercel.app |
 | Solana evidence page (live) | https://dist-two-gamma-80.vercel.app |
 | Demo video | [to add: link] |
 | Pitch deck | [to add: link] |
@@ -34,6 +35,7 @@ Show it working end to end on public chains. The on-chain links:
 
 | Requirement | Link |
 | --- | --- |
+| **Proof page: every DON report, each workflow id linked to a Basescan tx that carries it** | https://qu3ee-chainlink-proof.vercel.app |
 | CRE workflows (orchestration layer) | [workflows/trap](../workflows/trap), [workflows/cosign](../workflows/cosign), [workflows/patrol](../workflows/patrol) |
 | Live deployment on the CRE network | Patrol `002d793802489c6c0b8e379240bd9f8f7b6189ba682c02f19969e31fcaeb5078`, Trap `006576bb13bfa082e9ccf563521e2004534f708992cf597054db84be8ff3cd66`, Cosign `00e143e0e4721b04f2eb4f7d07274a5307c82c66d2d0d45a3fa110258bcb0ebc` (private registry, all ACTIVE) |
 | Blockchain plus external data | Base Sepolia contracts; NOWNodes RPC inside the Trap ([nownodes.ts](../workflows/trap/src/logic/nownodes.ts)); Trek proposals over the HTTP trigger |

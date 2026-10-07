@@ -18,6 +18,10 @@
     <br />
     <a href="docs/SUBMISSION.md"><strong>Submission links</strong></a>
     &middot;
+    <a href="https://qu3ee-chainlink-proof.vercel.app">Chainlink proof</a>
+    &middot;
+    <a href="https://dist-two-gamma-80.vercel.app">Solana proof</a>
+    &middot;
     <a href="docs/BENCHMARK.md">Benchmark report</a>
     &middot;
     <a href="docs/benchmark_whitepaper.html">Benchmark white paper (HTML)</a>
