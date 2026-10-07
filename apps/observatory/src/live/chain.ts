@@ -7,10 +7,14 @@ import fork from '../deployment.json'
 import { ColdVaultAbi, PatrolStateAbi, QuorumReceiverAbi, QuorumVaultAbi, ThreatRegistryAbi } from '../shared/abi'
 
 export const RPC = (import.meta.env.VITE_RPC_URL as string) ?? (typeof location !== 'undefined' ? location.origin + '/rpc' : 'http://127.0.0.1:8545')
-export const CHAIN_LABEL = fork.chainId === 84532 ? 'Base Sepolia fork' : `chain ${fork.chainId}`
+/** The public deployment (mode PROD, behind the KeystoneForwarder) says "Base Sepolia"; the local fork (SIM) says "fork". */
+export const CHAIN_LABEL =
+  fork.chainId === 84532 ? ((fork as { mode?: string }).mode === 'PROD' ? 'Base Sepolia' : 'Base Sepolia fork') : `chain ${fork.chainId}`
 
 /** Display names for the demo orgs; any other org in the deployment shows as "Org <letter>". */
-const NAMES: Record<string, string> = { A: 'Bybit', B: 'Bitget' }
+// Neutral on purpose: the deployment is public, and an incident labelled with a real exchange's name reads as if that
+// exchange was hit or is a member. The historical replays (Bybit, Stake, Bitget) carry their own names.
+const NAMES: Record<string, string> = { A: 'Exchange A', B: 'Exchange B' }
 
 type OrgJson = { orgId: string; receiver: string; hotVault: string; warmVault: string; coldVault: string }
 export type OrgRef = { letter: string; name: string; orgId: Hex; receiver: Address; hot: Address; warm: Address; cold: Address }
@@ -164,6 +168,8 @@ const blockTime = new Map<string, number>() // by block hash: a fork reset reuse
 /** Incremental: only new blocks are fetched. A reset or reorg (cached head hash changed) refetches all.
  * Calls share one in-flight read, so two pollers never append the same logs twice. */
 let reading: Promise<ChainEvent[]> | null = null
+const LOG_WINDOW = 200n
+
 export function readEvents(): Promise<ChainEvent[]> {
   reading ??= fetchEvents().finally(() => { reading = null })
   return reading
@@ -176,7 +182,12 @@ async function fetchEvents(): Promise<ChainEvent[]> {
   }
   if (head.number > cache.to) {
     const addresses = [...ORGS.flatMap((o) => [o.receiver, o.hot, o.warm, o.cold]), D.threatRegistry, D.patrolState]
-    const logs = await client.getLogs({ address: addresses, fromBlock: cache.to + 1n, toBlock: head.number })
+    // Public RPCs refuse wide windows (sepolia.base.org answers 413 above about 200 blocks), so read in slices.
+    const logs: Log[] = []
+    for (let from = cache.to + 1n; from <= head.number; from += LOG_WINDOW) {
+      const to = from + LOG_WINDOW - 1n < head.number ? from + LOG_WINDOW - 1n : head.number
+      logs.push(...((await client.getLogs({ address: addresses, fromBlock: from, toBlock: to })) as Log[]))
+    }
     const parsed = parseEventLogs({ abi: EVENT_ABI as never, logs: logs as Log[], strict: false }) as unknown as (Log & { eventName: string; args: Record<string, unknown> })[]
     const keep = parsed.filter((l) => SHOWN.has(l.eventName))
     const missing = [...new Set(keep.map((l) => l.blockHash!).filter((h) => !blockTime.has(h)))]
