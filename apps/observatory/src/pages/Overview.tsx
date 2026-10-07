@@ -8,7 +8,7 @@ import { useReplay } from '../components/replay'
 import SecurityPanel from '../components/SecurityPanel'
 import AttackTimeline from '../components/AttackTimeline'
 import { ORGS, readLive, useLive } from '../live/chain'
-import { runAttack, toMap } from '../live/bridge'
+import { BRIDGE, runAttack, toMap } from '../live/bridge'
 
 const MODES: [WorldMode, string][] = [['live', 'Live'], ['trace', 'Trace origin']]
 const LEGEND: [React.ReactNode, string][] = [
@@ -131,7 +131,7 @@ export default function Overview() {
   // Live attack: the button runs the real backend flow on the fork; each on-chain response plays as a map
   // beat (no scrubber). Beat values are positions on the map's own 0-18s visual clock.
   const BEAT: Record<string, number> = { start: 0, scan: 0.4, probe: 0.9, tripwire: 1.3, verify: 1.7, report: 4, QuotaZeroed: 4, FreezeSet: 5, Swept: 6, DelayRaised: 6.5, ThreatAdded: 8, done: 10 }
-  const [atk, setAtk] = useState<{ busy: boolean; status: string; tx?: string; block?: number; done?: boolean; err?: string }>({ busy: false, status: '' })
+  const [atk, setAtk] = useState<{ busy: boolean; status: string; tx?: string; block?: number; done?: boolean; resetting?: boolean; err?: string }>({ busy: false, status: '' })
   const atkOrg = useRef<string | null>(null)
   const runAttackDemo = async () => {
     if (atk.busy) return
@@ -175,6 +175,21 @@ export default function Overview() {
       setTimeout(() => { atkOrg.current = null; recovering.current = false; setAtk({ busy: false, status: '' }) }, 1500)
     }
   }, [atk.done, atkRecovered])
+  // Reset: after an attack the button becomes Reset. It reverts the fork to the clean post-setup snapshot and
+  // returns the map to calm, so the next run starts fresh. done:false up front so the recovery effect won't also fire.
+  const resetDemo = async () => {
+    if (atk.busy) return
+    recovering.current = false
+    setAtk({ busy: true, done: false, resetting: true, status: 'Resetting the fork to a clean state…' })
+    try {
+      await fetch(`${BRIDGE}/reset`, { method: 'POST' }).catch(() => null)
+    } finally {
+      atkOrg.current = null
+      toMap({ type: 'beat', t: 0 })
+      toMap({ type: 'home' })
+      setAtk({ busy: false, status: '' })
+    }
+  }
 
   const done = tracing ? tr >= TR.end : t >= T.end
 
@@ -236,12 +251,15 @@ export default function Overview() {
             <PlayGlyph playing={playing && !done} />{done ? 'Re-trace' : playing ? 'Pause trace' : 'Resume trace'}
           </button>
         ) : (
-          <button onClick={runAttackDemo} disabled={atk.busy} title="Runs the real attack on the fork; the defence response drives this view"
+          <button onClick={atk.done ? resetDemo : runAttackDemo} disabled={atk.busy}
+            title={atk.done ? 'Reset the fork and map to a clean state' : 'Runs the real attack on the fork; the defence response drives this view'}
             className="flex items-center gap-2.5 h-11 px-6 rounded-xl bg-[#D6A61F] text-ink text-[13.5px] font-semibold hover:bg-[#E2B52E] disabled:opacity-60 disabled:hover:bg-[#D6A61F] shadow-[0_8px_30px_rgba(214,166,31,.35)] transition-colors">
             {atk.busy
               ? <svg width="14" height="14" viewBox="0 0 24 24" className="animate-spin"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="3" strokeDasharray="42" strokeLinecap="round" opacity="0.9" /></svg>
-              : <svg width="13" height="13" viewBox="0 0 14 14"><path d="M3.5 2v10l8.5-5z" fill="currentColor" /></svg>}
-            {atk.busy ? 'Attack in progress\u2026' : atk.done ? 'Run attack again' : 'Attack'}
+              : atk.done
+                ? <svg width="14" height="14" viewBox="0 0 16 16"><path d="M13.6 8a5.6 5.6 0 1 1-1.7-4M13.6 2.4V6H10" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                : <svg width="13" height="13" viewBox="0 0 14 14"><path d="M3.5 2v10l8.5-5z" fill="currentColor" /></svg>}
+            {atk.busy ? (atk.resetting ? 'Resetting\u2026' : 'Attack in progress\u2026') : atk.done ? 'Reset' : 'Attack'}
           </button>
         )}
       </div>
