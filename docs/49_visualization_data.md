@@ -28,6 +28,7 @@ node node_modules/ponder/dist/esm/bin/ponder.js start --schema ponder_quorum -H 
 | `/history/series/<name>?org&fromBlock&limit\|last` | 一条命名的序列（见第 3 节） |
 | `/history/series/snapshots?org&fromBlock&limit\|last` | 每个区块每个 org 的状态快照 |
 | `/history/counts?org` | 每种事件的总数与最近 24 小时（链上时间）数量；用来替代 UI 里写死的探测、攻击、广播次数 |
+| `/history/angles?org&fromBlock` | 一次攻击的多方位判断（第 8 节） |
 | `/history/stream` | SSE，`event: chain`，每条新索引到的事件推一次；`id` = `区块:logIndex`，支持 `Last-Event-ID` 或 `?after=` 续接；15 秒没有新事件推一次 `event: ping` |
 
 事件行的格式：`{id, block, time, tx, contract, tier (receiver|desk|hot|warm|cold|null), org, event, caseId, args}`。金额是基础单位的十进制字符串（qUSD 6 位、qETH 18 位）。
@@ -87,3 +88,17 @@ node node_modules/ponder/dist/esm/bin/ponder.js start --schema ponder_quorum -H 
 ## 7. 攻击按钮这条线
 
 `POST /bridge/attack` 在 fork 上产生真实交易，CRE simulate --broadcast 写报告；indexer 索引到之后从 `/history/stream` 推出来。地图用 bridge 的 `/attack/status` 驱动叙事步骤（扫描、探测、核实），用 `/history/stream` 的真实事件驱动收紧动画与数字，用 `/history/series/snapshots` 画前后对比。
+
+## 8. 多方位判断（`/history/angles`）
+
+诱饵与攻击都在本地 fork 上模拟，所以每个角度都要说清楚自己能不能看、看到了什么。`fromBlock` 填攻击开始的区块（bridge 的 start 步骤）；不填就从这个 org 最近一次 ThreatAdded 或 AlertSet 往前 5 个区块。逻辑是纯函数 `services/indexer/src/api/angles.ts`，测试 `services/indexer/test/angles.test.ts`。
+
+| 角度 | 看什么 | flag 的条件 | fork 上的实际结果（2026-10-07） |
+| --- | --- | --- | --- |
+| 诱饵绊线（CRE） | 这个 org 的 AlertSet、FreezeSet、QuotaZeroed、Swept、ThreatAdded | 有 ThreatAdded，或等级 ≥ L3 | flag：CONFIRMED、冻结、额度 0、威胁共享 |
+| 第二数据源（NOWNodes） | 公开节点能不能证明这笔交易 | 永远不 flag；fork 上是 na（交易只在本机），公开链上 key 没权限时也是 na | na |
+| 流出异常（Patrol CUSUM） | 窗口内 PatrolStateUpdated 的 S 与 alarm | alarm | clear：S 最大 0（1 qUSD 的探测不改变流出，抓到它的是诱饵） |
+| 资产守恒（Patrol） | 每个 token 最新 AssetCheckpoint 对比攻击前最后一个 | 任一 token 减少 | clear：两个 token 都没少 |
+| 跨交易所（ThreatRegistry） | 窗口内 ThreatAdded | 有 | flag：另一家交易所在 Cosign 关 4 拒绝这个地址 |
+
+结论字段 `verdict` = 「N of M independent angles flag this attack」，M 只算能看的角度（na 不算）。

@@ -12,5 +12,5 @@
     "types": ["node"]
   },
   "include": ["./**/*.ts"],
-  "exclude": ["node_modules", ".ponder", "generated"]
+  "exclude": ["node_modules", ".ponder", "generated", "test"]
 }

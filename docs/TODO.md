@@ -9,7 +9,7 @@
 - [ ] **决定 CRE 运行方式**（STATUS「CRE 运行方式」还是空的）：方式 A DON 部署（要 `cre account access`）或方式 B sim-runner + SIM 模式。AWS 设计按方式 B 写（sim-runner 容器 + `CRE_API_KEY`）
 - [ ] **公开 Base Sepolia 部署**：`deployments/base-sepolia.json` 还不存在（现在只有 fork、anvil、Ethereum Sepolia）。需要有测试币的 deployer；`SIM_OPERATOR` 要等于 workflows/.env 里 CRE key 的地址；`pnpm deploy:base-sepolia`
 - [ ] 公开链上的诱饵：decoy-admin 生成并经 ConfigTimelock 提交 DecoyCommit root（fork 上由 fork-demo/setup.ts 做；公开链要正式流程，只用 secrets/）
-- [ ] Base Sepolia 没有 NOWNodes：trap 配置 `nownodesRpcUrl` 为空，只用 CRE 自己的收据（审计 H1/H2 已处理）。要不要另找第二数据源，团队决定
+- [ ] NOWNodes 有 Base Sepolia 节点，但我们的 key 没开权限：在 NOWNodes 后台开通后，NOWNODES_URL 加 84532，公开链 Trap 才有第二数据源（本地 fork 上永远不适用，见 STATUS）
 - [x] 8443 的 UI 已搬进仓库：`apps/observatory`（`hexmap.html` 在仓库根目录）。还要决定：Amplify 部署 `apps/observatory` 还是 `apps/console`
 - [x] `packages/offchain/scripts/fork-demo/`（setup、bridge、patrol）已提交
 

@@ -105,6 +105,7 @@
 - **诱饵生成器（docs/48_decoy_generation.md，2026-10-07）：** 新生成器在 1,000 个合成账户上 8 / 8 过双侧门槛（AUC 区间上界最大 0.613），但演示用的 100 个账户只有 19 行在吸引区段里，门槛过不了、ρ_max 15% 下也只放得下 1 个诱饵。要决定：(1) D28 改用新生成器的口径（区段并集、双侧 [0.35, 0.65]、honeyword ≤ 0.35）还是维持旧口径；(2) 演示交易所的账户池要不要扩到约 1,000 个；(3) 生成器的计划写在 `secrets/decoygen/`（不进 git，与 decoys.local.json 同一目录），规则 2 只点名了 decoys.local.json，要不要把这个目录也列进去；(4) 计划落地（写 exchange_*、登记 Trap、ConfigTimelock 提交新根）会换掉示例诱饵所在的根，什么时候做；(5) 门槛与 ρ_max、预备期 2 期、每月轮换 20% 都是假设值
 - SAFE 区块标签用 -4（go-ethereum 惯例），SDK 只公开了 finalized（-3）；spike S9 要在 Base Sepolia 上确认
 - 关 6 的第二个数据源：S7 已确认 NOWNodes 只有 Ethereum Sepolia、没有 Base Sepolia，所以 Base 上关 6 仍只做「价格过期」，「数据源一致」维持 waived（D14.6）
+- **更正（2026-10-07 实测）：** NOWNodes 有 Base Sepolia 节点（`base-sepolia.nownodes.io`），是我们的 key 没开权限（回复「You do not have access to this node」）；同一个 key 能用 eth-sepolia 与 base 主网。要在 NOWNodes 后台给 key 开 Base Sepolia，之后在 `workflows/trap/src/logic/nownodes.ts` 的 NOWNODES_URL 加 84532，公开链上的 Trap 才有真的第二数据源。本地 fork 上的交易只在本机，任何公开节点都看不到，所以 fork 上第二数据源一律显示「不适用」，不能显示为一致（规则 8）
 - CUSUM 报警目前只把补充量减半；「再加一个独立信号就升 L1」（D55 的第二部分）还没做，需要先定义哪些信号算独立（PENDING 51、指纹命中）
 
 - exchange-api 的排队：文档写 pg-boss；现在用 withdrawals 表本身当 outbox，worker 用 `FOR UPDATE SKIP LOCKED` 认领，效果相同（崩溃不丢单、不重复提交），少一个依赖、也不需要额外 schema 权限。要不要换回 pg-boss？

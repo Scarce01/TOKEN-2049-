@@ -8,7 +8,8 @@ import { db } from 'ponder:api'
 import schema from 'ponder:schema'
 import { Hono } from 'hono'
 import { streamSSE } from 'hono/streaming'
-import { and, asc, desc, eq, gt, gte, inArray, lte, or, replaceBigInts } from 'ponder'
+import { and, asc, desc, eq, gt, gte, inArray, lt, lte, or, replaceBigInts } from 'ponder'
+import { judge } from './angles'
 
 const dep = JSON.parse(
   readFileSync(
@@ -64,7 +65,7 @@ const shape = (r: Row) => ({
   org: orgOf(r),
   event: r.event,
   caseId: r.caseId,
-  args: r.args,
+  args: r.args as Record<string, unknown>,
 })
 
 /** Named series: which events make up each line on the map (docs/49 section 2). */
@@ -209,6 +210,47 @@ app.get('/history/counts', async (c) => {
     if (now - r.time <= 86_400) day[r.event] = (day[r.event] ?? 0) + 1
   }
   return c.json({ org, asOfChainTime: now, all, last24h: day })
+})
+
+/** Multi-angle judgement of an attack (docs/49 section 8). ?org=A&fromBlock=<attack start block>; without
+ * fromBlock the window starts 5 blocks before the org's latest ThreatAdded or AlertSet. */
+app.get('/history/angles', async (c) => {
+  const q = c.req.query()
+  const org = q.org && ORG_RE.test(q.org) ? q.org : 'A'
+  const t = schema.chainEvents
+  let from = q.fromBlock ? BigInt(int(q.fromBlock, 0)) : null
+  if (from === null) {
+    const marks = (
+      await db
+        .select()
+        .from(t)
+        .where(inArray(t.event, ['ThreatAdded', 'AlertSet']))
+        .orderBy(desc(t.blockNumber))
+        .limit(SCAN)
+    )
+      .map(shape)
+      .filter((r) => r.org === org)
+    from = marks[0] ? BigInt(Math.max(0, marks[0].block - 5)) : 0n
+  }
+  const window = (
+    await db.select().from(t).where(gte(t.blockNumber, from)).orderBy(asc(t.blockNumber), asc(t.logIndex)).limit(SCAN)
+  ).map(shape)
+  const before = (
+    await db
+      .select()
+      .from(t)
+      .where(and(lt(t.blockNumber, from), eq(t.event, 'AssetCheckpoint')))
+      .orderBy(asc(t.blockNumber), asc(t.logIndex))
+      .limit(SCAN)
+  ).map(shape)
+  const fork = (process.env.DEPLOY_NAME ?? 'base-sepolia').endsWith('-fork')
+  const r = judge(org, window, before, {
+    fork,
+    chainId: dep.chainId,
+    orgCount: ORGS.length,
+    cusumH: BigInt(process.env.PATROL_CUSUM_H ?? 5000),
+  })
+  return c.json({ ...r, fromBlock: Number(from) })
 })
 
 /** New events as they are indexed. Resumes after Last-Event-ID ("block:logIndex"), else starts at the head. */

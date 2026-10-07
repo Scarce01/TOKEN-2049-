@@ -294,8 +294,9 @@ async function runAttackJob() {
         .find((l) => l.startsWith('nownodes '))
         ?.slice('nownodes '.length)
         .trim() ?? 'n/a'
+    // a local fork's transactions exist only on this machine, so no public node can vouch for them
     const nownodes = /not served/.test(nn)
-      ? 'no node for this chain · skipped'
+      ? 'local fork · a public node cannot see this tx'
       : /status=1/.test(nn)
         ? `${nn} · agrees`
         : nn
