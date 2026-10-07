@@ -150,7 +150,8 @@ export default function Overview() {
           toMap({ type: 'beat', t: BEAT.done }) // 10: caged, cash-out held
           setTimeout(() => toMap({ type: 'beat', t: 13.6 }), 2200) // blue trail settles back to the decoy
           setTimeout(() => toMap({ type: 'beat', t: 16 }), 5200) // settle: attacker neutralised, deposit held
-          setAtk({ busy: false, done: true, status: 'Attacker trapped · defence tightened' })
+          setTimeout(() => toMap({ type: 'fund' }), 4200) // trail back: the ground flattens and the walled reserve rises (until Reset)
+          setAtk({ busy: false, done: true, status: 'Attacker trapped · funds held in the temporary-lane reserve' })
           return
         }
         const key = e.type === 'response' ? e.event : e.phase
