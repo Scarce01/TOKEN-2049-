@@ -39,7 +39,7 @@ function detail(id: string, c: Clock, live?: Live): Detail | null {
   if (p.kind === 'global') {
     const sent = c.trace ? RECEIVERS.length : RECEIVERS.filter((_, i) => c.t >= arriveAt(i)).length
     return {
-      eyebrow: 'Network capital', title: 'Global Quorum Core', tone: 'gold',
+      eyebrow: 'Network capital', title: 'Global Qu3ee Core', tone: 'gold',
       state: incident ? ['Incident active', 'amber'] : ['Nominal', 'gold'],
       agency: 'Quorum network · all members',
       latest: verified ? `${stamp(T.toGlobalEnd)} · DW-07 evidence verified` : incident ? 'Awaiting evidence from Bybit' : 'No verified signal in window',
