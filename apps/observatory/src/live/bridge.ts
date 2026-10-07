@@ -48,14 +48,18 @@ export async function runAttack(on: (e: AttackEvent) => void): Promise<void> {
     const b = (await r.json().catch(() => ({}))) as { error?: string }
     throw new Error(b.error ?? `bridge http ${r.status}`)
   }
+  // CRE verify waits for the running Patrol simulate, then compiles and runs the trap workflow: about 2 min on
+  // the fork, so poll until the bridge says the run ended (10 min ceiling, then report instead of hanging busy)
   let seen = 0
-  for (let i = 0; i < 180; i++) {
+  const deadline = Date.now() + 10 * 60_000
+  while (Date.now() < deadline) {
     await new Promise((res) => setTimeout(res, 600))
     const s = (await fetch(`${BRIDGE}/attack/status`).then((x) => x.json()).catch(() => null)) as { running: boolean; steps: AttackEvent[] } | null
     if (!s) continue
     for (; seen < s.steps.length; seen++) on(s.steps[seen])
     if (!s.running && seen >= s.steps.length) return
   }
+  throw new Error('attack still running on the bridge after 10 min')
 }
 
 /** Messages for the hexmap iframe; HexWorld forwards them (window event 'hexmap'). */

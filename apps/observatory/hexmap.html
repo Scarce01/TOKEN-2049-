@@ -846,7 +846,7 @@ function drawVerifyFx(){
   const waving=(el>=VFX.creRipAt&&el<=VFX.creRipAt+VFX.creRipDur)||(el>=VFX.nnRipAt&&el<=VFX.nnRipAt+VFX.nnRipDur);
   if(verifyWaving&&!waving)terrainTime=-1;verifyWaving=waving;
   // hold until the chain confirms: run the intro to el 13.3, then hold on the hornet until the 'verified' step lands
-  if((verifyFx.verified&&el>=13.3)||el>45){verifyFx=null;verifyWaving=false;follow=true;terrainTime=-1;invalidate();return;}
+  if((verifyFx.verified&&el>=13.3)||el>300){verifyFx=null;verifyWaving=false;follow=true;terrainTime=-1;invalidate();return;}
   const tw=nodeTowers[verifyFx.org]||nodeTowers.A;
   const decoy={x:threat.x,z:threat.y},core={x:coreCell.x,z:coreCell.y},node=tw?{x:tw.g.position.x,z:tw.g.position.z}:decoy;
   // same viewing angle throughout; each waypoint carries its own zoom - the tower checks sit at ATK_ZOOM and the

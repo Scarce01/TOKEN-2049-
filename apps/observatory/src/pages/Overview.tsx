@@ -138,6 +138,7 @@ export default function Overview() {
     if (mode !== 'live') changeMode('live')
     setSelected(null)
     atkOrg.current = null
+    sawAlert.current = false
     setAtk({ busy: true, status: 'Attacker compromises the exchange backend' })
     toMap({ type: 'beat', t: 0 })
     try {
@@ -163,15 +164,20 @@ export default function Overview() {
       setAtk((a) => ({ ...a, busy: false, err: err instanceof Error ? err.message : String(err) }))
     }
   }
-  // recovery: once the attacked org's alert clears (reset or TTL), return the map to calm and free the bees
-  const atkRecovered = !!atkOrg.current && !!live.data && !live.data.orgs.some((o) => o.letter === atkOrg.current && o.alert > 0 && o.alertExpiresAt > live.data!.chainTime)
+  // recovery: once the attacked org's alert clears (reset or TTL), return the map to calm and free the bees.
+  // Only after the live read has shown the alert raised: 'done' lands about 1 s after the alert, before the next
+  // 6 s live poll, and that stale pre-attack read must not count as "cleared" (it wiped the finale).
+  const atkAlerted = !!atkOrg.current && !!live.data && live.data.orgs.some((o) => o.letter === atkOrg.current && o.alert > 0 && o.alertExpiresAt > live.data!.chainTime)
+  const sawAlert = useRef(false)
+  if (atkAlerted) sawAlert.current = true
+  const atkRecovered = sawAlert.current && !atkAlerted
   const recovering = useRef(false)
   useEffect(() => {
     if (atk.done && atkRecovered && !recovering.current) {
       recovering.current = true
       toMap({ type: 'beat', t: 0 }) // alert cleared -> the map returns to calm, bees resume patrol
       setAtk((a) => ({ ...a, status: 'Exchange standing down · patrol resumed' }))
-      setTimeout(() => { atkOrg.current = null; recovering.current = false; setAtk({ busy: false, status: '' }) }, 1500)
+      setTimeout(() => { atkOrg.current = null; sawAlert.current = false; recovering.current = false; setAtk({ busy: false, status: '' }) }, 1500)
     }
   }, [atk.done, atkRecovered])
   // Reset: after an attack the button becomes Reset. It reverts the fork to the clean post-setup snapshot and
@@ -184,6 +190,7 @@ export default function Overview() {
       await fetch(`${BRIDGE}/reset`, { method: 'POST' }).catch(() => null)
     } finally {
       atkOrg.current = null
+      sawAlert.current = false
       toMap({ type: 'beat', t: 0 })
       toMap({ type: 'home' })
       setAtk({ busy: false, status: '' })
