@@ -645,7 +645,7 @@ async function main() {
       `tighten missed (alert ${after.alert}, quota ${after.quota}, warm ${after.warmOpen ? 'open' : 'frozen'}, suspect ${after.suspect})`,
     )
   }
-  section('09', 'Quorum state', [
+  section('09', 'Qu3ee state', [
     'Alert:',
     `${before.alert} -> ${after.alert}`,
     'Hot quota:',

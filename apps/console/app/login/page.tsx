@@ -25,7 +25,7 @@ export default function Login() {
 
   return (
     <div className="mx-auto mt-24 max-w-sm card">
-      <div className="mb-4 text-lg font-semibold">Quorum Console</div>
+      <div className="mb-4 text-lg font-semibold">Qu3ee Console</div>
       <div className="label mb-1">Officer email</div>
       <input
         className="w-full"
