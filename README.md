@@ -60,6 +60,16 @@
     <li><a href="#usage">Usage</a></li>
     <li><a href="#project-layout">Project layout</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
+    <li>
+      <a href="#hackathon-tracks">Hackathon tracks</a>
+      <ul>
+        <li><a href="#main-track">Main track</a></li>
+        <li><a href="#chainlink-cre">Chainlink CRE</a></li>
+        <li><a href="#nownodes">NOWNodes</a></li>
+        <li><a href="#solana">Solana</a></li>
+        <li><a href="#cardano">Cardano</a></li>
+      </ul>
+    </li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -108,8 +118,9 @@ obey the QuorumReceiver, which only obeys whitelisted workflows and two officers
 
 Every number is tagged with its source: **on-chain** = public chain data, **assumed** = simulation or assumed
 parameters, **test** = automated test, **testnet fork (local)** = local anvil fork of Base Sepolia driven by the CRE
-CLI (`cre workflow simulate --broadcast`), **testnet** = public Ethereum Sepolia, **testnet (DON)** = public Base Sepolia
-with the workflows running on the Chainlink DON.
+CLI (`cre workflow simulate --broadcast`), **testnet fork (hosted)** = the anvil fork of Base Sepolia served at the public Observatory URL,
+**testnet** = public Ethereum Sepolia, **testnet (DON)** = public Base Sepolia with the workflows running on the
+Chainlink DON, **testnet (Solana devnet)** = the Solana program below.
 
 #### Working
 
@@ -132,6 +143,7 @@ with the workflows running on the Chainlink DON.
 | Quota bucket vs the Bitget theft | **6 of 7** theft transfers would go to the manual lane | on-chain (C multiplier assumed) |
 | Design conformance (`pnpm verify:design`) | 83 items: **47 pass**, 1 fail (D28), 34 not yet (acceptance scenes not written), 1 waived | test |
 | **Solana Guard** (devnet, hackathon work) | qUSD-S, a Token-2022 mint with the Qu3ee transfer hook: transfer **SUCCESS** before, Guard set to CONTAINED from the DON's Base Sepolia Trap report, the same transfer **REJECTED on chain** after; 16/16 program tests ([solana/README.md](solana/README.md), [evidence page](https://dist-two-gamma-80.vercel.app)) | testnet (Solana devnet) |
+| Public fork Observatory | <https://da2whkz14p08x.cloudfront.net/>. Recorded attack on org A, blocks 47786511 to 47786515: decoy tripwire, CRE report, warm vault frozen, hot quota 0, alert CONFIRMED, threat shared. The verify line names the local fork, not a NOWNodes call | testnet fork (hosted) |
 
 #### Not working yet
 
@@ -160,7 +172,8 @@ More detail and caveats: [docs/STATUS.md](docs/STATUS.md), [docs/AUDIT_2026-10-0
 * [![Next.js][Next-badge]][Next-url] Console and user app (wagmi, Tailwind, TanStack Query)
 * [![Supabase][Supabase-badge]][Supabase-url] Postgres, pg-boss outbox
 * [![Python][Python-badge]][Python-url] tracing analysis and Trek
-* NOWNodes (second data source), Base Sepolia and Ethereum Sepolia
+* NOWNodes (Trap second source, and the cross-chain tracing RPC), Base Sepolia and Ethereum Sepolia
+* Solana, Anchor, Token-2022 transfer hook on devnet ([solana/README.md](solana/README.md))
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -171,6 +184,9 @@ This codebase was started before TOKEN2049 Origins in the team's private beta re
 history of the beta repository is available to the organizers on request. The same import brought in the team's
 earlier design notes ([docs/background](docs/background)) and two earlier UI drafts ([archive](archive)); the live UI is
 [apps/observatory](apps/observatory).
+
+The Solana Guard program under [solana/](solana/) was written during the hackathon on 2026-10-07. It is not part of
+that import.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -202,6 +218,15 @@ earlier design notes ([docs/background](docs/background)) and two earlier UI dra
 **Public Base Sepolia (live)**: contracts in PROD mode, Patrol, Trap and Cosign on the Chainlink DON. Addresses,
 workflow IDs and how it was deployed: [docs/DEPLOY_BASE_SEPOLIA.md](docs/DEPLOY_BASE_SEPOLIA.md). Which `.env` holds
 what: [docs/ENV.md](docs/ENV.md).
+
+**Public fork Observatory**: <https://da2whkz14p08x.cloudfront.net/> serves the Observatory against an anvil fork of
+Base Sepolia (chain id 84532, mode SIM). It is not the PROD deployment above. A completed attack is at
+`/bridge/attack/status`. On the run recorded 2026-10-07, org A moved from block 47786511 to 47786515. The second-source
+line on that run is the local fork: a public node cannot see the fork transaction, and NOWNodes is not called.
+
+**Solana devnet**: recorded program id, mint, and the before, contain, and after transactions are in
+[solana/README.md](solana/README.md). Evidence page: <https://dist-two-gamma-80.vercel.app>. The fork Observatory does
+not embed that run.
 
 ```sh
 bun packages/offchain/scripts/e2e-cosign-public.ts   # one honest withdrawal, verdict written by the DON
@@ -276,6 +301,7 @@ calls (Trap before Patrol before Cosign). Production limits stay on.
 | `datasets/`, `supabase/` | synthetic data and chain seeding; migrations and seed |
 | `packages/offchain/scripts/fork-demo` | fork demo setup, bridge (Attack flow, Patrol scheduler) |
 | `docs/background`, `archive/` | earlier design notes and UI drafts, kept for reference |
+| `solana/` | Qu3ee Guard, a Token-2022 transfer hook on Solana devnet. Written during the hackathon. [solana/README.md](solana/README.md) |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -287,11 +313,126 @@ calls (Trap before Patrol before Cosign). Production limits stay on.
 - [x] End-to-end runs on the simulation chain with the CRE CLI
 - [ ] Acceptance scenes for the 34 open design items (see [docs/TODO.md](docs/TODO.md))
 - [x] Public Base Sepolia deployment, mode A: Patrol, Trap and Cosign live on the Chainlink DON
+- [x] Solana Guard on devnet ([solana/README.md](solana/README.md))
+- [x] Cardano x402 Trace Agent on Preprod ([services/trace-market](services/trace-market))
 - [ ] Frontend and indexer switched to the public deployment
 - [ ] AWS deployment ([docs/38_phase8_aws.md](docs/38_phase8_aws.md)): CDK, ECS Fargate, Amplify, CloudWatch
 - [ ] Team decisions: decoy indistinguishability (D28), R7 lane under freeze, decoy rotation
 
 Full list: [docs/TODO.md](docs/TODO.md). Open decisions: [docs/STATUS.md](docs/STATUS.md) under 待决定.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Hackathon tracks
+
+One product. Each track states the requirement, then the part of Qu3ee that meets it. Figures are in [Results](#results).
+
+### Main track
+
+**Functionality and execution, 30%.** Three journeys run end to end. On public Base Sepolia the Chainlink DON freezes an exchange after a decoy touch, writes APPROVE for a withdrawal, and accepts Patrol reports ([docs/DEPLOY_BASE_SEPOLIA.md](docs/DEPLOY_BASE_SEPOLIA.md)). On the hosted fork, prevention is 8/8, tracing is 11/11, and the Observatory runs the attack at <https://da2whkz14p08x.cloudfront.net/>. On Solana devnet the same transfer succeeds, then fails on chain after containment.
+
+**Technical implementation and integration, 25%.** The vaults obey only `QuorumReceiver`. Workflows `trap`, `cosign`, and `patrol` read the chain and external HTTP, then `writeReport`. Trap calls NOWNodes. Trek proposals enter Patrol verify-edge over HTTP. The Solana Guard enforces containment inside a Token-2022 transfer hook.
+
+**Innovation and originality, 20%.** Tightening is a decision of the CRE workflows and the contracts. Member exchanges share one ThreatRegistry. A traced hop is listed only after CRE re-reads that transfer. A confirmed threat on Base Sepolia then fails a transfer inside the Solana token.
+
+**Usefulness and potential impact, 15%.** The problem is exchange-key theft. Public incidents are measured in [Results](#results): Bybit 51 of 51, Stake 4 of 4, and the Bitget tracing run. The receiver and the three workflows are the unit a custody desk deploys in front of a hot wallet.
+
+**Demo and presentation, 10%.** Judges open the hosted Observatory, the Base Sepolia transactions in [docs/DEPLOY_BASE_SEPOLIA.md](docs/DEPLOY_BASE_SEPOLIA.md), the Solana evidence page, and the design in [docs/proposal_v4.md](docs/proposal_v4.md).
+
+### Chainlink CRE
+
+The track asks for a CRE workflow that connects a blockchain to an external API, system, or data source, shown with `cre workflow simulate` or a live CRE network deployment.
+
+`workflows/trap`, `workflows/cosign`, and `workflows/patrol` are that orchestration layer. Handlers read chain state and HTTP, then `writeReport`. The decision logic is a pure function in each workflow's `src/logic`. Trap posts `eth_getTransactionReceipt` to NOWNodes. Patrol verify-edge takes Trek proposals over HTTP. Reports are idempotent: anchor-block time, integer math, one verdict per event.
+
+Both demonstrations exist. The fork rows in [Results](#results) are CRE CLI runs (`cre workflow simulate --broadcast`, commands in [Usage](#usage)). Patrol, Trap, and Cosign are also ACTIVE on the CRE DON, private registry, writing to public Base Sepolia. Workflow IDs:
+
+| Workflow | ID |
+| --- | --- |
+| Patrol | `002d793802489c6c0b8e379240bd9f8f7b6189ba682c02f19969e31fcaeb5078` |
+| Trap | `006576bb13bfa082e9ccf563521e2004534f708992cf597054db84be8ff3cd66` |
+| Cosign | `00e143e0e4721b04f2eb4f7d07274a5307c82c66d2d0d45a3fa110258bcb0ebc` |
+
+Contract addresses and the KeystoneForwarder are in [docs/DEPLOY_BASE_SEPOLIA.md](docs/DEPLOY_BASE_SEPOLIA.md).
+
+**Blockchain, 40%.** Withdrawal policy lives in the contracts. Every member in the deployment reads the same ThreatRegistry. The Solana hook enforces the same containment on a second chain.
+
+**Effective use of CRE, 40%.** CRE is the writer of freeze, quota, sweep, verdict, and threat reports. The public Base Sepolia rows in [Results](#results) are those DON executions: decoy touch to freeze in 10 s, withdrawal request to APPROVE in 18 s, Patrol 52/52 reports accepted.
+
+**Wow factor, 20%.** One Trap report accepted on Base Sepolia is what moves the Solana Guard from `NORMAL` to `CONTAINED`.
+
+### NOWNodes
+
+The track asks for a working product in which a NOWNodes RPC or API endpoint takes part in the architecture.
+
+Trap uses `https://eth-sepolia.nownodes.io`. After a decoy transfer, each CRE node already holds the chain receipt. Before `writeReport`, the workflow sends `eth_getTransactionReceipt` for the same hash to that endpoint. The call is an HTTP POST from the CRE HTTP client. The key is the secret `NOWNODES_KEY`, sent as the `api-key` header (`workflows/trap/workflow.ts`, `workflows/trap/src/logic/nownodes.ts`). The nodes agree on one canonical receipt. When that receipt contradicts the trigger log, the workflow writes nothing. On the recorded Ethereum Sepolia run, NOWNodes confirmed the log, the trap tripped, and a later APPROVE reverted with `AlertConfirmed`.
+
+The same key is the RPC for cross-chain tracing of the Bitget case (`analysis/trace_bybit/xchain.py`):
+
+| Chain | Endpoint |
+| --- | --- |
+| Arbitrum | `https://arbitrum.nownodes.io` |
+| Optimism | `https://optimism.nownodes.io` |
+| Base | `https://base.nownodes.io` |
+| BSC | `https://bsc.nownodes.io` |
+| Avalanche C-Chain | `https://avax.nownodes.io/ext/bc/C/rpc` |
+
+**Quality and completeness, 25%.** The path from a decoy hit through the second source to the vault is covered by the DON freeze, the fork demo, and `workflows/trap/test/nownodes.test.ts`.
+
+**Use of NOWNodes, 25%.** The receipt check sits on the tightening path. The tracing job uses the five origin-chain endpoints to follow bridge deposits.
+
+**Real-world usefulness, 20%.** The check guards the decision to freeze an exchange hot wallet. The tracing run follows stolen funds across the chains above.
+
+**Technical creativity, 15%.** The receipt is reduced to a canonical string, integer status and sorted logs, so every CRE node agrees on the same answer.
+
+**Scalability, 15%.** One receipt call per decoy hit. Another chain is another URL in `NOWNODES_URL`.
+
+### Solana
+
+The track asks for a program that interacts with Solana, deployed or meaningfully called on devnet or mainnet, with the program id, at least one explorer transaction, hackathon-period code, and a public demo.
+
+Qu3ee Guard is `solana/programs/qu3ee_guard`, written on 2026-10-07. The EVM contracts it reacts to are the earlier import, disclosed under [Provenance](#provenance). qUSD-S is a Token-2022 mint. Every transfer calls the hook, which reads that mint's Guard PDA. `initialize_guard` starts it at `NORMAL`. `set_guard_contained` applies a confirmed threat. `execute` allows the transfer in `NORMAL` and fails it with `GuardError::Contained` after that. The recorded containment used a DON Trap report on Base Sepolia: KeystoneForwarder accepted it, and the Receiver logged FREEZE and THREAT. Sixteen program tests cover authority, idempotency, and one Guard per org and mint.
+
+| | |
+| --- | --- |
+| Cluster | devnet |
+| Program | [`HaJ4J8KhE5FGfBFpgrwkqXk6yXfdjNYJpLjJ71KGrEXz`](https://explorer.solana.com/address/HaJ4J8KhE5FGfBFpgrwkqXk6yXfdjNYJpLjJ71KGrEXz?cluster=devnet) |
+| qUSD-S mint | [`6D7PygkF5K85JS1Cbkxvz6J4Q7vrY1byCLx47T3w91o6`](https://explorer.solana.com/address/6D7PygkF5K85JS1Cbkxvz6J4Q7vrY1byCLx47T3w91o6?cluster=devnet) |
+| Transfer before containment | [SUCCESS](https://explorer.solana.com/tx/2NBywAz97EinV7i7aBWAWsQai2Y3nQZDDMFEFb5KeHBTjviNhyrqTpcqLfXFBEtcjfjb561VkUJJscthF39qY4w6?cluster=devnet) |
+| Guard set to CONTAINED | [tx](https://explorer.solana.com/tx/xcKtP7Q4xsZmNPQXMHKvE1EqttUVuFvYeUEbLjp6r5N4tiCZqAXv49LqiNLyufYacAkP1jp5tQyRNrYrAMC1weU?cluster=devnet), from [Base Sepolia](https://sepolia.basescan.org/tx/0x32ab0635fff14b905027e50d102d71feb25e66383ca40b536b9405a9da1b834f) |
+| Same transfer after | [REJECTED on chain](https://explorer.solana.com/tx/2jhbFKJ9uWVgTJbsxnB9WCxWGuVcUsQi1oMabuC1u5BWMusP4cfTFYykhJSs9RdrfGw22w9GjrEGDXqmR5vHwkZd?cluster=devnet) |
+
+The full run is [demo/solana-latest-run.json](demo/solana-latest-run.json). Every transaction is [demo/solana-history.json](demo/solana-history.json). A judge opens the lot at <https://dist-two-gamma-80.vercel.app>.
+
+**Technical execution, 30%.** The allow and the reject happen inside the transfer hook. The program is the product, and the three transactions above are the execution.
+
+**Innovation, 20%.** Containment is a failure of the token transfer itself, caused by a threat confirmed on Base Sepolia.
+
+**Product and experience, 20%.** The evidence page is the demo: program, mint, both transfers, and the containment transaction, with no login.
+
+**Impact, 15%.** A hot-wallet asset on Solana stops moving when Qu3ee has confirmed the threat. The same custody problem is the one measured on Bybit, Stake, and Bitget.
+
+**Demo, 15%.** The evidence page and the explorer links are live.
+
+### Cardano
+
+The track asks for agentic commerce on Cardano: an agent requests a resource, receives a price, pays on chain, and gets the service with no account and no API key.
+
+That service is the QUBEE Trace Agent in `services/trace-market`. `GET /api/trace/:address` answers HTTP 402 with x402 terms: 1 tADA on `cardano:preprod`, paid to a Preprod address. `@x402/cardano` (`ExactCardanoScheme`) and the Cardano Foundation facilitator at `https://x402.preprod.dev.ecosyseng.cf-deployments.org` verify and settle the payment. The agent holds no signing key. The QUBEE Investigator reads the 402, applies the spend policy, signs through Koios Preprod (`https://preprod.koios.rest/api/v1`), and retries. HTTP 200 returns the QUBEE trace for that address from the Bybit, Bitget, and Stake replay, each link with its evidence transaction. The payment leaves the classification at LINKED. Whether the Ethereum attack is real stays with CRE and NOWNodes.
+
+The spend policy is the control on a live agent: up to 1 tADA pays on its own, up to 10 tADA pays on its own only for a CONFIRMED case, and above that a person approves. A BEHAVIOR case does not start a paid trace.
+
+Deployed, the Trace Agent is a public HTTPS service with `FACILITATOR_URL` and `SELLER_ADDRESS` set. Each Investigator is its own wallet under that cap. The route scales per request: one payment, one trace. Documentation is [services/trace-market/README.md](services/trace-market/README.md).
+
+**Technical execution, 30%.** The price, the payment, and the settlement use Cardano x402 on Preprod: the official scheme, the hosted facilitator, and Koios.
+
+**Innovation, 20%.** After a confirmed case, Qu3ee buys the next forensic trace from another agent. The purchase is the request.
+
+**User experience, 20%.** The caller sees a price in the 402, pays, and receives the trace. There is no account to open and no API key to hold.
+
+**Impact, 20%.** Specialist tracing becomes a metered service a custody desk can call after containment, with the spend cap on the agent.
+
+**Pitch, 10%.** Qu3ee buys forensic intelligence from another agent, per call, on Cardano.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
