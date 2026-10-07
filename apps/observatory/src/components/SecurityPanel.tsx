@@ -69,14 +69,16 @@ function describe(e: ChainEvent, ethUsd: number): { title: string; detail: strin
   }
 }
 
-export default function SecurityPanel({ selected, onSelect, hidden }: { selected: string | null; onSelect: (letter: string | null) => void; hidden: boolean }) {
+export default function SecurityPanel({ selected, onSelect, hidden, onExpanded }: { selected: string | null; onSelect: (letter: string | null) => void; hidden: boolean; onExpanded?: (open: boolean) => void }) {
   const live = useLive(readLive, 5000)
   const events = useLive(readEvents, 6000)
   const patrol = useLive(readPatrol, 2000)
   usePatrolBees(patrol.data)
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(true)
   // picking an exchange on the map (re)opens the popup
   useEffect(() => { if (selected) setCollapsed(false) }, [selected])
+  const expanded = !hidden && !collapsed
+  useEffect(() => { onExpanded?.(expanded) }, [expanded, onExpanded])
 
   // real hot quota and alert level for the vault labels on the map, keyed by exchange letter
   useEffect(() => {
