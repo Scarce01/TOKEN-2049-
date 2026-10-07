@@ -58,4 +58,4 @@
 - [ ] `apps/observatory` 用 oxfmt、不在 biome 与 pnpm workspace 里：之后统一格式与 lint
 - [ ] `archive/` 里的两份旧 UI 草稿：确认没有要回收的东西后可以删
 - [ ] `media/2049-tracking-demo.mp4`（27 MB）没进 git：有人看过确认画面里没有真实诱饵地址（规则 2）后再决定提交或另外存放
-- [ ] UI 曾出现 React「重复 key」警告（key 是一笔 trap 报告交易 hash 加序号），仓库版载入时没有复现；跑 Attack 动画时留意
+- [x] UI 的 React「重复 key」警告：事件列表的 key 已改为 `交易 hash:log 序号:位置`；完整跑一次 Attack（11 步）0 个警告
