@@ -4,7 +4,7 @@
 
 <br />
 <div align="center">
-  <h1 align="center">Qu3ee (beta)</h1>
+  <h1 align="center">Qu3ee</h1>
 
   <p align="center">
     A second line of defense for exchange withdrawals, enforced by Chainlink CRE and on-chain vaults.
@@ -14,13 +14,17 @@
     <br />
     <a href="docs/BENCHMARK.md">Benchmark report</a>
     &middot;
+    <a href="docs/benchmark_whitepaper.html">Benchmark white paper (HTML)</a>
+    &middot;
+    <a href="docs/DEPLOY_BASE_SEPOLIA.md">Live on Base Sepolia</a>
+    &middot;
     <a href="docs/STATUS.md">Status</a>
     &middot;
     <a href="docs/AUDIT_2026-10-07.md">Latest test and audit report</a>
     &middot;
     <a href="docs/TODO.md">To do</a>
     &middot;
-    <a href="https://github.com/Scarce01/TOKEN-2049-beta/issues">Report an issue</a>
+    <a href="https://github.com/Scarce01/TOKEN-2049-/issues">Report an issue</a>
   </p>
 </div>
 
@@ -47,6 +51,7 @@
     <li><a href="#project-layout">Project layout</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#collaborators">Collaborators</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
@@ -128,7 +133,9 @@ with the workflows running on the Chainlink DON.
 | DON figures are single runs; frontend still on the fork | the other prevention cases ran on the local fork only; the Observatory reads the fork until it is switched | testnet (DON) | more runs and the frontend switch are in progress |
 | Invariants do not cover the legitimate path | removing some vault checks is caught only by unit tests | test | ghost-variable checks still to add |
 
-Full benchmark write-up (tracing, cross-chain, Trek, alarm rules, limits, deployment plan): [docs/BENCHMARK.md](docs/BENCHMARK.md).
+Full benchmark write-up (tracing, cross-chain, Trek, alarm rules, DON runs, limits, deployment plan):
+[docs/BENCHMARK.md](docs/BENCHMARK.md). The same report as a designed page with charts:
+[docs/benchmark_whitepaper.html](docs/benchmark_whitepaper.html) (download and open in a browser).
 
 More detail and caveats: [docs/STATUS.md](docs/STATUS.md), [docs/AUDIT_2026-10-07.md](docs/AUDIT_2026-10-07.md),
 [reports/design-conformance.md](reports/design-conformance.md).
@@ -181,6 +188,15 @@ earlier design notes ([docs/background](docs/background)) and two earlier UI dra
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Usage
+
+**Public Base Sepolia (live)**: contracts in PROD mode, Patrol, Trap and Cosign on the Chainlink DON. Addresses,
+workflow IDs and how it was deployed: [docs/DEPLOY_BASE_SEPOLIA.md](docs/DEPLOY_BASE_SEPOLIA.md). Which `.env` holds
+what: [docs/ENV.md](docs/ENV.md).
+
+```sh
+bun packages/offchain/scripts/e2e-cosign-public.ts   # one honest withdrawal, verdict written by the DON
+python analysis/don_bench/don_benchmark.py           # DON executions joined with on-chain reports
+```
 
 **Simulation chain** (local anvil fork of Base Sepolia, the setup the team uses):
 
@@ -284,6 +300,22 @@ or exchange schemas, and every number in the UI or the video names its source.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Collaborators
+
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/Scarce01"><img src="https://github.com/Scarce01.png?size=80" width="80" alt="Scarce01" /><br /><sub><b>Scarce01</b></sub></a></td>
+    <td align="center"><a href="https://github.com/CL0908"><img src="https://github.com/CL0908.png?size=80" width="80" alt="CL0908" /><br /><sub><b>CL0908</b></sub></a></td>
+    <td align="center"><a href="https://github.com/saladbkp"><img src="https://github.com/saladbkp.png?size=80" width="80" alt="saladbkp" /><br /><sub><b>saladbkp</b></sub></a></td>
+    <td align="center"><a href="https://github.com/yantongggg"><img src="https://github.com/yantongggg.png?size=80" width="80" alt="yantongggg" /><br /><sub><b>yantongggg</b></sub></a></td>
+  </tr>
+</table>
+
+Built at the TOKEN2049 hackathon. The team works without fixed roles; who is doing what is coordinated through
+`/sync` and `/handoff` ([docs/TEAM_WORKFLOW.md](docs/TEAM_WORKFLOW.md)).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## License
 
 No license has been chosen yet; until then all rights are reserved by the team.
@@ -292,9 +324,9 @@ No license has been chosen yet; until then all rights are reserved by the team.
 
 ## Contact
 
-Team board and issues: [github.com/Scarce01/TOKEN-2049-beta/issues](https://github.com/Scarce01/TOKEN-2049-beta/issues)
+Team board and issues: [github.com/Scarce01/TOKEN-2049-/issues](https://github.com/Scarce01/TOKEN-2049-/issues)
 
-Project link: [github.com/Scarce01/TOKEN-2049-beta](https://github.com/Scarce01/TOKEN-2049-beta)
+Project link: [github.com/Scarce01/TOKEN-2049-](https://github.com/Scarce01/TOKEN-2049-)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
