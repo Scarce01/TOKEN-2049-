@@ -58,16 +58,20 @@ def edges_for(addrs, cfg, state):
     return [e for e in es if e.value >= int(cfg["min_edge_wei"])]
 
 
-def run_levels(cfg, seeds, tau_ppm, fetch):
-    """Level-by-level expansion. With fetch=False every address must already be in the cache."""
+def run_levels(cfg, seeds, tau_ppm, fetch, extra_edges=(), drop=None):
+    """Level-by-level expansion. With fetch=False every address must already be in the cache.
+    extra_edges: synthetic edges (cross-chain, from '<chain>:<addr>' nodes that are never fetched).
+    drop(edge): edges to leave out (the bridge contract's own payout that a cross-chain edge replaces)."""
     state = {"fetched": set(), "truncated": set(), "services": {}, "expanded": set()}
-    edges = {}
+    edges = {e.key(): e for e in extra_edges}
     frontier = sorted(seeds)
     for level in range(cfg["hops"] + 1):
-        frontier = [a for a in frontier if a not in state["fetched"]]
+        frontier = [a for a in frontier if a not in state["fetched"] and ":" not in a]
         for e in edges_for(frontier, cfg, state):
-            edges[e.key()] = e
-        classify = make_classifier(cfg, state["truncated"], state["services"])
+            if not (drop and drop(e)):
+                edges[e.key()] = e
+        base_classify = make_classifier(cfg, state["truncated"], state["services"])
+        classify = lambda a, f=base_classify: None if ":" in a else f(a)  # noqa: E731
         res = propagate(list(edges.values()), seeds, hops=min(level + 1, cfg["hops"]), tau_ppm=tau_ppm, classify=classify)
         # Swap transactions: read the whole tx so an output paid to a fresh wallet is visible.
         if cfg.get("expand_swaps", True):
@@ -81,7 +85,7 @@ def run_levels(cfg, seeds, tau_ppm, fetch):
             picked = sorted(todo, key=lambda b: (-todo[b], b))[: cfg.get("max_tx_expand_per_level", 400)]
             for b in sorted(picked):
                 for e in etherscan.edges_from_raw(etherscan.tx_transfers(b, cfg), cfg):
-                    if e.value >= int(cfg["min_edge_wei"]):
+                    if e.value >= int(cfg["min_edge_wei"]) and not (drop and drop(e)):
                         edges[e.key()] = e
                 state["expanded"].add(b)
             if picked:
@@ -101,33 +105,20 @@ def run_levels(cfg, seeds, tau_ppm, fetch):
     return list(edges.values()), state
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["fetch", "score"])
-    ap.add_argument("--seeds", choices=["A", "B"], default="B")
-    ap.add_argument("--case", default=None, help="bitget, stake, ... (default: Bybit)")
-    args = ap.parse_args()
-    if args.cmd == "score":
-        os.environ["TRACE_OFFLINE"] = "1"
-    cfg, fbi, seed_sets = load(args.case)
-    if args.case:
-        args.seeds = "A"
-    seeds = seed_sets[args.seeds]
-    edges, state = run_levels(cfg, seeds, cfg["tau_fetch_ppm"], fetch=args.cmd == "fetch")
-    if args.cmd == "fetch":
-        print(f"fetched {len(state['fetched'])} addresses, {len(edges)} edges, truncated: {sorted(state['truncated'])}")
-        return
-
+def evaluate(cfg, fbi, seeds, seeds_set, edges, state):
+    """Propagate over the fetched edges and score against the truth list (offline)."""
     base_classify = make_classifier(cfg, state["truncated"], state["services"])
 
     def classify(a):
+        if ":" in a:  # cross-chain source node: never a breakpoint
+            return None
         try:
             return base_classify(a)
         except RuntimeError:  # offline cache miss: an address we never fetched, so it never passes taint on
             return None
 
     out = {
-        "seeds_set": args.seeds,
+        "seeds_set": seeds_set,
         "seeds": seeds,
         "seeds_on_fbi": sorted(set(seeds) & set(fbi)),
         "window": [cfg["start_block"], cfg["end_block"]],
@@ -205,6 +196,27 @@ def main():
         "hits_in_top_100": hit(100),
         "missed": sorted(targets - {a for _, a in ranked}),
     }
+    return out
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("cmd", choices=["fetch", "score"])
+    ap.add_argument("--seeds", choices=["A", "B"], default="B")
+    ap.add_argument("--case", default=None, help="bitget, stake, ... (default: Bybit)")
+    args = ap.parse_args()
+    if args.cmd == "score":
+        os.environ["TRACE_OFFLINE"] = "1"
+    cfg, fbi, seed_sets = load(args.case)
+    if args.case:
+        args.seeds = "A"
+    seeds = seed_sets[args.seeds]
+    edges, state = run_levels(cfg, seeds, cfg["tau_fetch_ppm"], fetch=args.cmd == "fetch")
+    if args.cmd == "fetch":
+        print(f"fetched {len(state['fetched'])} addresses, {len(edges)} edges, truncated: {sorted(state['truncated'])}")
+        return
+
+    out = evaluate(cfg, fbi, seeds, args.seeds, edges, state)
     OUT.mkdir(exist_ok=True)
     body = json.dumps(out, indent=1, sort_keys=True)
     (OUT / f"{args.case + '_' if args.case else ''}result_{args.seeds}.json").write_text(body)
