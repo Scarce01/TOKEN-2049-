@@ -38,7 +38,7 @@
 
 ## 4. 团队要决定的（细节在 STATUS「待决定」）
 
-- [ ] D28 诱饵可分辨（唯一 fail）：诱饵怎么生成、评估口径
+- [ ] D28 诱饵可分辨（唯一 fail）：新生成器 analysis/decoygen 已做（docs/48），1,000 个账户过门槛、100 个不过；要定口径与账户池大小，再决定计划怎么落地（写 exchange_*、登记 Trap、提交新根）
 - [ ] NOWNodes 不可用时 Trap 照常收紧（已实现），还是 throw 重试 N 个区块
 - [ ] 被触发过的诱饵要轮换；旧 commit 里还有诱饵 label 与探针交易，历史改不了
 - [ ] R7：冻结时要不要连车道一起关；车道要不要受 R8 每小时、每天上限约束；proposal 第 4 节回写
@@ -49,6 +49,8 @@
 
 - [ ] R7 车道不在不变量 handler 里
 - [ ] `services/decoy-admin`（诱饵生成）没有单元测试
+- [ ] decoy-admin 读 `secrets/decoygen/<org>/epoch-<e>.json` 落地计划（见 docs/48 第 8 节）；生活痕迹由 seeder 执行
+- [ ] Observatory 的诱饵库存页（在线 / 离线）接 127.0.0.1:8791（交给 UI 会话）
 - [ ] 不变量只驱动攻击者调用，合法路径（execute、sweep、topUp、fund）的 ghost 检查还没加
 - [ ] notifier 从最新区块开始，宕机期间的事件不会补发（要持久化游标）
 - [ ] Console、user-app 把非 31337 的链都当成 Base Sepolia；shared 没有 Ethereum Sepolia 的 CHAIN_ID

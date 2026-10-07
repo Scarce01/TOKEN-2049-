@@ -102,6 +102,7 @@
 - **D44 误报率：** 合成流量算出 A 5.8%、B 12.0%，已确认主要是合成模型的问题（没有再充值）。用 BigQuery 的真实 Binance 提款按同一比例换算后，关 7 在 L0 让约 **每万笔 14 笔**（0.14%）转 PENDING；L1 账户上限减半时约 0.6%（稳定币）/ 0.26%（ETH）。按 Binance 的日流量（约 21,800 笔）约每天 30 笔人工复核。这些写进 metrics（public_onchain，比例换算是假设）
 
 - **D28 诱饵 AUC 没达标（合成数据，source = assumed）。** analysis/decoy_auc.py：全部 110 个账户里，余额本身就能分出诱饵（诱饵本来就放在头部，这是 proposal 6 A 的刻意设计）；只在攻击者会挑的前 60 名里比，逻辑回归 AUC 0.706、梯度提升 0.578，bootstrap 95% 区间上界 0.884，目标 ≤ 0.65。两件事要团队决定：(1) 只有 10 个诱饵，区间本来就很宽，「上界 ≤ 0.65」用单一批诱饵几乎不可能达到，要不要改成「多批重新生成后的平均 AUC」或加大样本；(2) 点估计 0.706 表示生成方式仍有破绽（推测是 regDays / activity 直接按头部账户 ±20% 抖动，与余额相关），要不要改 decoy-admin 的抽样方式。没决定前 D28 维持 fail，不改断言
+- **诱饵生成器（docs/48_decoy_generation.md，2026-10-07）：** 新生成器在 1,000 个合成账户上 8 / 8 过双侧门槛（AUC 区间上界最大 0.613），但演示用的 100 个账户只有 19 行在吸引区段里，门槛过不了、ρ_max 15% 下也只放得下 1 个诱饵。要决定：(1) D28 改用新生成器的口径（区段并集、双侧 [0.35, 0.65]、honeyword ≤ 0.35）还是维持旧口径；(2) 演示交易所的账户池要不要扩到约 1,000 个；(3) 生成器的计划写在 `secrets/decoygen/`（不进 git，与 decoys.local.json 同一目录），规则 2 只点名了 decoys.local.json，要不要把这个目录也列进去；(4) 计划落地（写 exchange_*、登记 Trap、ConfigTimelock 提交新根）会换掉示例诱饵所在的根，什么时候做；(5) 门槛与 ρ_max、预备期 2 期、每月轮换 20% 都是假设值
 - SAFE 区块标签用 -4（go-ethereum 惯例），SDK 只公开了 finalized（-3）；spike S9 要在 Base Sepolia 上确认
 - 关 6 的第二个数据源：S7 已确认 NOWNodes 只有 Ethereum Sepolia、没有 Base Sepolia，所以 Base 上关 6 仍只做「价格过期」，「数据源一致」维持 waived（D14.6）
 - CUSUM 报警目前只把补充量减半；「再加一个独立信号就升 L1」（D55 的第二部分）还没做，需要先定义哪些信号算独立（PENDING 51、指纹命中）
@@ -204,6 +205,7 @@
 | D01、D48 | Trap 第二数据源（NOWNodes）：按 chainId 选端点，链上没有 NOWNodes 时只用 CRE 收据。有端点时，「矛盾」（收据存在，但日志不符或 status 不是 1）仍不动作（D48）；「不可用」（null 收据、HTTP 错误、非 JSON、各节点结果不一致）按 CRE 收据照常收紧 | 审计 H1、H2：原实现在 Base Sepolia 上诱饵永远不冻结；NOWNodes 落后一个区块、宕机或限流都会让收紧失效（违反规则 6） | 待团队确认（见待决定） |
 | 演示 | workflows/project.yaml 的 staging-settings 同时保留 Base Sepolia 与 Ethereum Sepolia 的 RPC | create-detect-decoy 把 staging 整个换成 Ethereum Sepolia，sim-runner 在 Base 上无法 simulate（对齐审查阻断） | |
 | D29 | 攻击者可见热钱包的余额与 label 改由 secrets/visible-wallets.layout.local.json 产生（labels.ts 同一个生成器），不再写在 datasets 源码里；e2e 只在探针之后读它；STATUS 删掉诱饵 label、名次与探针交易 | 审计 H3：仓库能直接看出哪个是诱饵（规则 2） | |
+| D28、6 A | 新增 analysis/decoygen：策略库 + Plackett-Luce、区段 SMOTE + 抖动 + 密度比重抽样、DCR 界、双侧 AUC 门槛与 honeyword、贪心 maximin 放置（HMAC 随机化）、预备池 / 晋升 / 轮换 / 烧毁、每期新盐新根、实时模式（127.0.0.1:8791）。只产生计划，不碰链与示例诱饵 | 旧的 decoy-admin 抽样 AUC 0.706、D28 fail；用户要求按 5 步设计做生成器，并在 UI 里看诱饵生成与消失 | 待团队确认（见待决定） |
 | D51、6.4 | 实现 patrol verify-edge（trigger 5，HTTP）：Trek 提议的边由 CRE 逐条读 receipt 核实；除了 docs/36 6.4 的「转账存在、from/to/金额对得上、父条目有效」，另加「父地址本身在锚点是 suspect」与每个代币的最小金额；衍生条目 24 小时，证据与到期由 workflow 自算；原生币边暂不支持 | 防止被攻陷的 Trek 拿任意真实转账配上一个有效父证据去标记无辜地址；防撒灰；docs/36 写 24 小时，Trek 提议 72 小时，以设计文档为准 | 待团队确认 |
 
 ## 审查记录（每阶段的独立审查结果）

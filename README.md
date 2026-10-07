@@ -188,6 +188,7 @@ bun scripts/round3-pg.ts                                   # exchange database (
 bun packages/offchain/scripts/fork-demo/setup.ts           # once per fork deployment: hot wallets, decoy, configs
 bun --env-file=apps/exchange-api/.env.fork apps/exchange-api/src/index.ts   # exchange backend, 127.0.0.1:8797
 bun packages/offchain/scripts/fork-demo/bridge.ts          # Attack button and Patrol scheduler, 127.0.0.1:8790
+python analysis/decoygen/serve.py --org a --tick 30 --fresh # live decoy generation and inventory, 127.0.0.1:8791
 cd apps/observatory && pnpm install --ignore-workspace && pnpm dev           # UI, http://localhost:8443
 ```
 
@@ -197,6 +198,7 @@ cd apps/observatory && pnpm install --ignore-workspace && pnpm dev           # U
 | 54329 | exchange database | `scripts/round3-pg.ts` |
 | 8797 | exchange backend (untrusted) | `apps/exchange-api` |
 | 8790 | bridge: Attack flow and Patrol through the CRE CLI | `packages/offchain/scripts/fork-demo/bridge.ts` |
+| 8791 | decoy generator, live mode: inventory, SSE events (tags only, off-chain plan) | `analysis/decoygen/serve.py` ([docs/48](docs/48_decoy_generation.md)) |
 | 8443 | observatory UI | `apps/observatory` (`VITE_RPC_URL`, `VITE_BRIDGE_URL` override 8545 and 8790) |
 
 **Single workflow runs:**
