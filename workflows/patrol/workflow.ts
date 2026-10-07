@@ -83,6 +83,9 @@ export const configSchema = baseConfig.extend({
         baselines: z.array(z.array(z.object({ mu: z.number(), sigma: z.number() })).length(168)),
         k: z.number(),
         h: z.number(),
+        // Shewhart spike rule (36_phase6.md 6.3): per token, same order as `tokens`; "0" = off
+        spikeMax: z.array(z.string()).optional(),
+        spikeHold: z.number().optional(),
       }),
     })
     .optional(),
@@ -272,6 +275,8 @@ function onQuota(runtime: Runtime<Config>): string {
     ...DEFAULT_CUSUM((p6.cusum.baselines[ti] ?? []).map((b) => ({ mu: BigInt(b.mu), sigma: BigInt(b.sigma) }))),
     k: BigInt(p6.cusum.k),
     h: BigInt(p6.cusum.h),
+    spikeMax: BigInt(p6.cusum.spikeMax?.[ti] ?? '0'),
+    spikeHold: BigInt(p6.cusum.spikeHold ?? 20000),
   })
   // planned ops whose window may overlap the recompute range (expired ones included)
   const rawOps = callAt(

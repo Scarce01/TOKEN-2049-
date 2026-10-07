@@ -1,13 +1,29 @@
 // CUSUM over the hot vault's per-minute outflow (36_phase6.md 6.3). Fixed 168-slot baseline from
 // config (no online learning), integer log2 x 1000, checkpoint + recompute == per-minute (D58).
+// Plus a Shewhart spike rule (6.3): CUSUM catches a slow rise, not a few huge transfers (Bitget, STATUS);
+// one minute above spikeMax pushes S to h + spikeHold, so the alarm holds while S decays. Off when spikeMax = 0.
 import { ringAt, ringCovers } from '../../../../packages/shared/src/index'
 
 export type Baseline = { mu: bigint; sigma: bigint } // log2 units x 1000
-export type CusumParams = { baseline: Baseline[]; k: bigint; h: bigint; sigmaFloor: bigint } // k, h x 1000
+export type CusumParams = {
+  baseline: Baseline[]
+  k: bigint
+  h: bigint
+  sigmaFloor: bigint
+  spikeMax: bigint
+  spikeHold: bigint
+} // k, h, spikeHold x 1000; spikeMax in token units
 export type PlannedOp = { windowStart: bigint; windowEnd: bigint; registeredMinute: bigint; perMinute: bigint }
 export type CusumState = { minute: bigint; S: bigint; alarm: boolean; gap: boolean }
 
-export const DEFAULT_CUSUM = (baseline: Baseline[]): CusumParams => ({ baseline, k: 500n, h: 5000n, sigmaFloor: 50n })
+export const DEFAULT_CUSUM = (baseline: Baseline[]): CusumParams => ({
+  baseline,
+  k: 500n,
+  h: 5000n,
+  sigmaFloor: 50n,
+  spikeMax: 0n,
+  spikeHold: 20000n,
+})
 
 /** floor(log2(x + 1) * 1000) with linear interpolation inside each power of two; exact integers only. */
 export function log2milli(x: bigint): bigint {
@@ -34,6 +50,7 @@ export function step(p: CusumParams, S: bigint, x: bigint, minute: bigint): { S:
   const z = ((log2milli(x) - b.mu) * 1000n) / sigma
   let next = S + z - p.k
   if (next < 0n) next = 0n
+  if (p.spikeMax > 0n && x > p.spikeMax && next < p.h + p.spikeHold) next = p.h + p.spikeHold
   return { S: next, alarm: next > p.h }
 }
 

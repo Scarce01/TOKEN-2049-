@@ -230,6 +230,49 @@ describe('CUSUM (D55, D58)', () => {
     expect(r.gap).toBe(true)
   })
 
+  test('spike rule: one huge minute alarms at once that CUSUM alone misses (Bitget shape)', () => {
+    // Bitget shape: one 34.7M minute against a baseline whose sigma is inflated by idle minutes
+    const wide: Baseline[] = Array.from({ length: 168 }, () => ({ mu: 25_000n, sigma: 15_000n }))
+    const huge = 34_750_000_000_000n // 34.75M USDT in 6-decimal units
+    const off = DEFAULT_CUSUM(wide)
+    expect(step(off, 0n, huge, 0n).alarm).toBe(false) // z about 1.7: CUSUM alone stays quiet
+    const on = { ...off, spikeMax: 14_000_000_000_000n } // 10 x p99 per active minute (H0)
+    const r = step(on, 0n, huge, 0n)
+    expect(r.alarm).toBe(true)
+    expect(r.S).toBe(on.h + on.spikeHold)
+    expect(step(on, 0n, on.spikeMax, 0n).alarm).toBe(false) // at the limit: no spike
+  })
+
+  test('spike alarm holds for a while, then decays, and stays off when spikeMax is 0', () => {
+    const wide: Baseline[] = Array.from({ length: 168 }, () => ({ mu: 25_000n, sigma: 15_000n }))
+    const on = { ...DEFAULT_CUSUM(wide), spikeMax: 1000n }
+    let s = step(on, 0n, 5000n, 0n)
+    let held = 0
+    for (let m = 1n; m < 120n && s.alarm; m++) {
+      s = step(on, s.S, 0n, m) // idle minutes after the spike
+      held++
+    }
+    expect(held > 3 && held < 60).toBe(true)
+    // spikeMax 0 (default): the same huge minute only moves S by z - k, as before
+    const off = DEFAULT_CUSUM(wide)
+    const x = 10n ** 20n
+    const z = ((log2milli(x) - 25_000n) * 1000n) / 15_000n
+    expect(step(off, 0n, x, 0n).S).toBe(z - off.k)
+  })
+
+  test('spike rule keeps checkpoint + recompute equal to per-minute (D58)', () => {
+    const m0 = 29_000_000n
+    const ring = Array(32).fill(0n)
+    for (let i = 0n; i < 30n; i++)
+      ring[Number((m0 + i) % 32n)] = word(m0 + i, i === 7n ? 900_000n : (i * 7919n) % 50_000n)
+    const q = { ...p, spikeMax: 500_000n }
+    let s: CusumState = { minute: m0 - 1n, S: 0n, alarm: false, gap: false }
+    for (let m = m0; m < m0 + 30n; m++) s = recompute(q, s, ring, m, [])
+    let c: CusumState = { minute: m0 - 1n, S: 0n, alarm: false, gap: false }
+    for (const stop of [m0 + 5n, m0 + 8n, m0 + 29n]) c = recompute(q, c, ring, stop, [])
+    expect({ S: c.S, alarm: c.alarm }).toEqual({ S: s.S, alarm: s.alarm })
+  })
+
   test('write every 10 minutes or when the alarm flips', () => {
     const a = { minute: 100n, S: 0n, alarm: false, gap: false }
     expect(shouldWrite(a, { ...a, minute: 105n })).toBe(false)
