@@ -1,6 +1,6 @@
 import { Link } from 'react-router'
 import { Metric, Mono, Panel, PageHeader } from '../components/ui'
-import { ALERT, readEvents, readLive, useLive, type ChainEvent, type LiveOrg } from '../live/chain'
+import { ALERT, CHAIN_LABEL, readEvents, readLive, useLive, type ChainEvent, type LiveOrg } from '../live/chain'
 
 // The onboarded network, live from the fork. The backend runs two exchanges (org A / org B); a confirmed
 // threat at one is written to the shared ThreatRegistry and is readable by the other within the same block.
@@ -18,7 +18,7 @@ export default function Network() {
   return (
     <div className="max-w-[1480px]">
       <PageHeader eyebrow="Shared defence" title="Network"
-        desc="Connected exchanges share confirmed threats through the on-chain ThreatRegistry. A trap hit at one member is reusable intelligence for every other, with no shared backend to compromise. Live from the Base Sepolia fork." />
+        desc={`Connected exchanges share confirmed threats through the on-chain ThreatRegistry. A trap hit at one member is reusable intelligence for every other, with no shared backend to compromise. Live from ${CHAIN_LABEL}.`} />
       <div className="grid grid-cols-4 gap-4 mb-5">
         <Metric label="Connected" value={orgs.length || '…'} sub="exchanges on this deployment" status="active" />
         <Metric label="Active alerts" value={orgs.length ? alerts : '…'} sub="members tightened now" status={alerts ? 'threat' : 'active'} />
@@ -32,7 +32,7 @@ export default function Network() {
 
       <Panel title="Threat propagation">
         {threats.length === 0 ? (
-          <p className="px-5 py-8 text-[13px] text-mute">No threats shared on the fork yet. A confirmed trap hit publishes one here, readable by every member.</p>
+          <p className="px-5 py-8 text-[13px] text-mute">No threats shared on {CHAIN_LABEL} yet. A confirmed trap hit publishes one here, readable by every member.</p>
         ) : (
           <ul className="divide-y divide-white/[0.05]">
             {threats.slice(0, 12).map((t) => (
