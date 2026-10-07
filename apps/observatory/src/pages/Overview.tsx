@@ -138,7 +138,6 @@ export default function Overview() {
     if (mode !== 'live') changeMode('live')
     setSelected(null)
     atkOrg.current = null
-    sawAlert.current = false
     setAtk({ busy: true, status: 'Attacker compromises the exchange backend' })
     toMap({ type: 'beat', t: 0 })
     try {
@@ -150,7 +149,7 @@ export default function Overview() {
           toMap({ type: 'beat', t: BEAT.done }) // 10: caged, cash-out held
           setTimeout(() => toMap({ type: 'beat', t: 13.6 }), 2200) // blue trail settles back to the decoy
           setTimeout(() => toMap({ type: 'beat', t: 16 }), 5200) // settle: attacker neutralised, deposit held
-          setTimeout(() => toMap({ type: 'fund' }), 4200) // trail back: the ground flattens and the walled reserve rises (until Reset)
+          setTimeout(() => toMap({ type: 'fund' }), 4200) // trail back: the ground flattens, the reserve and the red bank wall rise (held until Reset)
           setAtk({ busy: false, done: true, status: 'Attacker trapped · funds held in the temporary-lane reserve' })
           return
         }
@@ -165,33 +164,16 @@ export default function Overview() {
       setAtk((a) => ({ ...a, busy: false, err: err instanceof Error ? err.message : String(err) }))
     }
   }
-  // recovery: once the attacked org's alert clears (reset or TTL), return the map to calm and free the bees.
-  // Only after the live read has shown the alert raised: 'done' lands about 1 s after the alert, before the next
-  // 6 s live poll, and that stale pre-attack read must not count as "cleared" (it wiped the finale).
-  const atkAlerted = !!atkOrg.current && !!live.data && live.data.orgs.some((o) => o.letter === atkOrg.current && o.alert > 0 && o.alertExpiresAt > live.data!.chainTime)
-  const sawAlert = useRef(false)
-  if (atkAlerted) sawAlert.current = true
-  const atkRecovered = sawAlert.current && !atkAlerted
-  const recovering = useRef(false)
-  useEffect(() => {
-    if (atk.done && atkRecovered && !recovering.current) {
-      recovering.current = true
-      toMap({ type: 'beat', t: 0 }) // alert cleared -> the map returns to calm, bees resume patrol
-      setAtk((a) => ({ ...a, status: 'Exchange standing down · patrol resumed' }))
-      setTimeout(() => { atkOrg.current = null; sawAlert.current = false; recovering.current = false; setAtk({ busy: false, status: '' }) }, 1500)
-    }
-  }, [atk.done, atkRecovered])
-  // Reset: after an attack the button becomes Reset. It reverts the fork to the clean post-setup snapshot and
-  // returns the map to calm, so the next run starts fresh. done:false up front so the recovery effect won't also fire.
+  // Reset: after an attack the button becomes Reset and the contained state (reserve vault, red bank wall) holds until
+  // it is pressed. It reverts the fork to the clean post-setup snapshot and returns the map to calm for the next run.
   const resetDemo = async () => {
     if (atk.busy) return
-    recovering.current = false
     setAtk({ busy: true, done: false, resetting: true, status: 'Resetting the fork to a clean state…' })
     try {
       await fetch(`${BRIDGE}/reset`, { method: 'POST' }).catch(() => null)
     } finally {
       atkOrg.current = null
-      sawAlert.current = false
+      toMap({ type: 'fundClear' }) // the reserve and the bank wall stay up until this button
       toMap({ type: 'beat', t: 0 })
       toMap({ type: 'home' })
       setAtk({ busy: false, status: '' })
