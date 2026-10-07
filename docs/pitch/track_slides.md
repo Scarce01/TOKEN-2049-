@@ -1,19 +1,22 @@
 # Track slides: Chainlink CRE, NOWNodes, Solana (content only)
 
-Status: draft, 2026-10-07. One section per track, three slides each, written against that track's judging criteria.
+Status: draft, 2026-10-07, checked against token2049/main 637d7b2 (Solana Guard live on devnet, docs/SUBMISSION.md).
+One section per track, three slides each, written against that track's judging criteria.
 Slide text is in English (what goes on screen); 讲者备注 is in Chinese. No em dash.
 
 Every number carries its source (CLAUDE.md rule 8):
 
 - `[DON]` testnet, measured on the real Chainlink DON (Base Sepolia, 2026-10-07)
 - `[testnet sim]` testnet with real transactions, run through `cre workflow simulate --broadcast` (mock forwarder)
+- `[devnet]` Solana devnet, measured (demo/solana-latest-run.json, 2026-10-07)
 - `[on-chain]` public on-chain data (replays of real incidents; tx hashes in the repo)
 - `[test]` automated tests
 - `[assumed]` assumption or model
 - `[todo]` not measured yet; fill in after the run, otherwise leave the line off the slide
 
 Sources for every figure: docs/BENCHMARK.md, docs/DEPLOY_BASE_SEPOLIA.md, docs/STATUS.md, docs/AUDIT_2026-10-07.md,
-docs/42_performance.md, docs/10_interfaces.md, reports/don/, analysis/trace_bybit/results/.
+docs/42_performance.md, docs/10_interfaces.md, docs/SUBMISSION.md, reports/don/, analysis/trace_bybit/results/,
+solana/README.md, demo/solana-latest-run.json.
 
 ---
 
@@ -71,7 +74,7 @@ Criteria: Blockchain 40% · Effective use of CRE 40% · Wow factor 20%
 - 10 秒、18 秒都是单次运行（BENCHMARK.md）。说「measured once on the DON」，不要说「always」
 - Base Sepolia 上 DON 部署的 Trap 只有一个测试诱饵，没有 NOWNodes 第二来源（NOWNodes 的 key 访问不了 Base Sepolia）。NOWNodes 见证是在 Ethereum Sepolia 用 simulate --broadcast 跑通的
 - Gate 6 的「多数据源一致」目前豁免，只跑价格新鲜度；被问到七关就照实说
-- Base Sepolia 的 Trap 冻结报告交易只放截断的 `0x32ab0635…`，不要放全哈希（可以从攻击者地址反推出诱饵）
+- Base Sepolia 的 Trap 冻结报告 `0x32ab0635…` 与探针 `0x236778f2…` 团队已在 docs/SUBMISSION.md 公开。STATUS 提醒：被触发过的诱饵可由 suspect 地址反查，下次演示前要轮换诱饵
 
 ## A3. Wow factor (20%): touch a decoy, ten seconds later the money cannot leave
 
@@ -88,13 +91,14 @@ Criteria: Blockchain 40% · Effective use of CRE 40% · Wow factor 20%
 - If the flag lands within 60 s, 94.7% of the flagged wallets still hold the money `[on-chain]` (replay)
 - From one known Bybit attacker address, our tracer recovered all 51 FBI-listed wallets within 3 hops `[on-chain]`; the FBI list came out 5 days later
 
-**One DON, more chains (next)**
-- A confirmed threat on Ethereum becomes on-chain enforcement on Solana through CRE Solana Write `[todo]`
-- The same case can buy deeper forensics from another agent over x402 on Cardano `[todo]`
+**One DON verdict, enforced on another chain**
+- The DON's Trap report on Base Sepolia contained a Token-2022 asset on Solana devnet: the same transfer that worked before was rejected on chain after `[devnet]`
+- Next: CRE Solana Write, so the DON writes to Solana directly instead of through a key `[todo]`
 
 讲者备注：
 - 现场演示在本地 fork 上跑（真实合约与真实 CRE workflow，CLI simulate）。台上要说「local fork of Base Sepolia」；DON 实测数字用上一页
-- 「Solana / Cardano」两条现在是代码写好、未在测试网跑通；跑通前只说「next」，跑通后补 tx 与 Program ID
+- Solana 那条已在 devnet 跑通（交易见 C 节）；但目前是 Guard 的 authority 钥匙把 DON 报告带过去，不是 CRE 直接写 Solana。说「the DON's report」，不要说「CRE writes to Solana」
+- Cardano 不参赛（docs/SUBMISSION.md），台上不提
 - 94.7% 与 51/51 是公开数据回放（不是实时归因），说「replay」
 - 地图上的追踪动画与跨链结尾是示意；实测的追踪结果是回放数字，不要说「演示里的追踪是实时的」
 
@@ -181,43 +185,44 @@ Demo and presentation 15%
 
 ## C1. Technical execution (30%) + Innovation (20%): the rule lives in the transfer itself
 
-**Title:** A threat confirmed on Ethereum makes the same transfer fail on Solana.
+**Title:** A threat the Chainlink DON confirmed on Base makes the same transfer fail on Solana.
 
 **Core logic on chain, not a dashboard**
-- `qubee-guard`: an Anchor program that is the Token-2022 transfer hook of `qUSD-S`
-- Every transfer of the mint calls the hook, which reads the mint's Guard PDA (`["guard", mint]`): NORMAL lets it through, CONTAINED makes the transfer fail on chain (`GuardContained`)
-- The hook never calls out. It enforces a decision already made by QUBEE and Chainlink CRE
+- `qu3ee_guard`: an Anchor program that is the Token-2022 transfer hook of `qUSD-S`, live on devnet `[devnet]`
+- Every transfer of the mint calls the hook, which reads the mint's Guard PDA (`["guard", mint]`): NORMAL lets it through, CONTAINED fails the transfer on chain (`Contained`, custom error 6000)
+- The hook makes no external calls and runs no tracing. It enforces a decision the Chainlink DON already made
 
 **Rules the program enforces**
-- Only the guard's authority can contain; a wrong signer is rejected
-- Only a CONFIRMED threat can contain; LINKED and BEHAVIOR are rejected on chain
-- Older evidence cannot override newer state; applying the same threat twice leaves the same state
-- One Guard per mint: exchange A cannot freeze exchange B
-- The Guard is checked by its seeds, so nobody can pass in a fake NORMAL guard; the hook refuses calls outside a real Token-2022 transfer
-- After setup the mint's hook authority is removed, so nobody can point the hook elsewhere and switch enforcement off
+- Only the Guard's authority changes its state
+- The same case applied twice leaves the same state; evidence older than what the Guard holds (by EVM block number) is refused, so a stale report cannot reopen a mint
+- One Guard per org and mint: org A's containment never touches org B's asset; other mints are unaffected
+- The mint must name this program as its transfer hook before a Guard can be created, and only the mint authority can create it
+- Inside a transfer, the hook checks that both token accounts are mid-transfer and that the extra accounts are exactly the ones its list names: leaving out the Guard, swapping in another Guard, or calling the hook outside a transfer all fail
+- 16 tests on a local validator, S01 to S08 plus hook wiring and no-bypass `[test]`
 
 **Cross-chain evidence**
-- The Guard stores the evidence hash of a real QUBEE threat on Ethereum Sepolia: `ThreatAdded` at block 11,853,996 `[testnet sim]`
-- The demo reads that receipt first and refuses to contain unless the event is there
+- The Guard carries the source of its containment: the DON's Trap report on Base Sepolia `0x32ab0635…`, block 47,802,234 `[DON]`
+- Before applying it, the demo checks that report on Base: the KeystoneForwarder accepted it and the Receiver logged FREEZE and THREAT
 
 **Innovation**
 - Transfer hooks are usually allowlists. Here the hook enforces a security verdict that a Chainlink DON reached on another chain
-- Next: CRE Solana Write, so the Guard accepts DON-signed reports through the production Keystone forwarder only `[todo]`
+- Next: CRE Solana Write, so the DON's report lands through the Solana keystone forwarder and the Guard's authority becomes the DON itself `[todo]`
 
 讲者备注：
-- 程序与测试已写好（S01 到 S08，加上绕过与权限测试），devnet 部署要等 Docker 与 devnet SOL。部署前不要说「deployed」
+- 现在是「Guard 的 authority 钥匙在 Base 上核对 DON 报告后，把威胁带到 Solana」。CRE 直接写 Solana（on_report 指令）还没写，只说「next」
+- 链上没有 CONFIRMED / LINKED 分类检查（ThreatReport 只有 case hash、来源链、证据交易、区块号）。不要说「LINKED 在链上被拒」
+- mint 的 hook authority 在这次运行里没有移除。不要说「没人能把 hook 换掉」；被问到就说这是上线前要做的一步
 - 不要说可以套在现有 USDC 上：qUSD-S 是新发行的测试币，带我们的 hook
-- Sepolia 那笔威胁证据来自 CRE simulate --broadcast 的报告（真实测试网交易，不是 DON）
 
 ## C2. Product and UX (20%) + Real-world impact (15%)
 
 **Title:** Holders do nothing. Issuers get a circuit breaker that a hacked server cannot turn off.
 
 **User experience**
-- Holders send `qUSD-S` like any token; wallets resolve the hook's extra account automatically
-- When the Guard is CONTAINED the transfer fails with a readable reason: "QUBEE Guard is CONTAINED: transfer rejected"
-- Exchange officers see one card: program, asset, transfer before the threat ALLOWED, threat source on Ethereum, current state CONTAINED, transfer after the threat REJECTED, each with an explorer link
-- Two commands for a reviewer: `pnpm solana:setup`, `pnpm solana:demo`
+- Holders send `qUSD-S` like any Token-2022 token; the client resolves the hook's extra account (the Guard) from the on-chain list
+- When the Guard is CONTAINED the transfer fails with a readable reason: "Qu3ee guard is CONTAINED: transfer rejected"
+- A public evidence page shows every transaction of the run, each with an explorer link: https://dist-two-gamma-80.vercel.app
+- A reviewer runs it alone: `pnpm solana:test`, `pnpm solana:demo`
 
 **Who needs this**
 - Stablecoin issuers and treasuries minting Token-2022 assets
@@ -226,29 +231,28 @@ Demo and presentation 15%
 
 **Path after the hackathon**
 - Issuers add the hook when they create a mint
-- Exchanges in the QUBEE network share one threat list; the Guard turns that list into enforcement on Solana
-- Reset is deliberate: only the guard authority can return a mint to NORMAL
+- Exchanges in the Qu3ee network share one threat list on the EVM side; the Guard turns a confirmed threat into enforcement on Solana
+- Reset is deliberate: only the Guard's authority returns a mint to NORMAL, and only with evidence at least as new as what it holds
 
 讲者备注：
-- 「wallets resolve automatically」指 spl-token 的 `createTransferCheckedWithTransferHookInstruction` 会读链上 ExtraAccountMetaList；如果有人问钱包兼容性，就这样解释
 - 影响面讲「新发行的资产」，不要暗示能保护已发行的代币
+- devnet 与 Base Sepolia 都没有 NOWNodes 端点，Solana 这边用别的 RPC（README 已写明）
 
 ## C3. Demo (15%): the same transfer, before and after
 
 **Title:** Same asset, same sender, same recipient. Success, then rejected on chain.
 
-**Live run (`pnpm solana:demo`, Solana devnet)**
-1. Program `[todo: Program ID]`
-2. Mint `qUSD-S` `[todo: mint address]`
-3. Guard NORMAL
-4. Alice sends Bob 10 qUSD-S: **SUCCESS** `[todo: signature]`
-5. Apply the QUBEE threat from Ethereum Sepolia (evidence `0xb0f0…1eba`): **SUCCESS** `[todo: signature]`
-6. Guard **CONTAINED**
-7. Alice sends Bob 10 qUSD-S again: **REJECTED on chain** (`GuardContained`) `[todo: signature]`
+**Live run (`pnpm solana:demo`, Solana devnet)** `[devnet]`
+1. Program `HaJ4J8KhE5FGfBFpgrwkqXk6yXfdjNYJpLjJ71KGrEXz`
+2. Mint `qUSD-S` `6D7PygkF5K85JS1Cbkxvz6J4Q7vrY1byCLx47T3w91o6`, Guard for org B, NORMAL
+3. Sender sends recipient 10 qUSD-S: **SUCCESS** `2NBywAz9…`
+4. Check the DON's Trap report on Base Sepolia (`0x32ab0635…`, block 47,802,234): accepted by the KeystoneForwarder, FREEZE and THREAT logged
+5. Apply it to the Guard: **CONTAINED** `xcKtP7Q4…`
+6. The same 10 qUSD-S transfer again: **REJECTED on chain** (`Contained`) `2jhbFKJ9…`
 
-Then open the three transactions in Solana Explorer and show the Observatory card.
+Then open the three transactions in Solana Explorer, or show the evidence page.
 
 讲者备注：
-- 第 7 步用 skipPreflight 发送，所以失败的那笔也上链、有 explorer 链接；这是这页最有说服力的一笔
-- `[todo]` 全部在 devnet 跑完后从 `apps/observatory/src/data/solana_guard.json` 填入；跑通前这页不上台
-- 如果 CRE Solana Write 赶上了，第 5 步改成「Chainlink CRE writes the threat to Solana」并补 DON 交易
+- 第 6 步那笔失败交易也上链了、有 explorer 链接，这是这页最有说服力的一笔
+- 所有链接在 docs/SUBMISSION.md 的 Solana 一节，台上点那里最稳
+- 如果 CRE Solana Write 赶上了，第 4、5 步改成「Chainlink CRE writes the threat to Solana」并补 DON 交易
