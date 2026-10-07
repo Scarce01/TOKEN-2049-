@@ -5,9 +5,10 @@ raising the alarm before an exchange notices. Measured on three real incidents w
 
 Version 2026-10-07. Every number carries its source:
 **public on-chain** = real chain data, **testnet fork** = local fork of Base Sepolia driven by the real CRE CLI,
-**test** = automated test suite, **assumed** = model or assumed parameter.
+**testnet (DON)** = public Base Sepolia with the workflows on the Chainlink DON, **test** = automated test suite,
+**assumed** = model or assumed parameter.
 
-Some results come from code in open pull requests: cross-chain tracing (#4) and the spike rule (#3).
+Cross-chain tracing (#4) and the spike rule (#3) are merged.
 
 ## Headline
 
@@ -17,6 +18,7 @@ Some results come from code in open pull requests: cross-chain tracing (#4) and 
 | Bitget attacker wallets, once Across and Stargate are followed | **8 to 12 of 14** | public on-chain |
 | Spike rule alarm on Bitget's hot wallet | **18:58**, the minute of the first large theft; Bitget noticed at 19:05 | public on-chain |
 | Flagged wallets still holding the money if the flag lands within 60 s | **94.7%** (Trek replay on Bybit) | public on-chain |
+| On the Chainlink DON: decoy touch to freeze / withdrawal request to verdict | **10 s** / **18 s** (1 run each) | testnet (DON) |
 
 ## 1. What we measured
 
