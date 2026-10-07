@@ -87,6 +87,8 @@ Criteria: Blockchain 40% · Effective use of CRE 40% · Wow factor 20%
 4. The map follows the stolen trail and shows the funds held in the temporary-lane reserve
 5. The exchange's admin alone cannot undo any of it: lowering the alert takes two of three officers
 
+**Judges can open it:** the public fork Observatory with a recorded attack on org A (blocks 47786511 to 47786515): https://da2whkz14p08x.cloudfront.net/
+
 **Why speed matters**
 - If the flag lands within 60 s, 94.7% of the flagged wallets still hold the money `[on-chain]` (replay)
 - From one known Bybit attacker address, our tracer recovered all 51 FBI-listed wallets within 3 hops `[on-chain]`; the FBI list came out 5 days later
@@ -157,7 +159,7 @@ Technical creativity 15% · Scalability 15%
 **Title:** Adding a chain is adding an endpoint.
 
 **Scales by design**
-- The Trap picks its NOWNodes endpoint by chain id: a new EVM chain is one entry in that map, using the same CRE secret
+- Adding a chain is a new URL in `NOWNODES_URL`, not a new workflow; the Trap picks the endpoint by chain id and uses the same CRE secret
 - Cost follows attacks, not traffic: one NOWNodes call per decoy touch per node `[assumed]` (design budget); tracing calls are cached and deterministic
 - The tracer already speaks to five chains through one provider; the same code path covers any EVM chain NOWNodes serves
 
