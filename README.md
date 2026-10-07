@@ -4,6 +4,10 @@
 
 <br />
 <div align="center">
+  <a href="https://github.com/Scarce01/TOKEN-2049-">
+    <img src="docs/images/logo.png" alt="Qu3ee logo" width="120" height="120">
+  </a>
+
   <h1 align="center">Qu3ee</h1>
 
   <p align="center">
@@ -51,7 +55,6 @@
     <li><a href="#project-layout">Project layout</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#collaborators">Collaborators</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
@@ -298,27 +301,14 @@ The team works through pull requests; see [docs/TEAM_WORKFLOW.md](docs/TEAM_WORK
 Rules that never bend: the exchange backend holds no decision logic, the decoy list never reaches git, logs, frontends
 or exchange schemas, and every number in the UI or the video names its source.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## Collaborators
-
-<table>
-  <tr>
-    <td align="center"><a href="https://github.com/Scarce01"><img src="https://github.com/Scarce01.png?size=80" width="80" alt="Scarce01" /><br /><sub><b>Scarce01</b></sub></a></td>
-    <td align="center"><a href="https://github.com/CL0908"><img src="https://github.com/CL0908.png?size=80" width="80" alt="CL0908" /><br /><sub><b>CL0908</b></sub></a></td>
-    <td align="center"><a href="https://github.com/saladbkp"><img src="https://github.com/saladbkp.png?size=80" width="80" alt="saladbkp" /><br /><sub><b>saladbkp</b></sub></a></td>
-    <td align="center"><a href="https://github.com/yantongggg"><img src="https://github.com/yantongggg.png?size=80" width="80" alt="yantongggg" /><br /><sub><b>yantongggg</b></sub></a></td>
-  </tr>
-</table>
-
-Commit history (updates automatically):
+### Top contributors
 
 <a href="https://github.com/Scarce01/TOKEN-2049-/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Scarce01/TOKEN-2049-" alt="Contributors" />
+  <img src="https://contrib.rocks/image?repo=Scarce01/TOKEN-2049-" alt="contrib.rocks image" />
 </a>
 
-Built at the TOKEN2049 hackathon. The team works without fixed roles; who is doing what is coordinated through
-`/sync` and `/handoff` ([docs/TEAM_WORKFLOW.md](docs/TEAM_WORKFLOW.md)).
+An avatar shows up once your commit email is linked to your GitHub account (GitHub, Settings, Emails), or when you
+commit with your GitHub noreply address.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
