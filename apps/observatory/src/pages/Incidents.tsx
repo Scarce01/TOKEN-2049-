@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router'
 import { Kind } from '../shared/constants'
 import { DataTable, Metric, PageHeader, Panel, StateBadge } from '../components/ui'
-import { buildCases, readEvents, readLive, useLive, type Case } from '../live/chain'
+import { buildCases, CHAIN_LABEL, readEvents, readLive, useLive, type Case } from '../live/chain'
 import { CASES, proves } from './Replay'
 
 // Incidents, live from the fork. A case is a CRE report and every tightening it applied, grouped by caseId.
@@ -35,7 +35,7 @@ export default function Incidents() {
   return (
     <div className="max-w-[1480px]">
       <PageHeader eyebrow="Command center" title="Incidents"
-        desc="Every verified trap hit becomes a case with its full on-chain response: the CRE report and each tightening action it applied. Live from the Base Sepolia fork." />
+        desc={`Every verified trap hit becomes a case with its full on-chain response: the CRE report and each tightening action it applied. Live from ${CHAIN_LABEL}.`} />
       <div className="grid grid-cols-4 gap-4 mb-5">
         <Metric label="Cases" value={events.data ? cases.length : '…'} sub="on chain since deployment" status="active" />
         <Metric label="Active" value={active.length} sub="alert still in force" status={active.length ? 'threat' : 'active'} />
@@ -76,9 +76,9 @@ export default function Incidents() {
           { key: 's', label: 'Status', render: () => <span className="font-mono text-[11px] tracking-[0.12em] text-honey">REPLAY</span> },
         ]} />
       </Panel>
-      <Panel title="Live cases · Base Sepolia fork">
+      <Panel title={`Live cases · ${CHAIN_LABEL}`}>
         {cases.length === 0 ? (
-          <p className="px-5 py-8 text-[13px] text-mute">No cases on the fork yet. Run an attack from the Overview to create one.</p>
+          <p className="px-5 py-8 text-[13px] text-mute">No cases on {CHAIN_LABEL} yet. Run an attack from the Overview to create one.</p>
         ) : (
           <DataTable rows={cases} rowKey={(c) => c.caseId} onSelect={(c) => nav(`/cases/${c.caseId}`)} cols={[
             { key: 'id', label: 'Case', render: (c) => <span className="font-mono text-cream">{short(c.caseId)}</span> },

@@ -1,3 +1,4 @@
+import { CHAIN_LABEL } from '../live/chain'
 import { useEffect, useState } from "react"
 import { NavLink, useLocation } from "react-router"
 import { Icon } from "./ui"
@@ -196,7 +197,7 @@ function LiveStatus() {
   const org = data?.orgs[0]
   const blk = data ? `${(data.block / 1e6).toFixed(2)}M` : "--"
   return (
-    <span className="flex items-center gap-2 text-mute" title={ok ? `Base Sepolia fork · block ${data!.block} · ${org?.mode}` : "Backend unreachable"}>
+    <span className="flex items-center gap-2 text-mute" title={ok ? `${CHAIN_LABEL} · block ${data!.block} · ${org?.mode}` : "Backend unreachable"}>
       <span className={`w-1.5 h-1.5 rounded-full ${ok ? "bg-[#5fd08a]" : "bg-[#6a665e]"}`} />
       {ok ? <>Backend <b className="font-medium text-cream">{org?.mode}</b> · blk {blk}</> : "Backend offline"}
     </span>

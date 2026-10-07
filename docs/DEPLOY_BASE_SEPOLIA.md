@@ -1,7 +1,7 @@
 # Public Base Sepolia deployment (mode A, DON)
 
 Deployed 2026-10-07. Contracts on public Base Sepolia (chain 84532) in PROD mode, behind the real
-KeystoneForwarder; Patrol runs on the Chainlink DON. Addresses: [deployments/base-sepolia.json](../deployments/base-sepolia.json).
+KeystoneForwarder; Patrol, Trap and Cosign run on the Chainlink DON. Addresses: [deployments/base-sepolia.json](../deployments/base-sepolia.json).
 
 ## What is live
 
@@ -11,7 +11,9 @@ KeystoneForwarder; Patrol runs on the Chainlink DON. Addresses: [deployments/bas
 | Patrol workflow | ACTIVE on the DON (zone-a), private registry, every minute | workflow ID `002d793802489c6c0b8e379240bd9f8f7b6189ba682c02f19969e31fcaeb5078` |
 | Workflow owner on the DON | `0x31ed35d932725595DD5D27F23705D8c0c54e29db` (private registry, derived by CRE) | `cre workflow list` |
 | Receiver owner | `0x31ed…29db` on both Receivers, through ConfigTimelock (officers `0x4060…` and `0xbfad…` signed, 10 min delay) | queue `0x3cc9d57d…` / `0x1fd3a6b6…`, execute `0xff06e7e3…` / `0x0c55d958…` (org A / org B) |
-| Trap, Cosign | not on the DON yet | need decoys on this chain first (see below) |
+| Trap workflow | ACTIVE on the DON, watching one test decoy wallet of org B (no secrets needed: no NOWNodes on Base Sepolia, no committed proof) | workflow ID `006576bb13bfa082e9ccf563521e2004534f708992cf597054db84be8ff3cd66`; decoy touch to freeze 10 s (BENCHMARK.md) |
+| Cosign workflow | ACTIVE on the DON, private registry | workflow ID `00e143e0e4721b04f2eb4f7d07274a5307c82c66d2d0d45a3fa110258bcb0ebc`; request to verdict 18 s, paid after the delay (BENCHMARK.md) |
+| CRE secrets | uploaded 2026-10-07 (5 secrets, namespace main, owner `0x31ed…29db`) | Patrol has not failed since 12:26 UTC |
 
 **Verified after the owner change:** DON reports are accepted. Example: tx `0x554b02a6a1cc1bfca7210cc0c6f504eaf1b6129a4be78ca4951861b240b320ec` (block 47801297), sent by a DON transmitter to the KeystoneForwarder, `ReportProcessed` result 1 for Receiver A, with `PatrolStateUpdated` (CUSUM checkpoint) and `AssetCheckpoint` in the same tx; tx `0x7cf4bad9…` carried a `Ping`. No `ActionFailed` or `ActionStale`.
 
@@ -68,10 +70,12 @@ The Observatory is built around the local fork. To read the public deployment in
 
 ## Next
 
-- Decoys on this chain: generate with decoy-admin, fund the decoy wallets (faucet), commit the root through
-  the timelock (2 officer signatures again), put the plaintext decoy addresses only in the trap log trigger config
-  (CLAUDE.md rule 2).
-- Upload CRE secrets for the private registry: `cre secrets create ../secrets.yaml -T staging-settings
-  --secrets-auth browser` (browser login on the CRE account).
-- Deploy Trap and Cosign the same way as Patrol, then run one decoy touch on the public chain.
+- Secrets were uploaded with `cre login`, then from `workflows/`: `cre secrets create secrets.yaml -T staging-settings
+  --secrets-auth browser -e .env.nokey` (an env file without `CRE_API_KEY`: API keys are not accepted for secrets).
+  `project.yaml` has a read-only Ethereum mainnet RPC so the CLI can check the Vault DON's keys.
+- Cosign test on this chain: `bun packages/offchain/scripts/e2e-cosign-public.ts` (seeder = deployer key in
+  `contracts/.env`, submitter A key in `apps/exchange-api/.env`; neither is printed).
+- More decoys on this chain (only one test decoy of org B today): generate with decoy-admin, commit the root through
+  the timelock (2 officer signatures), plaintext addresses only in the trap log trigger config (CLAUDE.md rule 2).
+- Frontend served against this chain, the indexer, and a public-chain attack flow (no time travel or impersonation).
 - Rotate after the hackathon: the CRE API key (`token2049cre`) and every key used here.
