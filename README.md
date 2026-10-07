@@ -311,6 +311,12 @@ or exchange schemas, and every number in the UI or the video names its source.
   </tr>
 </table>
 
+Commit history (updates automatically):
+
+<a href="https://github.com/Scarce01/TOKEN-2049-/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Scarce01/TOKEN-2049-" alt="Contributors" />
+</a>
+
 Built at the TOKEN2049 hackathon. The team works without fixed roles; who is doing what is coordinated through
 `/sync` and `/handoff` ([docs/TEAM_WORKFLOW.md](docs/TEAM_WORKFLOW.md)).
 
