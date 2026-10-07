@@ -31,10 +31,18 @@ function forkSnapshot(): string {
   if (!(process.env.DEPLOY_NAME ?? '').endsWith('-fork') || !existsSync(SNAPSHOT_FILE)) return ''
   return readFileSync(SNAPSHOT_FILE, 'utf8')
 }
+/** Fork only: the block anvil was loaded at from a state dump (written by infra/fork/start.py or whoever
+ * reloads a local fork). There is no state before it, so per-block snapshots start after it. */
+const LOADED_HEAD_FILE = join(__dirname, '..', '..', '.tmp', 'fork-loaded-head')
+function loadedHead(): string {
+  if (!(process.env.DEPLOY_NAME ?? '').endsWith('-fork') || !existsSync(LOADED_HEAD_FILE)) return ''
+  return readFileSync(LOADED_HEAD_FILE, 'utf8').trim()
+}
 function codeHash(): string {
   const h = createHash('sha256')
     .update(process.env.DEPLOY_NAME ?? 'base-sepolia')
     .update(forkSnapshot())
+    .update(loadedHead())
   for (const f of ['ponder.config.ts', 'ponder.schema.ts', 'src/index.ts']) h.update(readFileSync(join(__dirname, f)))
   return h.digest('hex').slice(0, 12)
 }
@@ -96,10 +104,10 @@ export default createConfig({
   },
   // vault balance, quota, cap, alert and freeze per org every N blocks (state that has no event of its own)
   blocks: {
-    // PONDER_SNAPSHOT_FROM: a fork loaded from a state dump has no state before its head (infra/fork/start.py)
+    // a fork loaded from a state dump has no state before its head (.tmp/fork-loaded-head, or PONDER_SNAPSHOT_FROM)
     Snapshot: {
       chain: 'chain',
-      startBlock: Number(process.env.PONDER_SNAPSHOT_FROM ?? resetStart),
+      startBlock: Number(process.env.PONDER_SNAPSHOT_FROM ?? (loadedHead() ? Number(loadedHead()) + 1 : resetStart)),
       interval: Number(process.env.PONDER_SNAPSHOT_EVERY ?? 30),
     },
   },

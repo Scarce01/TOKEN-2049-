@@ -86,7 +86,7 @@ def main():
     # so mine past the loaded head first (empty blocks)
     loaded_head = int(rpc('eth_blockNumber'), 16)
     rpc('anvil_mine', ['0x50', '0x1'])
-    os.environ['PONDER_SNAPSHOT_FROM'] = str(loaded_head + 1)  # inherited by serve.ts and the indexer it starts
+    (APP / '.tmp' / 'fork-loaded-head').write_text(str(loaded_head))  # read by services/indexer/ponder.config.ts
     # every boot is a fresh chain: never reuse an indexer database built against another one
     shutil.rmtree(APP / 'services' / 'indexer' / '.ponder', ignore_errors=True)
     # the bridge's Reset reverts to this snapshot (snapshots do not survive an anvil restart)
