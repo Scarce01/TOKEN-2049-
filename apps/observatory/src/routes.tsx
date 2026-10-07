@@ -13,6 +13,7 @@ import Network from "./pages/Network"
 import DesignSystem from "./pages/DesignSystem"
 import NotFound from "./pages/NotFound"
 import Controls from "./pages/Controls"
+import Replay from "./pages/Replay"
 
 function LegacyControls() {
   const location = useLocation()
@@ -49,6 +50,7 @@ export const router = createBrowserRouter(
       children: [
         { index: true, Component: Overview },
         { path: "cases", Component: Incidents },
+        { path: "cases/replay/:case?/:tab?", Component: Replay },
         { path: "cases/:id", Component: CaseDetail },
         { path: "controls", Component: Controls },
         { path: "controls/:tab/:id?", Component: LegacyControls },

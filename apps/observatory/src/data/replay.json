@@ -1,0 +1,911 @@
+{
+ "generated": "2026-10-07",
+ "source": "public on-chain",
+ "cases": [
+  {
+   "id": "bybit-2025-02",
+   "exchange": "Bybit",
+   "when": "2025-02",
+   "groundTruth": "FBI PSA I-022625-PSA",
+   "truthSize": 51,
+   "seeds": 1,
+   "window": [
+    21895238,
+    21930932
+   ],
+   "windowBlocks": 35694,
+   "discoveryFloorPct": 10.0,
+   "highViewPct": 90.0,
+   "recovered": 51,
+   "topN": 49,
+   "candidates": 3631,
+   "graph": {
+    "addresses": 793,
+    "edges": 19871
+   },
+   "hops": [
+    {
+     "hop": 1,
+     "flagged": 42,
+     "found": 41
+    },
+    {
+     "hop": 2,
+     "flagged": 962,
+     "found": 42
+    },
+    {
+     "hop": 3,
+     "flagged": 2703,
+     "found": 51
+    },
+    {
+     "hop": 4,
+     "flagged": 3395,
+     "found": 51
+    }
+   ],
+   "fullRecoveryHop": 3,
+   "highViewHolds": 51,
+   "coverage": "Ethereum",
+   "crossChain": false,
+   "ethOnly": null,
+   "breakpoints": {
+    "unit": "ETH",
+    "totals": {
+     "burn / redeem": 15000.0,
+     "contract (AugustusExecutor)": 75019.4,
+     "contract (DelayedWithdraw)": 30000.0,
+     "contract (LiFiDiamond)": 1273.89,
+     "contract (unlabeled)": 7889.94,
+     "dex": 8210.27,
+     "dex/bridge router": 14242.96,
+     "dex/pool": 270.63,
+     "proxy contract": 16516.79
+    },
+    "addresses": {
+     "burn / redeem": 1,
+     "contract (AugustusExecutor)": 1,
+     "contract (DelayedWithdraw)": 1,
+     "contract (LiFiDiamond)": 1,
+     "contract (unlabeled)": 1,
+     "dex": 3,
+     "dex/bridge router": 5,
+     "dex/pool": 1,
+     "proxy contract": 3
+    }
+   },
+   "attackerLike": {
+    "count": 721,
+    "fbi_recall_pct": 100.0,
+    "on_fbi": 51,
+    "precision_lower_bound_pct": 7.07
+   },
+   "classes": {
+    "attacker-like": 721,
+    "seed": 1,
+    "service": 17,
+    "touched": 71,
+    "unknown (not fetched)": 2857
+   },
+   "truth": [
+    {
+     "address": "0x0927\u20261377",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x0e8c\u20266b35",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x140c\u2026c3e3",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x1542\u20264443",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x1bb0\u2026c6b4",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x1eb2\u20265e57",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x2290\u2026433f",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x23db\u2026c887",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x30a8\u2026fa1d",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x3a21\u20269847",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x40e9\u2026187e",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x4c19\u2026cd67",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x51e9\u2026135d",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x5220\u2026619e",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x5af7\u20264b1d",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x660b\u2026ea1d",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x684d\u202628b9",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x6d46\u2026dc91",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x83c7\u20268950",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x83ef\u2026a09e",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x8c72\u20261806",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x9271\u2026d1ab",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x959c\u20266fb4",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x9624\u2026c3d8",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x9ef4\u2026407b",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0xa4b2\u2026449e",
+     "label": null,
+     "hop": 1,
+     "taintPct": 97.7,
+     "recovered": true
+    },
+    {
+     "address": "0xaf62\u20266ce9",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0xb172\u202603b4",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0xb4a8\u2026f1a2",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0xb723\u2026c305",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0xbc3e\u20269a7e",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0xbca0\u20264a39",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0xbde2\u2026bcbd",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0xcd1a\u2026b6e9",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0xcd7e\u2026c63a",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0xd3c6\u202607fb",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0xe697\u2026ae49",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0xe9bc\u2026f7e6",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0xf0a1\u20261c09",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0xfa3f\u20266c49",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0xfc92\u20266465",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0xdd90\u20265f92",
+     "label": null,
+     "hop": 2,
+     "taintPct": 95.7,
+     "recovered": true
+    },
+    {
+     "address": "0x1512\u20260268",
+     "label": null,
+     "hop": 3,
+     "taintPct": 95.7,
+     "recovered": true
+    },
+    {
+     "address": "0x2103\u2026044c",
+     "label": null,
+     "hop": 3,
+     "taintPct": 95.7,
+     "recovered": true
+    },
+    {
+     "address": "0x55cc\u2026b734",
+     "label": null,
+     "hop": 3,
+     "taintPct": 95.7,
+     "recovered": true
+    },
+    {
+     "address": "0x723a\u20268315",
+     "label": null,
+     "hop": 3,
+     "taintPct": 95.7,
+     "recovered": true
+    },
+    {
+     "address": "0xa5a0\u20266ad6",
+     "label": null,
+     "hop": 3,
+     "taintPct": 95.7,
+     "recovered": true
+    },
+    {
+     "address": "0xd5b5\u2026c489",
+     "label": null,
+     "hop": 3,
+     "taintPct": 95.7,
+     "recovered": true
+    },
+    {
+     "address": "0xeb0b\u20268549",
+     "label": null,
+     "hop": 3,
+     "taintPct": 95.7,
+     "recovered": true
+    },
+    {
+     "address": "0xf03a\u2026f0b1",
+     "label": null,
+     "hop": 3,
+     "taintPct": 95.7,
+     "recovered": true
+    },
+    {
+     "address": "0xf302\u202672be",
+     "label": null,
+     "hop": 3,
+     "taintPct": 95.7,
+     "recovered": true
+    }
+   ],
+   "source": "public on-chain",
+   "controls": {
+    "kind": "trek",
+    "watchBudget": 50,
+    "proposed": 51,
+    "of": 51,
+    "stillUnmovedPct": {
+     "12s": 100.0,
+     "3600s": 7.9,
+     "600s": 32.4,
+     "60s": 94.7
+    },
+    "note": "Trek replayed on the Bybit transfers with a watch budget of 50 addresses; classification uses hindsight"
+   }
+  },
+  {
+   "id": "stake-2023-09",
+   "exchange": "Stake",
+   "when": "2023-09",
+   "groundTruth": "FBI-published EVM addresses for the Stake.com theft (Ethereum, BSC, Polygon mixed)",
+   "truthSize": 4,
+   "seeds": 1,
+   "window": [
+    18063173,
+    18098889
+   ],
+   "windowBlocks": 35716,
+   "discoveryFloorPct": 10.0,
+   "highViewPct": 90.0,
+   "recovered": 4,
+   "topN": 2,
+   "candidates": 7,
+   "graph": {
+    "addresses": 8,
+    "edges": 121
+   },
+   "hops": [
+    {
+     "hop": 1,
+     "flagged": 3,
+     "found": 1
+    },
+    {
+     "hop": 2,
+     "flagged": 5,
+     "found": 3
+    },
+    {
+     "hop": 3,
+     "flagged": 5,
+     "found": 3
+    },
+    {
+     "hop": 4,
+     "flagged": 5,
+     "found": 3
+    }
+   ],
+   "fullRecoveryHop": null,
+   "highViewHolds": 3,
+   "coverage": "Ethereum",
+   "crossChain": false,
+   "ethOnly": null,
+   "breakpoints": {
+    "unit": "USD",
+    "totals": {
+     "dex": 5512675.83,
+     "dex/bridge router": 499881.73
+    },
+    "addresses": {
+     "dex": 6,
+     "dex/bridge router": 1
+    }
+   },
+   "attackerLike": {
+    "count": 5,
+    "fbi_recall_pct": 75.0,
+    "on_fbi": 3,
+    "precision_lower_bound_pct": 60.0
+   },
+   "classes": {
+    "attacker-like": 5,
+    "seed": 1,
+    "service": 7,
+    "touched": 2
+   },
+   "truth": [
+    {
+     "address": "0x94f1\u20268e8a",
+     "label": null,
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0x7d84\u2026ab4e",
+     "label": null,
+     "hop": 2,
+     "taintPct": 100.0,
+     "recovered": true
+    },
+    {
+     "address": "0xba36\u2026f30e",
+     "label": null,
+     "hop": 2,
+     "taintPct": 99.9,
+     "recovered": true
+    },
+    {
+     "address": "0xbda8\u20260c83",
+     "label": null,
+     "hop": 2,
+     "taintPct": 87.1,
+     "recovered": true
+    }
+   ],
+   "source": "public on-chain"
+  },
+  {
+   "id": "bitget-2026-09",
+   "exchange": "Bitget",
+   "when": "2026-09-24",
+   "groundTruth": "Bitget attacker wallets with >= 2 sources (Bitquery, Etherscan labels, TRM, Decrypt)",
+   "truthSize": 14,
+   "seeds": 7,
+   "window": [
+    26049114,
+    26084928
+   ],
+   "windowBlocks": 35814,
+   "discoveryFloorPct": 10.0,
+   "highViewPct": 90.0,
+   "recovered": 12,
+   "topN": 8,
+   "candidates": 192,
+   "graph": {
+    "addresses": 185,
+    "edges": 12239
+   },
+   "hops": [
+    {
+     "hop": 1,
+     "flagged": 3,
+     "found": 3
+    },
+    {
+     "hop": 2,
+     "flagged": 42,
+     "found": 3
+    },
+    {
+     "hop": 3,
+     "flagged": 64,
+     "found": 3
+    },
+    {
+     "hop": 4,
+     "flagged": 79,
+     "found": 3
+    }
+   ],
+   "fullRecoveryHop": null,
+   "highViewHolds": 3,
+   "coverage": "Ethereum, Across, Stargate",
+   "crossChain": true,
+   "ethOnly": {
+    "recovered": 8,
+    "candidates": 173
+   },
+   "breakpoints": {
+    "unit": "USD",
+    "totals": {
+     "bridge": 2684.14,
+     "burn / redeem": 833416.18,
+     "contract (Adapter)": 325281.6,
+     "contract (AllowanceHolder)": 155756.08,
+     "contract (Deposit)": 2682.69,
+     "contract (LZMultiCall)": 15291795.17,
+     "contract (MayanForwarder2)": 236354.52,
+     "contract (OnchainGateway)": 397271.21,
+     "contract (Umbra)": 405086.35,
+     "contract (WETH9)": 260139.98,
+     "contract (unlabeled)": 41710175.36,
+     "dex": 11026262.73,
+     "dex/bridge router": 14921336.69,
+     "dex/pool": 1501561.82,
+     "proxy contract": 6574384.99,
+     "service (many senders)": 24615266.32
+    },
+    "addresses": {
+     "bridge": 1,
+     "burn / redeem": 1,
+     "contract (Adapter)": 1,
+     "contract (AllowanceHolder)": 1,
+     "contract (Deposit)": 1,
+     "contract (LZMultiCall)": 1,
+     "contract (MayanForwarder2)": 1,
+     "contract (OnchainGateway)": 1,
+     "contract (Umbra)": 1,
+     "contract (WETH9)": 1,
+     "contract (unlabeled)": 5,
+     "dex": 3,
+     "dex/bridge router": 3,
+     "dex/pool": 1,
+     "proxy contract": 4,
+     "service (many senders)": 5
+    }
+   },
+   "attackerLike": {
+    "count": 79,
+    "fbi_recall_pct": 21.43,
+    "on_fbi": 3,
+    "precision_lower_bound_pct": 3.8
+   },
+   "classes": {
+    "attacker-like": 79,
+    "seed": 7,
+    "service": 31,
+    "touched": 98,
+    "unknown (not fetched)": 27
+   },
+   "truth": [
+    {
+     "address": "0x469a\u202625dc",
+     "label": "Bitget Exploiter 21",
+     "hop": 1,
+     "taintPct": 99.7,
+     "recovered": true,
+     "ethereumOnly": false
+    },
+    {
+     "address": "0x600c\u202684b2",
+     "label": "Bitget Exploiter 4",
+     "hop": 1,
+     "taintPct": 67.7,
+     "recovered": true,
+     "ethereumOnly": true
+    },
+    {
+     "address": "0x7c96\u20263e1c",
+     "label": "Bitget Exploiter 2",
+     "hop": 1,
+     "taintPct": 80.0,
+     "recovered": true,
+     "ethereumOnly": true
+    },
+    {
+     "address": "0x94a4\u20265da0",
+     "label": "Bitget Exploiter 7",
+     "hop": 1,
+     "taintPct": 33.7,
+     "recovered": true,
+     "ethereumOnly": false
+    },
+    {
+     "address": "0xd2c2\u2026f899",
+     "label": "Bitget Exploiter 5",
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true,
+     "ethereumOnly": true
+    },
+    {
+     "address": "0xdc29\u2026dc63",
+     "label": "Bitget Exploiter 9",
+     "hop": 1,
+     "taintPct": 100.0,
+     "recovered": true,
+     "ethereumOnly": true
+    },
+    {
+     "address": "0xe07b\u20267d57",
+     "label": "Bitget Exploiter 8",
+     "hop": 1,
+     "taintPct": 58.8,
+     "recovered": true,
+     "ethereumOnly": false
+    },
+    {
+     "address": "0xe410\u2026d946",
+     "label": "Bitget Exploiter 6",
+     "hop": 1,
+     "taintPct": 12.4,
+     "recovered": true,
+     "ethereumOnly": false
+    },
+    {
+     "address": "0xa6dd\u20265545",
+     "label": "Bitget Exploiter 3",
+     "hop": 2,
+     "taintPct": 39.9,
+     "recovered": true,
+     "ethereumOnly": true
+    },
+    {
+     "address": "0x9fa3\u20264fa0",
+     "label": "Bitget Exploiter 10",
+     "hop": 3,
+     "taintPct": 58.6,
+     "recovered": true,
+     "ethereumOnly": true
+    },
+    {
+     "address": "0xa6bf\u2026b272",
+     "label": "Bitget Exploiter 11",
+     "hop": 3,
+     "taintPct": 58.6,
+     "recovered": true,
+     "ethereumOnly": true
+    },
+    {
+     "address": "0xfd5e\u20269e54",
+     "label": "Bitget Exploiter 12",
+     "hop": 3,
+     "taintPct": 52.7,
+     "recovered": true,
+     "ethereumOnly": true
+    },
+    {
+     "address": "0xed5a\u20261a51",
+     "label": "Bitget Exploiter 13",
+     "hop": 4,
+     "taintPct": 0.2,
+     "recovered": false,
+     "ethereumOnly": false
+    },
+    {
+     "address": "0x52f0\u2026d284",
+     "label": "Bitget Exploiter 14",
+     "hop": null,
+     "taintPct": null,
+     "recovered": false,
+     "ethereumOnly": false
+    }
+   ],
+   "source": "public on-chain",
+   "network": {
+    "chains": [
+     {
+      "chain": "arbitrum",
+      "reached": 4,
+      "skipped": null,
+      "bridges": {
+       "across": 5
+      },
+      "usd": 4293933
+     },
+     {
+      "chain": "avalanche",
+      "reached": 0,
+      "skipped": "avalanche eth_getTransactionCount",
+      "bridges": {},
+      "usd": 0
+     },
+     {
+      "chain": "base",
+      "reached": 2,
+      "skipped": null,
+      "bridges": {
+       "stargate": 4
+      },
+      "usd": 4122101
+     },
+     {
+      "chain": "bsc",
+      "reached": 3,
+      "skipped": null,
+      "bridges": {
+       "across": 49
+      },
+      "usd": 4498832
+     },
+     {
+      "chain": "optimism",
+      "reached": 3,
+      "skipped": null,
+      "bridges": {
+       "across": 1,
+       "stargate": 6
+      },
+      "usd": 5621150
+     }
+    ],
+    "links": 65,
+    "bridgedUsd": 18536016
+   },
+   "timeline": [
+    {
+     "utc": "2026-09-24T18:31:00Z",
+     "event": "First test transfer, 93 TRX on Tron"
+    },
+    {
+     "utc": "2026-09-24T18:31:11Z",
+     "event": "Test transfer 0.84 ETH, Bitget 6 to Bitget Exploiter 1"
+    },
+    {
+     "utc": "2026-09-24T18:58:59Z",
+     "event": "First large outflow, 34.75M USDT from Bitget 6"
+    },
+    {
+     "utc": "2026-09-24T19:01:20Z",
+     "event": "First burst starts: five chains within 15 seconds (to 19:01:35)"
+    },
+    {
+     "utc": "2026-09-24T19:03:23Z",
+     "event": "Test transfer 0.65 ETH, Bitget 35 to Bitget Exploiter 1"
+    },
+    {
+     "utc": "2026-09-24T19:05:00Z",
+     "event": "Bitget monitoring flags discrepancy; customer withdrawals blocked"
+    },
+    {
+     "utc": "2026-09-24T19:16:14Z",
+     "event": "Second burst: five chains within 9 seconds (to 19:16:23, 13,965.93 ETH from Bitget 35)"
+    },
+    {
+     "utc": "2026-09-24T20:09:11Z",
+     "event": "Two more Ethereum transfers 12 seconds apart (1,879.20 ETH, 1,395.90 ETH)"
+    },
+    {
+     "utc": "2026-09-24T21:23:11Z",
+     "event": "Last transfer, 223.20 ETH from Bitget 6"
+    },
+    {
+     "utc": "2026-09-24T21:44:00Z",
+     "event": "Wallet service shut down (approximate)"
+    }
+   ],
+   "controls": {
+    "kind": "spike",
+    "events": {
+     "test_transfer": "09-24 18:31",
+     "large_outflow": "09-24 18:58",
+     "bitget_detected": "09-24 19:05"
+    },
+    "rule": [
+     {
+      "kind": "stable",
+      "spike_max_x_p99": 10,
+      "spike_max_units": "14049342732000",
+      "false_alarms_before_test_transfer": 2,
+      "false_alarms_per_day": 0.53,
+      "first_alarm": "09-24 18:58",
+      "minutes_after_large_outflow": 0,
+      "before_bitget_detected": true
+     },
+     {
+      "kind": "eth",
+      "spike_max_x_p99": 10,
+      "spike_max_units": "2029290783100000000000",
+      "false_alarms_before_test_transfer": 1,
+      "false_alarms_per_day": 0.27,
+      "first_alarm": "09-24 19:01",
+      "minutes_after_large_outflow": 3,
+      "before_bitget_detected": true
+     }
+    ],
+    "note": "Patrol CUSUM spike rule at 10x the pre-hack p99 per minute; false alarms counted on 3.8 days before the hack"
+   }
+  }
+ ]
+}
