@@ -150,7 +150,7 @@ export async function fund(s: DemoState) {
   }
 }
 
-async function seedDb(s: DemoState) {
+export async function seedDb(s: DemoState) {
   const sql = postgres(DB_URL, { max: 2, onnotice: () => {} })
   await sql`delete from exchange_a.hot_wallets`
   for (const w of s.wallets) {
