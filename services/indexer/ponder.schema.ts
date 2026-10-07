@@ -30,3 +30,22 @@ export const cases = onchainTable('cases', (t) => ({
   firstSeen: t.bigint().notNull(),
   updatedAt: t.bigint().notNull(),
 }))
+
+// One row per org per snapshot block: the state the map draws (balances, quota, cap, alert, freezes).
+// Token amounts are decimal strings of base units (qUSD 6 decimals, qETH 18).
+export const snapshots = onchainTable(
+  'snapshots',
+  (t) => ({
+    chainId: t.integer().notNull(),
+    blockNumber: t.bigint().notNull(),
+    blockTime: t.bigint().notNull(),
+    org: t.text().notNull(), // A, B, ...
+    alert: t.integer().notNull(),
+    alertExpiresAt: t.bigint().notNull(),
+    hotFrozenUntil: t.bigint().notNull(),
+    warmFrozenUntil: t.bigint().notNull(),
+    activeConfirmed: t.integer().notNull(),
+    vaults: t.json().notNull(), // { hot: {balance, quota, cap}, warm: {...}, cold: {balance, delay} } per token
+  }),
+  (t) => ({ pk: primaryKey({ columns: [t.chainId, t.blockNumber, t.org] }) }),
+)

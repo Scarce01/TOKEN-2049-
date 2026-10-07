@@ -205,6 +205,7 @@ cd apps/observatory && pnpm install --ignore-workspace && pnpm dev           # U
 | 8797 | exchange backend (untrusted) | `apps/exchange-api` |
 | 8790 | bridge: Attack flow and Patrol through the CRE CLI | `packages/offchain/scripts/fork-demo/bridge.ts` |
 | 8791 | decoy generator, live mode: inventory, SSE events (tags only, off-chain plan) | `analysis/decoygen/serve.py` ([docs/48](docs/48_decoy_generation.md)) |
+| 42069 | indexer: chain events and state snapshots as time series, SSE (`/history`) | `services/indexer` ([docs/49](docs/49_visualization_data.md)) |
 | 8443 | observatory UI | `apps/observatory` (`VITE_RPC_URL`, `VITE_BRIDGE_URL` override 8545 and 8790) |
 
 **Single workflow runs:**

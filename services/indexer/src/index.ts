@@ -1,20 +1,25 @@
 // Every event of our contracts -> chain_events; withdrawal / trap cases derived from them.
 // Reorgs and backfill are Ponder's job.
 
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { ponder } from 'ponder:registry'
-import { cases, chainEvents } from 'ponder:schema'
+import { cases, chainEvents, snapshots } from 'ponder:schema'
 import {
   ColdVaultAbi,
   ConfigTimelockAbi,
   caseIdWithdrawal,
+  DecoyCommitAbi,
   DepositVaultAbi,
   KeyRegistryAbi,
+  OfficerDeskAbi,
+  PatrolStateAbi,
   QuorumReceiverAbi,
   QuorumVaultAbi,
   RequestBoardAbi,
   ThreatRegistryAbi,
 } from '@quorum/shared'
-import type { Abi, Hex } from 'viem'
+import { type Abi, type Address, type Hex, parseAbi } from 'viem'
 
 const CONTRACTS: Record<string, Abi> = {
   RequestBoard: RequestBoardAbi,
@@ -25,6 +30,9 @@ const CONTRACTS: Record<string, Abi> = {
   QuorumVault: QuorumVaultAbi,
   ColdVault: ColdVaultAbi,
   ThreatRegistry: ThreatRegistryAbi,
+  OfficerDesk: OfficerDeskAbi, // was in the config but never handled, so its events were dropped
+  PatrolState: PatrolStateAbi,
+  DecoyCommit: DecoyCommitAbi,
 }
 
 const jsonSafe = (v: unknown): unknown =>
@@ -129,3 +137,104 @@ async function deriveCase(contract: string, ev: string, e: Ev, ctx: Ctx, caseId?
       .onConflictDoUpdate({ updatedAt: t })
   }
 }
+
+// ---- per-org state snapshots (block filter "Snapshot", every PONDER_SNAPSHOT_EVERY blocks) ----
+
+const dep = JSON.parse(
+  readFileSync(
+    join(__dirname, '..', '..', '..', 'deployments', `${process.env.DEPLOY_NAME ?? 'base-sepolia'}.json`),
+    'utf8',
+  ),
+)
+type OrgJson = { receiver: Address; hotVault: Address; warmVault: Address; coldVault: Address }
+const ORGS = Object.entries(dep as Record<string, unknown>)
+  .filter(([k]) => /^org[A-Z]$/.test(k))
+  .sort(([a], [b]) => a.localeCompare(b))
+  .map(([k, v]) => ({ letter: k.slice(3), ...(v as OrgJson) }))
+const TOKENS = { qUSD: dep.qUSD as Address, qETH: dep.qETH as Address }
+const MULTICALL3 = '0xcA11bde05977b3631167028862bE2a173976CA11' as const
+const receiverAbi = parseAbi([
+  'function alert() view returns (uint8)',
+  'function alertExpiresAt() view returns (uint64)',
+  'function frozenUntil(address) view returns (uint64)',
+])
+const vaultAbi = parseAbi([
+  'function balanceOf(address) view returns (uint256)',
+  'function quota(address) view returns (uint256)',
+  'function cap(address) view returns (uint256)',
+])
+const coldAbi = parseAbi([
+  'function balanceOf(address) view returns (uint256)',
+  'function delay() view returns (uint64)',
+])
+const threatAbi = parseAbi(['function activeConfirmedCount() view returns (uint256)'])
+
+ponder.on(
+  // biome-ignore lint/suspicious/noExplicitAny: block filter key
+  'Snapshot:block' as any,
+  (async ({
+    event,
+    context,
+  }: {
+    event: { block: { number: bigint; timestamp: bigint } }
+    // biome-ignore lint/suspicious/noExplicitAny: Ponder's client type is generated per config
+    context: Ctx & { client: any }
+  }) => {
+    const calls: { address: Address; abi: Abi; functionName: string; args?: unknown[] }[] = [
+      { address: dep.threatRegistry, abi: threatAbi, functionName: 'activeConfirmedCount' },
+    ]
+    for (const o of ORGS) {
+      calls.push(
+        { address: o.receiver, abi: receiverAbi, functionName: 'alert' },
+        { address: o.receiver, abi: receiverAbi, functionName: 'alertExpiresAt' },
+        { address: o.receiver, abi: receiverAbi, functionName: 'frozenUntil', args: [o.hotVault] },
+        { address: o.receiver, abi: receiverAbi, functionName: 'frozenUntil', args: [o.warmVault] },
+        { address: o.coldVault, abi: coldAbi, functionName: 'delay' },
+      )
+      for (const v of [o.hotVault, o.warmVault])
+        for (const t of Object.values(TOKENS))
+          for (const fn of ['balanceOf', 'quota', 'cap'])
+            calls.push({ address: v, abi: vaultAbi, functionName: fn, args: [t] })
+      for (const t of Object.values(TOKENS))
+        calls.push({ address: o.coldVault, abi: coldAbi, functionName: 'balanceOf', args: [t] })
+    }
+    // allowFailure: one reverting view (cold balanceOf on some deployments) must not drop the snapshot
+    const res: { status: string; result?: unknown }[] = await context.client.multicall({
+      contracts: calls,
+      multicallAddress: MULTICALL3,
+    })
+    let i = 0
+    const next = () => {
+      const r = res[i++]!
+      return r.status === 'success' ? (r.result as bigint | number) : 0n
+    }
+    const confirmed = Number(next())
+    for (const o of ORGS) {
+      const [alert, alertExp, hotF, warmF, delay] = [next(), next(), next(), next(), next()]
+      const vaults: Record<string, Record<string, Record<string, string>>> = {}
+      for (const tier of ['hot', 'warm']) {
+        vaults[tier] = {}
+        for (const t of Object.keys(TOKENS))
+          vaults[tier][t] = { balance: String(next()), quota: String(next()), cap: String(next()) }
+      }
+      vaults.cold = { delay: { seconds: String(delay) } }
+      for (const t of Object.keys(TOKENS)) vaults.cold[t] = { balance: String(next()) }
+      await context.db
+        .insert(snapshots)
+        .values({
+          chainId: context.chain.id,
+          blockNumber: event.block.number,
+          blockTime: event.block.timestamp,
+          org: o.letter,
+          alert: Number(alert),
+          alertExpiresAt: BigInt(alertExp),
+          hotFrozenUntil: BigInt(hotF),
+          warmFrozenUntil: BigInt(warmF),
+          activeConfirmed: confirmed,
+          vaults,
+        })
+        .onConflictDoNothing()
+    }
+    // biome-ignore lint/suspicious/noExplicitAny: see above
+  }) as any,
+)

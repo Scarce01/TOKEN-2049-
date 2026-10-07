@@ -7,8 +7,9 @@
 //           PORT=8080 bun serve.ts                                      # pick a different port
 //
 // Routes (one origin):  /  -> built UI (dist)    /rpc -> anvil 8545    /bridge -> fork bridge 8790
-//                       /decoygen -> decoygen 8791 (SSE ok)
-// Backends it supervises (spawn if the port is free): PGlite 54329, exchange-api 8797, decoygen 8791, fork bridge 8790.
+//                       /decoygen -> decoygen 8791 (SSE ok)    /history -> indexer 42069 (time series, SSE ok)
+// Backends it supervises (spawn if the port is free): PGlite 54329, exchange-api 8797, decoygen 8791, fork bridge 8790,
+// indexer 42069 (Ponder on the fork, PGlite in services/indexer/.ponder; DEPLOY_NAME picks the deployment).
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 
@@ -56,6 +57,15 @@ async function startBackends() {
   await ensure('exchange-api', 8797, [BUN, '--env-file=apps/exchange-api/.env.fork', 'apps/exchange-api/src/index.ts'])
   await ensure('decoygen', 8791, ['python', 'analysis/decoygen/serve.py', '--org', 'a', '--tick', '30'])
   await ensure('fork bridge', 8790, [BUN, 'packages/offchain/scripts/fork-demo/bridge.ts'], { env: BRIDGE_ENV })
+  // Ponder runs on Node; a snapshot every block on the fork (blocks only exist when something happens there)
+  await ensure('indexer', 42069, ['node', 'node_modules/ponder/dist/esm/bin/ponder.js', 'start', '--schema', 'ponder_quorum', '-H', '127.0.0.1'], {
+    cwd: join(ROOT, 'services', 'indexer'),
+    env: {
+      DEPLOY_NAME: process.env.DEPLOY_NAME ?? 'base-sepolia-fork',
+      PONDER_RPC_URL_1: process.env.PONDER_RPC_URL_1 ?? 'http://127.0.0.1:8545',
+      PONDER_SNAPSHOT_EVERY: process.env.PONDER_SNAPSHOT_EVERY ?? '1',
+    },
+  })
 }
 
 const CT: Record<string, string> = { html: 'text/html', js: 'text/javascript', css: 'text/css', json: 'application/json', svg: 'image/svg+xml', png: 'image/png', ico: 'image/x-icon', woff2: 'font/woff2', map: 'application/json' }
@@ -101,10 +111,11 @@ const server = Bun.serve({
     if (path === '/rpc' || path.startsWith('/rpc/')) return proxy(req, 'http://127.0.0.1:8545', path.replace(/^\/rpc/, '') || '/')
     if (path.startsWith('/bridge')) return proxy(req, 'http://127.0.0.1:8790', path.replace(/^\/bridge/, '') || '/')
     if (path.startsWith('/decoygen')) return proxy(req, 'http://127.0.0.1:8791', path)
+    if (path.startsWith('/history')) return proxy(req, 'http://127.0.0.1:42069', path)
     return serveStatic(path)
   },
 })
-console.log(`[serve] Observatory on http://localhost:${server.port}  (UI + /rpc + /bridge + /decoygen on one origin)`)
+console.log(`[serve] Observatory on http://localhost:${server.port}  (UI + /rpc + /bridge + /decoygen + /history on one origin)`)
 
 for (const sig of ['SIGINT', 'SIGTERM'] as const) {
   process.on(sig, () => {

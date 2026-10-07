@@ -51,6 +51,8 @@
 - [ ] `services/decoy-admin`（诱饵生成）没有单元测试
 - [ ] decoy-admin 读 `secrets/decoygen/<org>/epoch-<e>.json` 落地计划（见 docs/48 第 8 节）；生活痕迹由 seeder 执行
 - [ ] Observatory 的诱饵库存页（在线 / 离线）接 127.0.0.1:8791（交给 UI 会话）
+- [x] indexer 补上 PatrolState、DecoyCommit、OfficerDesk，加状态快照表与 `/history` 时间序列 API 和 SSE，serve.ts 代理（docs/49）
+- [ ] Observatory 改用 `/history`：等级、冻结、CUSUM、资产、计数改从 indexer 取，删掉写死的数字（交给 UI 会话）
 - [ ] 不变量只驱动攻击者调用，合法路径（execute、sweep、topUp、fund）的 ghost 检查还没加
 - [ ] notifier 从最新区块开始，宕机期间的事件不会补发（要持久化游标）
 - [ ] Console、user-app 把非 31337 的链都当成 Base Sepolia；shared 没有 Ethereum Sepolia 的 CHAIN_ID
