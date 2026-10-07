@@ -11,6 +11,10 @@ Recorded on the Overview tab after a fresh Reset. About 85 spoken words. No em d
 | 0:24 to 0:32 | Ground flattens, the reserve rises and turns gold, coin above, red wall along the river bank. Camera holds on the reserve, then pulls back. | The hacked backend cannot undo any of it. The funds stay in reserve, the exchange sealed. |
 | 0:32 to 0:35 | Whole map. Side tab: *Attack contained, Open incident*. Caption: **Decoy touch to freeze: 10 s · measured on the Chainlink DON, Base Sepolia**. | On the live Chainlink network: decoy touch to freeze in ten seconds. |
 
+## Continuous read (same words, one take)
+
+An attacker has taken over this exchange's backend. Full admin access. First, they probe the hot wallets. One of them is a decoy, and only the Chainlink network knows which. The probe touches it. Chainlink CRE nodes verify the transaction independently, with NOWNodes as a second witness on public chains. The network writes its response on chain: warm vault frozen, hot quota zero, the attacker's address shared with every member exchange. The hacked backend cannot undo any of it. The funds stay in reserve, the exchange sealed. On the live Chainlink network: decoy touch to freeze in ten seconds.
+
 ## Production notes
 
 - On the local fork the verify step takes 40 s to 2 min (the CRE CLI compiles the workflow). Cut from *CRE verifying* to *Attack verified*, and put a small caption on the cut: "verification shortened in edit".
