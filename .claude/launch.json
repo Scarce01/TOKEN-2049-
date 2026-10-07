@@ -48,6 +48,12 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["analysis/decoygen/serve.py", "--org", "a", "--tick", "30"],
       "port": 8791
+    },
+    {
+      "name": "trace-market",
+      "runtimeExecutable": "C:/Users/xuziy/bin/bun.exe",
+      "runtimeArgs": ["--cwd", "services/trace-market", "--env-file=.env", "src/server.ts"],
+      "port": 4021
     }
   ]
 }

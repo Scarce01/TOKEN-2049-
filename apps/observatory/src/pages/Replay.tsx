@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
+import PaidInvestigationCard from '../components/PaidInvestigationCard'
+import SolanaGuardCard from '../components/SolanaGuardCard'
 import { DataTable, Metric, PageHeader, Panel, Row, Tabs, VTimeline } from '../components/ui'
 import replay from '../data/replay.json'
 
@@ -252,6 +254,8 @@ function NetworkTab({ c }: { c: ReplayCase }) {
         </Panel>
       )}
 
+      <PaidInvestigationCard caseId={c.id} />
+
       <Panel title={`Where the traced money stopped (${c.breakpoints.unit})`} className="mb-5">
         <DataTable dense rows={bp} rowKey={([k]) => k} cols={[
           { key: 'k', label: 'Endpoint', render: ([k]) => <span className="text-cream">{cap(k)}</span> },
@@ -287,6 +291,7 @@ function ControlsTab({ c }: { c: ReplayCase }) {
         <div className="px-5 pb-5"><Counterfactual c={c} /></div>
       </Panel>
       <EnforcementReceipt />
+      <SolanaGuardCard />
     </>
   )
 }

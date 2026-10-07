@@ -1,0 +1,27 @@
+{
+  "name": "@quorum/trace-market",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Paid forensic trace API (x402 on Cardano preprod) and the QUBEE Investigator agent that pays for it",
+  "scripts": {
+    "wallet": "bun src/wallet.ts",
+    "seller": "bun --env-file=.env src/server.ts",
+    "investigate": "bun --env-file=.env --env-file=.env.investigator src/investigator.ts",
+    "build": "tsc --noEmit -p .",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@evolution-sdk/evolution": "0.5.14",
+    "@x402/cardano": "2.26.0",
+    "@x402/core": "2.26.0",
+    "@x402/express": "2.26.0",
+    "@x402/fetch": "2.26.0",
+    "express": "4.21.2"
+  },
+  "devDependencies": {
+    "@types/bun": "1.4.2",
+    "@types/express": "4.17.21",
+    "typescript": "5.9.3"
+  }
+}

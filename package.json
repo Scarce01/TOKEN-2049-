@@ -16,7 +16,15 @@
     "redteam:scan": "pnpm -C services/redteam scan",
     "redteam:attack": "pnpm -C services/redteam attack",
     "demo:e2e": "pnpm -C services/redteam demo:e2e",
-    "demo:trace": "pnpm -C services/redteam demo:trace"
+    "demo:trace": "pnpm -C services/redteam demo:trace",
+    "solana:build": "bash solana/docker.sh build",
+    "solana:validator": "bash solana/docker.sh validator",
+    "solana:test": "cd solana && bun test --timeout 120000",
+    "solana:deploy": "bash solana/docker.sh deploy",
+    "solana:setup": "bun solana/scripts/setup.ts",
+    "solana:demo": "bun solana/scripts/demo.ts",
+    "cardano:seller": "pnpm -C services/trace-market seller",
+    "cardano:investigate": "pnpm -C services/trace-market investigate"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.4",

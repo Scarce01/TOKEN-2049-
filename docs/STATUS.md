@@ -84,6 +84,7 @@
 
 ## 待决定
 
+- **Phase 2 赛道：Solana 与 Cardano（2026-10-07 开始）：** 计划在 docs/50_tracks_master.md、51_track_cardano.md、52_track_solana.md。与计划不同的地方，请团队确认：(1) 付费溯源（services/trace-market）返回「从该地址收到被污染资金」（RECEIVED_TAINTED_FROM，向下游追，每条都带证据交易），计划里的 FUNDED_BY（上游出资人）溯源引擎没有，不自己发明；(2) 两张 UI 卡片放 apps/observatory（Replay 的 Network、Controls 页），不是 apps/console；(3) Solana 用 Docker 官方镜像里的 Anchor 1.0.2，不是 1.2.1（镜像最新只到 1.0.2）；(4) Solana Guard 在 P0 由部署者钥匙（secrets/solana/，不进 git）设为 CONTAINED，P1 才改成只认 CRE 的生产 forwarder（不能放行模拟 forwarder，否则谁都能 simulate --broadcast 冻结）；(5) Solana 的封锁证据用 Ethereum Sepolia 上真实的 CRE trap 报告（区块 11,853,996 的 ThreatAdded evidenceHash），demo 脚本先读回执确认有 ThreatAdded 才写 Guard
 - **Receiver 合约大小：** 47 第二阶段后 runtime 21,431 bytes，离 24,576 上限约 3.1 KB。R7 定向冻结或再加功能前，要先把人员动作（HOLD、CANCEL、MANUAL、LOWER_ALERT）拆到独立合约
 - **R7 受保护车道（47，D112）：** 已做，默认关（见设计变更）。还要团队决定：(1) proposal 第 4 节的冻结语义回写；(2) Trap 的 FREEZE 或 QUOTA_ZERO 要不要同时把车道额度 pBudget 清零（现在 Trap 关不掉车道）；(3) 车道放行要不要也受 R8 每小时、每天上限约束（现在不受）；(4) R7 还没进不变量 handler
 - **46 两类预算与信任等级（TRUSTED / GENERAL、T1 到 T3）：** 3.6 没做。需要 KeyRegistry 记钥匙年龄、金库按类别分桶、Patrol 分别补充（跨三个合约）；先定 ADDRESS_MATURE_AGE 与 KEY_TRUST_AGE（46 第 21 节建议 7 天 / 7 天，演示 3 分钟 / 1 小时）。seenAt 已在链上，成熟地址随时可以算
