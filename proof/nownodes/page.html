@@ -1,0 +1,156 @@
+<title>Qu3ee NOWNodes Proof</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one evidence column. Totals, the two places NOWNodes sits (Trap check, cross-chain trace), the per-chain table, then every bridge link with both explorer links. */
+:root {
+  --bg: #f2f6f6; --surface: #ffffff; --ink: #11232a; --muted: #52666d; --line: #d4e0e2;
+  --accent: #0b7c86; --ok: #1f7a4d; --ok-bg: #e3f3ea; --bad: #b42318; --bad-bg: #fbe7e5;
+  --display: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  --body: 'Source Sans 3', 'Segoe UI', Arial, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0c1619; --surface: #132126; --ink: #e2eef0; --muted: #94aab0; --line: #24383e;
+  --accent: #4fd0db; --ok: #5fd39a; --ok-bg: #15342a; --bad: #ff8a80; --bad-bg: #3a1c1b; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0c1619; --surface: #132126; --ink: #e2eef0; --muted: #94aab0; --line: #24383e;
+  --accent: #4fd0db; --ok: #5fd39a; --ok-bg: #15342a; --bad: #ff8a80; --bad-bg: #3a1c1b; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font: 16px/1.55 var(--body); padding: 0 16px; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-block: 40px 56px; display: grid; gap: 40px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font: 600 13px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); display: flex; gap: 12px; flex-wrap: wrap; }
+h1 { font: 700 clamp(40px, 7vw, 64px)/1 var(--display); margin: 0; text-wrap: balance; }
+.lede { max-width: 66ch; color: var(--muted); margin: 0; font-size: 17px; }
+h2 { font: 700 26px/1.1 var(--display); letter-spacing: .02em; margin: 0 0 6px; text-transform: uppercase; }
+.sub { margin: 0 0 14px; color: var(--muted); max-width: 72ch; }
+a { color: inherit; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+a:hover { color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mono { font: 400 13px/1.45 var(--mono); word-break: break-all; }
+
+.totals { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--line); background: var(--surface); }
+.total { padding: 16px 18px; display: grid; gap: 4px; min-width: 0; }
+.total + .total { border-left: 1px solid var(--line); }
+.total b { font: 700 34px/1 var(--display); font-variant-numeric: tabular-nums; }
+.total span { color: var(--muted); font-size: 14px; }
+
+.uses { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.use { background: var(--surface); border: 1px solid var(--line); padding: 20px 22px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.use h3 { margin: 0; font: 700 22px/1.1 var(--display); text-transform: uppercase; letter-spacing: .02em; }
+.use p { margin: 0; color: var(--muted); }
+.use ol { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
+.use li span { display: block; }
+
+.tbl { overflow-x: auto; border: 1px solid var(--line); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+.tbl.chains table { min-width: 720px; }
+.tbl.links table { min-width: 860px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 600 12px/1 var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.num { font: 13px/1.45 var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.r { text-align: right; }
+.pill { display: inline-block; font: 600 12px/1 var(--body); letter-spacing: .06em; text-transform: uppercase; padding: 5px 9px; border-radius: 999px; white-space: nowrap; }
+.pill.ok { color: var(--ok); background: var(--ok-bg); }
+.pill.bad { color: var(--bad); background: var(--bad-bg); }
+.code { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+footer { color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); padding-top: 18px; display: grid; gap: 6px; }
+
+@media (max-width: 760px) {
+  .totals { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .total:nth-child(3) { border-left: 0; }
+  .total:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .uses { grid-template-columns: 1fr; }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><span>Qu3ee · NOWNodes</span><span id="gen"></span></div>
+    <h1>Qu3ee NOWNodes Proof</h1>
+    <p class="lede">Qu3ee reads chains through NOWNodes in two places: the Trap checks a decoy transfer against a second, independent node before it freezes anything, and the tracer follows stolen money across four EVM chains over plain NOWNodes JSON-RPC. Every result below links to a public block explorer.</p>
+  </header>
+
+  <section aria-label="Totals"><div class="totals" id="totals"></div></section>
+
+  <section aria-labelledby="uses-h">
+    <h2 id="uses-h">Where NOWNodes sits</h2>
+    <div class="uses" id="uses"></div>
+  </section>
+
+  <section aria-labelledby="chains-h">
+    <h2 id="chains-h">Chains read through NOWNodes</h2>
+    <p class="sub">Bitget, Sep 2026. The attacker's seed address was followed on each chain; every bridge deposit back to Ethereum was matched to its Ethereum fill. The node column links to the line in the repository that names the endpoint.</p>
+    <div class="tbl chains"><table>
+      <thead><tr><th>Chain</th><th>NOWNodes node</th><th>Blocks scanned</th><th>Bridge deposits</th><th>Matched to Ethereum</th><th>Result</th></tr></thead>
+      <tbody id="chains"></tbody>
+    </table></div>
+  </section>
+
+  <section aria-labelledby="links-h">
+    <h2 id="links-h">Every bridge link</h2>
+    <p class="sub" id="links-sub"></p>
+    <div class="tbl links"><table>
+      <thead><tr><th>Chain</th><th>Bridge</th><th>Deposit on origin chain</th><th>Fill on Ethereum</th><th>Recipient</th><th class="r">USD</th></tr></thead>
+      <tbody id="links"></tbody>
+    </table></div>
+  </section>
+
+  <section aria-labelledby="code-h">
+    <h2 id="code-h">Code</h2>
+    <ol class="code" id="code"></ol>
+  </section>
+
+  <footer>
+    <span>Built by <code>proof/nownodes/build.ts</code> from files in <a href="https://github.com/Scarce01/TOKEN-2049-" target="_blank" rel="noopener">github.com/Scarce01/TOKEN-2049-</a>. Decoy probe transactions are not listed: decoy addresses stay out of public files by design.</span>
+  </footer>
+</div>
+
+<script type="application/json" id="data">__DATA__</script>
+<script>
+(() => {
+  const d = JSON.parse(document.getElementById('data').textContent);
+  const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const short = (s, n = 6) => s && s.length > 2 * n + 5 ? `${s.slice(0, n + 2)}...${s.slice(-n)}` : s;
+  const link = (href, text, cls = '') => `<a class="${cls}" href="${esc(href)}" target="_blank" rel="noopener">${esc(text)}</a>`;
+  const usd = (v) => (v == null ? '' : `$${Math.round(v).toLocaleString('en-US')}`);
+  const explorer = Object.fromEntries(d.chains.map((c) => [c.name, c.explorer]));
+
+  document.getElementById('gen').textContent = `built ${d.generatedAt.slice(0, 16).replace('T', ' ')} UTC`;
+  const live = d.chains.filter((c) => !c.skipped).length;
+  document.getElementById('totals').innerHTML = [
+    [live, 'EVM chains traced through NOWNodes'],
+    [d.trace.links, 'bridge links, each with two explorer links'],
+    [`${d.trace.recall.found_anywhere} of ${d.trace.recall.truth_size}`, 'Bitget attacker wallets found from one seed'],
+    [d.trace.calls.toLocaleString('en-US'), 'JSON-RPC calls for the whole trace'],
+  ].map(([v, l]) => `<div class="total"><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join('');
+
+  document.getElementById('uses').innerHTML = `
+    <div class="use"><h3>1. Second source in the Trap</h3>
+      <p>Before the Chainlink DON freezes an exchange, the Trap re-reads the decoy transfer from NOWNodes (${link(d.trap.code, 'nownodes.ts')}, endpoint <span class="mono">${esc(d.trap.endpoint)}</span>). Two independent sources must agree; if NOWNodes is down the trap still acts, so an outage cannot suppress a freeze.</p>
+      <ol>${d.trap.runs.map((r) => `<li>${link(`https://sepolia.etherscan.io/tx/${r.tx}`, short(r.tx, 6), 'mono')}<span>${esc(r.label)}</span></li>`).join('')}</ol>
+      <p>Ethereum Sepolia. NOWNodes has no Base Sepolia endpoint, so on Base the Trap acts on the DON's own receipt read.</p></div>
+    <div class="use"><h3>2. Following money across chains</h3>
+      <p>The same seed (${link(`https://etherscan.io/address/${d.trace.seed}`, short(d.trace.seed, 4), 'mono')}) is followed on BSC, Optimism, Arbitrum and Base. Every transaction an address sent is found by bisecting its nonce over plain JSON-RPC, so no indexer is needed. Across and Stargate deposits are decoded from receipts and only count once their Ethereum fill is found.</p>
+      <p>Result: ${esc(d.trace.recall.found_anywhere)} of ${esc(d.trace.recall.truth_size)} analyst-labelled attacker wallets found, up from 8 with Ethereum alone. ${d.trace.links} bridge links worth ${usd(d.trace.usd)}.</p></div>`;
+
+  document.getElementById('chains').innerHTML = d.chains.map((c) => `
+    <tr><td><b>${esc(c.name)}</b></td>
+      <td>${c.host ? link(c.configLine, c.host, 'mono') : ''}</td>
+      <td class="num">${c.blocks ? `${c.blocks[0]} to ${c.blocks[1]}` : ''}</td>
+      <td class="num">${c.skipped ? '' : c.deposits}</td>
+      <td class="num">${c.skipped ? '' : c.matched}</td>
+      <td>${c.skipped ? `<span class="pill bad">Skipped</span> ${esc(c.skipped)}` : `<span class="pill ok">Traced</span> ${c.addressesReached} new address${c.addressesReached === 1 ? '' : 'es'}`}</td></tr>`).join('');
+
+  document.getElementById('links-sub').textContent = `${d.trace.links} deposits on an origin chain, each matched to the fill that paid out on Ethereum, largest first. The origin side was read through NOWNodes.`;
+  document.getElementById('links').innerHTML = d.links.map((l) => `
+    <tr><td>${esc(l.chain)}</td><td>${esc(l.bridge)}</td>
+      <td>${link(`${explorer[l.chain]}/tx/${l.origin_tx}`, short(l.origin_tx, 6), 'mono')}</td>
+      <td>${link(`https://etherscan.io/tx/${l.fill_tx}`, short(l.fill_tx, 6), 'mono')}</td>
+      <td>${link(`https://etherscan.io/address/${l.recipient}`, short(l.recipient, 4), 'mono')}</td>
+      <td class="num r">${esc(usd(l.usd))}${l.asset ? ` <span style="color:var(--muted)">${esc(l.asset)}</span>` : ''}</td></tr>`).join('');
+
+  document.getElementById('code').innerHTML = d.code.map((c) => `<li>${link(c.href, c.label)}</li>`).join('');
+})();
+</script>

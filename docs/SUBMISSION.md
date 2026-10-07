@@ -12,6 +12,7 @@ Everything a judge needs, per track. Status as of 2026-10-07. Every link here op
 | Live deployment: addresses, workflow IDs, how it was deployed | [docs/DEPLOY_BASE_SEPOLIA.md](DEPLOY_BASE_SEPOLIA.md) |
 | Chainlink proof page (live) | https://qu3ee-chainlink-proof.vercel.app |
 | Solana evidence page (live) | https://dist-two-gamma-80.vercel.app |
+| NOWNodes proof page (live) | https://qu3ee-nownodes-proof.vercel.app |
 | Demo video | [to add: link] |
 | Pitch deck | [to add: link] |
 
@@ -53,6 +54,7 @@ Contracts (Base Sepolia, PROD mode):
 
 | Requirement | Link |
 | --- | --- |
+| **Proof page: the Trap check on Ethereum Sepolia and all 65 bridge links, every item linked to an explorer** | https://qu3ee-nownodes-proof.vercel.app |
 | NOWNodes in the architecture: second source in the Trap | [workflows/trap/src/logic/nownodes.ts](../workflows/trap/src/logic/nownodes.ts) (Ethereum Sepolia run in the README results) |
 | NOWNodes in the architecture: multichain tracing (BSC, Optimism, Arbitrum, Base) | [analysis/trace_bybit/xchain.py](../analysis/trace_bybit/xchain.py), result [bitget_xchain_result.json](../analysis/trace_bybit/results/bitget_xchain_result.json) |
 | How it is used | [docs/BENCHMARK.md](BENCHMARK.md) section 3 (Bitget: 8 to 12 of 14 wallets, 2,671 calls) |
