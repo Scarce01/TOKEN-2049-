@@ -14,7 +14,7 @@ RPC="${BASE_SEPOLIA_RPC:-https://sepolia.base.org}"
 case "$NAME" in *-fork) RPC="http://127.0.0.1:8545" ;; esac
 VERIFY=()
 [ "$NAME" = "base-sepolia" ] && [ -n "${BASESCAN_API_KEY:-}" ] && VERIFY=(--verify --chain 84532)
-forge script script/Deploy.s.sol:Deploy --rpc-url "$RPC" --broadcast "${VERIFY[@]}"
+forge script script/Deploy.s.sol:Deploy --rpc-url "$RPC" --broadcast ${VERIFY[@]+"${VERIFY[@]}"}  # bash 3.2 (macOS): an empty array is "unbound" under set -u
 cd ..
 bun packages/shared/scripts/gen-abi.ts
 DEPLOY_NAME="$NAME" bun services/decoy-admin/src/cli.ts configs || true
