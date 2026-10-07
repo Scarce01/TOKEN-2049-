@@ -55,6 +55,7 @@ Contracts (Base Sepolia, PROD mode):
 | Requirement | Link |
 | --- | --- |
 | **Proof page: the Trap check on Ethereum Sepolia and all 65 bridge links, every item linked to an explorer** | https://qu3ee-nownodes-proof.vercel.app |
+| NOWNodes website and docs | https://nownodes.io · https://docs.nownodes.io |
 | NOWNodes in the architecture: second source in the Trap | [workflows/trap/src/logic/nownodes.ts](../workflows/trap/src/logic/nownodes.ts) (Ethereum Sepolia run in the README results) |
 | NOWNodes in the architecture: multichain tracing (BSC, Optimism, Arbitrum, Base) | [analysis/trace_bybit/xchain.py](../analysis/trace_bybit/xchain.py), result [bitget_xchain_result.json](../analysis/trace_bybit/results/bitget_xchain_result.json) |
 | How it is used | [docs/BENCHMARK.md](BENCHMARK.md) section 3 (Bitget: 8 to 12 of 14 wallets, 2,671 calls) |
@@ -63,8 +64,10 @@ NOWNodes has no Base Sepolia or Solana devnet endpoint, so those two use other R
 
 ### Form text: "How NOWNodes is used in your architecture"
 
-> NOWNodes is the independent second witness in Qu3ee's tightening path, and the multichain data source for tracing
-> stolen funds.
+> NOWNodes (https://nownodes.io, docs: https://docs.nownodes.io) is the independent second witness in Qu3ee's
+> tightening path, and the multichain data source for tracing stolen funds. We use a NOWNodes account and API key; the
+> endpoints are `eth-sepolia.nownodes.io`, `arbitrum.nownodes.io`, `optimism.nownodes.io`, `base.nownodes.io`,
+> `bsc.nownodes.io` and `avax.nownodes.io`.
 >
 > **1. Second source before a freeze (Chainlink CRE Trap workflow).** Qu3ee plants decoy wallets inside an exchange.
 > When a decoy moves, the CRE Trap workflow is about to freeze the exchange's vaults on chain. Before it writes that
@@ -91,6 +94,7 @@ NOWNodes has no Base Sepolia or Solana devnet endpoint, so those two use other R
 > Ethereum alone), in 2,671 calls. Code: `analysis/trace_bybit/xchain.py`, `bridges.py`.
 >
 > Every result above links to a public explorer on our proof page: https://qu3ee-nownodes-proof.vercel.app
+> (it also links each chain to the line in our repository that names its NOWNodes endpoint).
 >
 > Scope today: the receipt check runs where NOWNodes serves the chain (Ethereum Sepolia). Base Sepolia has no NOWNodes
 > endpoint, so the Base deployment acts on the CRE receipt alone. Adding a chain is one URL in `NOWNODES_URL`.
