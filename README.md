@@ -12,6 +12,8 @@
     <a href="docs/proposal_v4.md"><strong>Read the design »</strong></a>
     <br />
     <br />
+    <a href="docs/BENCHMARK.md">Benchmark report</a>
+    &middot;
     <a href="docs/STATUS.md">Status</a>
     &middot;
     <a href="docs/AUDIT_2026-10-07.md">Latest test and audit report</a>
@@ -119,6 +121,8 @@ CLI (`cre workflow simulate --broadcast`), **testnet** = public Ethereum Sepolia
 | **Tracing stops at bridges** | Bitget: 8 of 14 attacker wallets from one seed | on-chain | cross-chain matching not built |
 | No public Base Sepolia or DON run | everything above ran on a local fork, plus one Ethereum Sepolia run | testnet fork (local) | needs a funded deployer and a CRE deployment decision |
 | Invariants do not cover the legitimate path | removing some vault checks is caught only by unit tests | test | ghost-variable checks still to add |
+
+Full benchmark write-up (tracing, cross-chain, Trek, alarm rules, limits, deployment plan): [docs/BENCHMARK.md](docs/BENCHMARK.md).
 
 More detail and caveats: [docs/STATUS.md](docs/STATUS.md), [docs/AUDIT_2026-10-07.md](docs/AUDIT_2026-10-07.md),
 [reports/design-conformance.md](reports/design-conformance.md).
