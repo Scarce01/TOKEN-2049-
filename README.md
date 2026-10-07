@@ -5,7 +5,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/Scarce01/TOKEN-2049-">
-    <img src="docs/images/logo.png" alt="Qu3ee logo" width="120" height="120">
+    <img src="logo.png" alt="Qu3ee logo" width="120" height="120">
   </a>
 
   <h1 align="center">Qu3ee</h1>
