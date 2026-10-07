@@ -16,7 +16,9 @@
     "redteam:scan": "pnpm -C services/redteam scan",
     "redteam:attack": "pnpm -C services/redteam attack",
     "demo:e2e": "pnpm -C services/redteam demo:e2e",
-    "demo:trace": "pnpm -C services/redteam demo:trace"
+    "demo:trace": "pnpm -C services/redteam demo:trace",
+    "solana:test": "cd solana && bun test tests",
+    "solana:demo": "bun solana/scripts/demo.ts && bun solana/scripts/history.ts && bun solana/site/build.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.4",

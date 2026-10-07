@@ -125,6 +125,7 @@ with the workflows running on the Chainlink DON.
 | Gate 7 false-pending on real withdrawals (Binance) | about **14 per 10,000** | on-chain (cap scaling assumed) |
 | Quota bucket vs the Bitget theft | **6 of 7** theft transfers would go to the manual lane | on-chain (C multiplier assumed) |
 | Design conformance (`pnpm verify:design`) | 83 items: **47 pass**, 1 fail (D28), 34 not yet (acceptance scenes not written), 1 waived | test |
+| **Solana Guard** (devnet, hackathon work) | qUSD-S, a Token-2022 mint with the Qu3ee transfer hook: transfer **SUCCESS** before, Guard set to CONTAINED from the DON's Base Sepolia Trap report, the same transfer **REJECTED on chain** after; 16/16 program tests ([solana/README.md](solana/README.md)) | testnet (Solana devnet) |
 
 #### Not working yet
 

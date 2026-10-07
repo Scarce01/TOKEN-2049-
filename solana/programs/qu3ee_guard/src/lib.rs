@@ -57,7 +57,8 @@ pub mod qu3ee_guard {
             GuardError::NotMintAuthority
         );
         {
-            let data = mint.to_account_info().try_borrow_data()?;
+            let info = mint.to_account_info();
+            let data = info.try_borrow_data()?;
             let state = StateWithExtensions::<Token2022Mint>::unpack(&data)?;
             let hook = state.get_extension::<TransferHook>().map_err(|_| error!(GuardError::MintHookMismatch))?;
             let program: Option<Pubkey> = hook.program_id.into();
