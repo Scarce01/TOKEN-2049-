@@ -19,7 +19,7 @@ export type Agency = {
 }
 export type Decoy = { id: string; name: string; agency: string; x: number; z: number }
 
-/** the central commons that hosts the one Global Quorum Core */
+/** the central commons that hosts the one Global Qu3ee Core */
 export const HUB = { x: 0.4, z: -0.3, weight: 2.05 }
 export const GLOBAL: [number, number] = [HUB.x, HUB.z]
 
@@ -147,7 +147,7 @@ export const STEPS: { at: number; label: string }[] = [
   { at: T.marker, label: 'Malicious interaction marked' },
   { at: T.ripple, label: 'Incident ripple expanding' },
   { at: T.toLocal, label: 'Bybit local core receives' },
-  { at: T.toGlobal, label: 'Evidence routed to Quorum Core' },
+  { at: T.toGlobal, label: 'Evidence routed to Qu3ee Core' },
   { at: T.liftoff, label: 'Verified · courier dispatched' },
   { at: T.dispatch, label: 'Protected agencies receiving' },
   { at: ALL_RECEIVED, label: 'Network aware · 4 of 4 protected' },
@@ -191,7 +191,7 @@ export function anchorOf(id: string): [number, number, number] | null {
 export function hoverOf(id: string): [string, string] | null {
   const p = parsePick(id)
   if (!p) return null
-  if (p.kind === 'global') return ['Global Quorum Core', 'Network verification · 5 agencies']
+  if (p.kind === 'global') return ['Global Qu3ee Core', 'Network verification · 5 agencies']
   if (p.kind === 'decoy') { const d = DECOYS.find((x) => x.id === p.id)!; return [`Decoy ${d.name}`, `Agency ${agency(d.agency).letter} · honeypot`] }
   const a = agency(p.agency)
   if (p.kind === 'core') return [`Local Core · ${a.letter}`, a.name]

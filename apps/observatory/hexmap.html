@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
-<title>Quorum · Network Observatory</title>
+<title>Qu3ee · Network Observatory</title>
 <style>
 :root{--bg:#101214;--panel:#171a1d;--line:#2b2f33;--muted:#939a9f;--text:#eceeed;--honey:#efb85c;--red:#ed776b;--green:#9cb9a7;font-family:Inter,Arial,sans-serif;color:var(--text);background:var(--bg);font-size:13px}
 *{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button,select{color:inherit;background:transparent;border:1px solid var(--line);border-radius:5px}button{cursor:pointer;padding:9px 12px;transition:background .15s,border-color .15s}button:hover{background:#303438;border-color:#636b70}button:focus-visible,select:focus-visible,input:focus-visible,canvas:focus-visible{outline:2px solid var(--honey);outline-offset:3px}button[aria-pressed=true]{color:var(--honey);background:#332b20;border-color:#76603a}button:disabled{opacity:.4;cursor:default}svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle}button svg{pointer-events:none}small,.muted{color:var(--muted)}.mono{font-family:Consolas,monospace}.eyebrow{font-size:10px;font-weight:600;letter-spacing:2px;color:var(--muted)}
@@ -50,7 +50,7 @@ aside{background:linear-gradient(145deg,#1c2024,#161a1e);scrollbar-width:thin;sc
 <symbol id="reset" viewBox="0 0 24 24"><path d="M4 9a8 8 0 1 1 0 6M4 3v6h6"/></symbol>
 <symbol id="cross" viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M8 6l4-3 4 3M8 18l4 3 4-3M6 8l-3 4 3 4M18 8l3 4-3 4"/></symbol>
 </defs></svg>
-<header><div class="brand"><svg><use href="#hex"/></svg>QUORUM</div><div class="divider"></div><span class="page-name">Security operations / Observatory</span><div class="header-right"><span class="badge"><span class="dot"></span>DEMO · ASSUMED DATA</span><button id="privacy" aria-pressed="false" title="Hide decoy labels and highlights">Recording mode</button><span class="avatar" title="Demo officer">OP</span></div></header>
+<header><div class="brand"><svg><use href="#hex"/></svg>Qu3ee</div><div class="divider"></div><span class="page-name">Security operations / Observatory</span><div class="header-right"><span class="badge"><span class="dot"></span>DEMO · ASSUMED DATA</span><button id="privacy" aria-pressed="false" title="Hide decoy labels and highlights">Recording mode</button><span class="avatar" title="Demo officer">OP</span></div></header>
 <div class="workspace">
 <nav class="rail" aria-label="Current view"><span class="active" title="Network map"><svg><use href="#map"/></svg></span><div class="rail-line"></div><svg aria-label="Security console" role="img"><use href="#shield"/></svg><span class="vertical">NETWORK OBSERVATORY · 01</span></nav>
 <main class="main">
@@ -122,7 +122,7 @@ for(let q=-60;q<100;q++) for(let r=-45;r<65;r++) {
   // Cold: Burj-style tower. Centre column plus three wings (Y plan) whose setbacks spiral down.
   const sector=((Math.atan2(y-cy,x-cx)-Math.PI/2)%(2*Math.PI)+2*Math.PI)%(2*Math.PI)/(2*Math.PI/3);
   const wing=Math.round(sector)%3,onWing=Math.abs(sector-Math.round(sector))*(2*Math.PI/3)<.45;
-  const core=region.id===CORE_ISLAND; // this island hosts the Global Quorum Core model instead of wallets
+  const core=region.id===CORE_ISLAND; // this island hosts the Global Qu3ee Core model instead of wallets
   const cold=!core&&(radius===0||(radius<=COLD_R&&onWing));
   // Warm: a low hollow cylinder (ring wall) around the tower; the tower stands on it (base raised to the wall top).
   const dW=Math.hypot(x-cx,y-cy);
@@ -281,7 +281,7 @@ function makeBeacon(){
   g.scale.setScalar(BEACON_SCALE);scene.add(g);
   return {g,core,halo,motes,ring};
 }
-// Global Quorum Core from the React console (GlobalCore): stepped hex plinth, six leaning buttresses, tapering
+// Global Qu3ee Core from the React console (GlobalCore): stepped hex plinth, six leaning buttresses, tapering
 // dark spine with lit seams, spinning gold halos and a floating crystal crown. Model units, scaled to the island.
 const CORE_SCALE=34,CORE_STRETCH=1.8;
 // Holographic brand emblem (Copy2 Emblem): logo plane with a soft glow and a dark plate, billboarded to the camera,

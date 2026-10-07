@@ -132,7 +132,7 @@ function Terrain({ phase, focus }: { phase: number; focus: (id: NodeId) => boole
 }
 
 /* ---------- structures ---------- */
-/** Quorum Core — stacked hex architecture, dark metal, amber internal light, one beacon */
+/** Qu3ee Core — stacked hex architecture, dark metal, amber internal light, one beacon */
 function Core({ on }: { on: boolean }) {
   const k = on ? 1 : 0.35
   return (

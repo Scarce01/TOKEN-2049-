@@ -4,7 +4,7 @@
 
 <br />
 <div align="center">
-  <h1 align="center">QUBEE (beta)</h1>
+  <h1 align="center">Qu3ee (beta)</h1>
 
   <p align="center">
     A second line of defense for exchange withdrawals, enforced by Chainlink CRE and on-chain vaults.
@@ -58,7 +58,7 @@
 Most exchange thefts follow the same pattern: the attacker gains some control of the exchange, probes what is accepted,
 and only then drains. Alerts usually live inside the same backend the attacker already controls.
 
-QUBEE moves the decision outside that trust boundary:
+Qu3ee moves the decision outside that trust boundary:
 
 * **Decoys** (wallets, accounts, addresses) are planted inside the exchange. When an attacker touches one, the Chainlink
   CRE node network verifies it and tightens withdrawals on chain: warm vault frozen, hot quota zeroed, funds swept to
@@ -68,6 +68,8 @@ QUBEE moves the decision outside that trust boundary:
   sending them to manual review, and reconciles assets every Patrol run.
 * **Tracing**: an off-chain follower (Trek) proposes where the stolen money went next; CRE re-reads every proposed
   transfer and only then lists the next hop. Other member exchanges see the same list and hold payouts to it.
+
+Naming: the product is **Qu3ee**. The code keeps its original prefix `Quorum` (contracts such as QuorumReceiver, the EIP-712 domains, CRE workflow names, database schemas), because renaming those would change signatures, workflow IDs and deployed addresses.
 
 Design: [docs/proposal_v4.md](docs/proposal_v4.md). Build rules: [CLAUDE.md](CLAUDE.md). Interfaces:
 [docs/10_interfaces.md](docs/10_interfaces.md). Where keys go: [docs/KEYS.md](docs/KEYS.md).

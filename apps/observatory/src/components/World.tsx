@@ -443,7 +443,7 @@ void main() {
 const HONEY_FRAG = /* glsl */ `
 uniform float uTime;
 uniform float uAge;   // origin ripple age (s), < 0 when idle
-uniform float uAgeG;  // quorum core broadcast age
+uniform float uAgeG;  // Qu3ee Core broadcast age
 uniform vec2 uO;
 uniform vec2 uG;
 varying vec3 vW;
@@ -587,7 +587,7 @@ function PulseRing({ x, z, y = 0.2, r = 1, at, color = '#ffc54a' }: { x: number;
   return <mesh ref={ref} geometry={geo} position={[x, y, z]}><meshBasicMaterial color={color} transparent toneMapped={false} depthWrite={false} /></mesh>
 }
 
-/* ------------------------------------------------------------------ Global Quorum Core — the capital */
+/* ------------------------------------------------------------------ Global Qu3ee Core — the capital */
 
 /** tapering tower segments: [radius bottom, radius top, height] */
 const SPINE: [number, number, number][] = [[1.25, 1.12, 1.6], [1.08, 0.94, 1.7], [0.9, 0.76, 1.8], [0.72, 0.58, 1.7], [0.54, 0.4, 1.4]]
@@ -934,7 +934,7 @@ function Signals() {
   )
 }
 
-/** trace: candidate routes from the Quorum Core collapse until one verified origin remains */
+/** trace: candidate routes from the Qu3ee Core collapse until one verified origin remains */
 function TraceRoutes() {
   const S = useS()
   const lines = useRef<({ material: THREE.Material & { opacity: number; dashOffset?: number } } | null)[]>([])
