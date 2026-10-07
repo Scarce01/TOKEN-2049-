@@ -1,0 +1,166 @@
+<title>Qu3ee Solana Guard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a single case-file column; a three-step verdict strip on top, the facts sheet, then the on-chain ledger. */
+:root {
+  --bg: #f3f5f8; --surface: #ffffff; --ink: #172031; --muted: #5a6577; --line: #d9dee6;
+  --accent: #b5650d; --ok: #1f7a4d; --ok-bg: #e3f3ea; --bad: #b42318; --bad-bg: #fbe7e5;
+  --display: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  --body: 'Source Sans 3', 'Segoe UI', Arial, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f141c; --surface: #161d28; --ink: #e6ebf2; --muted: #9aa6b8; --line: #2a3443;
+  --accent: #f0a447; --ok: #5fd39a; --ok-bg: #15342a; --bad: #ff8a80; --bad-bg: #3a1c1b; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0f141c; --surface: #161d28; --ink: #e6ebf2; --muted: #9aa6b8; --line: #2a3443;
+  --accent: #f0a447; --ok: #5fd39a; --ok-bg: #15342a; --bad: #ff8a80; --bad-bg: #3a1c1b; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font: 16px/1.55 var(--body); padding: 0 16px; }
+.wrap { max-width: 1040px; margin: 0 auto; padding-block: 40px 56px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font: 600 13px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); display: flex; gap: 12px; flex-wrap: wrap; }
+h1 { font: 700 clamp(40px, 7vw, 64px)/1 var(--display); letter-spacing: .01em; margin: 0; text-wrap: balance; }
+.lede { max-width: 64ch; color: var(--muted); margin: 0; font-size: 17px; }
+h2 { font: 700 26px/1.1 var(--display); letter-spacing: .02em; margin: 0 0 14px; text-transform: uppercase; }
+a { color: inherit; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+a:hover { color: var(--accent); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--line); background: var(--surface); }
+.step { padding: 20px 22px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.step + .step { border-left: 1px solid var(--line); }
+.step .n { font: 500 12px/1 var(--mono); color: var(--muted); }
+.step .t { font: 700 22px/1.1 var(--display); text-transform: uppercase; letter-spacing: .02em; }
+.step p { margin: 0; color: var(--muted); font-size: 15px; }
+.pill { justify-self: start; font: 600 12px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; padding: 6px 10px; border-radius: 999px; }
+.pill.ok { color: var(--ok); background: var(--ok-bg); }
+.pill.bad { color: var(--bad); background: var(--bad-bg); }
+.pill.warn { color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.sig { font: 400 13px/1.4 var(--mono); word-break: break-all; }
+.verdict { margin: 0; font-size: 17px; }
+.verdict b { font-weight: 600; }
+
+.facts { display: grid; grid-template-columns: minmax(150px, 220px) minmax(0, 1fr); border-top: 1px solid var(--line); }
+.facts dt, .facts dd { margin: 0; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.facts dt { color: var(--muted); font-size: 14px; padding-right: 16px; }
+.facts dd { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; min-width: 0; }
+.copy { font: 600 12px/1 var(--body); color: var(--muted); background: none; border: 1px solid var(--line); padding: 5px 8px; border-radius: 4px; cursor: pointer; }
+.copy:hover { color: var(--ink); border-color: var(--muted); }
+
+.ledger { overflow-x: auto; border: 1px solid var(--line); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 15px; }
+th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 600 12px/1 var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+tr.demo td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+td.num { font-variant-numeric: tabular-nums; font-family: var(--mono); font-size: 13px; color: var(--muted); white-space: nowrap; }
+.note { color: var(--muted); font-size: 14px; margin: 10px 0 0; }
+
+.repro { display: grid; gap: 8px; }
+pre { margin: 0; overflow-x: auto; background: var(--surface); border: 1px solid var(--line); padding: 14px 16px; font: 13px/1.6 var(--mono); }
+footer { color: var(--muted); font-size: 14px; display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 18px; }
+
+@media (max-width: 720px) {
+  .strip { grid-template-columns: 1fr; }
+  .step + .step { border-left: 0; border-top: 1px solid var(--line); }
+  .facts { grid-template-columns: 1fr; }
+  .facts dt { border-bottom: 0; padding-bottom: 0; }
+}
+@media (prefers-reduced-motion: no-preference) { a, .copy { transition: color .15s, border-color .15s; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><span>Qu3ee · Solana Devnet</span><span id="gen"></span></div>
+    <h1>Qu3ee Solana Guard</h1>
+    <p class="lede">qUSD-S is a Token-2022 test asset whose every transfer runs through the Qu3ee Guard program. When the Chainlink DON confirms a threat on Base Sepolia, the Guard moves to CONTAINED and the same transfer fails on chain.</p>
+  </header>
+
+  <section aria-labelledby="run-h">
+    <h2 id="run-h">Latest run</h2>
+    <div class="strip" id="strip"></div>
+    <p class="verdict" id="verdict" style="margin-top:14px"></p>
+  </section>
+
+  <section aria-labelledby="facts-h">
+    <h2 id="facts-h">On-chain addresses</h2>
+    <dl class="facts" id="facts"></dl>
+  </section>
+
+  <section aria-labelledby="ledger-h">
+    <h2 id="ledger-h">Transaction history</h2>
+    <div class="ledger"><table>
+      <thead><tr><th>Time (UTC)</th><th>Action</th><th>Result</th><th>Signature</th><th>Slot</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table></div>
+    <p class="note">Every transaction of the Guard program and the demo mint on devnet. Rows marked on the left belong to the latest run. The rejected transfer was sent without preflight so its failure is recorded on chain.</p>
+  </section>
+
+  <section aria-labelledby="repro-h" class="repro">
+    <h2 id="repro-h">Reproduce</h2>
+    <pre>git clone https://github.com/Scarce01/TOKEN-2049-
+cd TOKEN-2049-/solana &amp;&amp; anchor build &amp;&amp; bun install &amp;&amp; bun test tests   # 16 tests, local validator
+cd .. &amp;&amp; bun solana/scripts/demo.ts                                    # before / contain / after on devnet</pre>
+  </section>
+
+  <footer>
+    <span>Hackathon work: the Solana program and scripts under <code>solana/</code> were written at TOKEN2049 on 2026-10-07. The EVM contracts and CRE workflows they react to existed before and are disclosed in the repository README.</span>
+    <span>Source: <a href="https://github.com/Scarce01/TOKEN-2049-" target="_blank" rel="noopener">github.com/Scarce01/TOKEN-2049-</a></span>
+  </footer>
+</div>
+
+<script type="application/json" id="data">__DATA__</script>
+<script>
+(() => {
+  const d = JSON.parse(document.getElementById('data').textContent);
+  const run = d.latestRun;
+  const sol = (kind, v) => `https://explorer.solana.com/${kind}/${v}?cluster=devnet`;
+  const short = (s, n = 8) => s.length > 2 * n + 3 ? `${s.slice(0, n)}...${s.slice(-n)}` : s;
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const link = (href, text) => `<a href="${esc(href)}" target="_blank" rel="noopener">${esc(text)}</a>`;
+
+  document.getElementById('gen').textContent = `updated ${d.generatedAt.slice(0, 16).replace('T', ' ')} UTC`;
+
+  const steps = [
+    { n: '1', t: 'Before', pill: ['ok', 'Transfer allowed'], p: `Guard NORMAL. Alice sends Bob ${run.before.amount} qUSD-S.`, sig: run.before.transferSignature },
+    { n: '2', t: 'Threat applied', pill: ['warn', 'Guard contained'], p: `Base Sepolia case ${short(run.containment.caseId, 6)} from block ${run.containment.sourceBlock}.`, sig: run.containment.stateTx },
+    { n: '3', t: 'After', pill: [run.after.result === 'REJECTED' ? 'bad' : 'warn', run.after.result === 'REJECTED' ? 'Transfer rejected' : run.after.result], p: `Same asset, same sender, same recipient, ${run.after.amount} qUSD-S.`, sig: run.after.transferSignature },
+  ];
+  document.getElementById('strip').innerHTML = steps.map((s) => `
+    <div class="step"><span class="n">Step ${s.n}</span><span class="t">${esc(s.t)}</span>
+    <span class="pill ${s.pill[0]}">${esc(s.pill[1])}</span><p>${esc(s.p)}</p>
+    <span class="sig">${link(sol('tx', s.sig), short(s.sig, 10))}</span></div>`).join('');
+
+  document.getElementById('verdict').innerHTML = run.pass
+    ? '<b>Pass.</b> The transfer that succeeded before containment was rejected on chain after it, with the Guard\'s <code>Contained</code> error.'
+    : '<b>Check the run.</b> The after-transfer did not fail with the expected error.';
+
+  const facts = [
+    ['Program', run.programId, sol('address', run.programId)],
+    ['Asset (qUSD-S mint)', run.mint, sol('address', run.mint)],
+    ['Guard PDA', run.guardPda, sol('address', run.guardPda)],
+    ['Hook account list', run.extraAccountMetaList, sol('address', run.extraAccountMetaList)],
+    ['Threat source', run.containment.sourceTx, `https://sepolia.basescan.org/tx/${run.containment.sourceTx}`],
+    ['Case id', run.containment.caseId, null],
+    ['Source check', run.containment.verifiedOnBase, null],
+  ];
+  document.getElementById('facts').innerHTML = facts.map(([k, v, href]) => `
+    <dt>${esc(k)}</dt><dd><span class="sig">${href ? link(href, v) : esc(v)}</span>${k === 'Source check' ? '' : `<button class="copy" type="button" data-v="${esc(v)}">Copy</button>`}</dd>`).join('');
+  document.getElementById('facts').addEventListener('click', async (e) => {
+    const b = e.target.closest('.copy'); if (!b) return;
+    try { await navigator.clipboard.writeText(b.dataset.v); b.textContent = 'Copied'; }
+    catch { const r = document.createRange(); r.selectNodeContents(b.previousElementSibling); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = 'Selected'; }
+    setTimeout(() => { b.textContent = 'Copy'; }, 1500);
+  });
+
+  document.getElementById('rows').innerHTML = d.transactions.slice().reverse().map((r) => `
+    <tr class="${r.demo ? 'demo' : ''}">
+      <td class="num">${r.time ? esc(r.time.slice(0, 19).replace('T', ' ')) : 'pending'}</td>
+      <td>${esc(r.action)}</td>
+      <td><span class="pill ${r.ok ? 'ok' : 'bad'}">${r.ok ? 'Success' : esc(r.error || 'Failed')}</span></td>
+      <td class="sig">${link(sol('tx', r.signature), short(r.signature, 10))}</td>
+      <td class="num">${r.slot}</td>
+    </tr>`).join('');
+})();
+</script>

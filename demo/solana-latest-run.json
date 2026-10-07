@@ -1,0 +1,54 @@
+{
+  "cluster": "devnet",
+  "generatedAt": "2026-10-07T14:27:34.460Z",
+  "programId": "HaJ4J8KhE5FGfBFpgrwkqXk6yXfdjNYJpLjJ71KGrEXz",
+  "mint": "6D7PygkF5K85JS1Cbkxvz6J4Q7vrY1byCLx47T3w91o6",
+  "asset": "qUSD-S",
+  "guardPda": "ENjZt7USt3r9VUc8uKKQSSVqFcWRqdVCyC9tUKGF7fib",
+  "extraAccountMetaList": "8nTA5g9s1YQ5kwdKjjvw2eG7o3HBZMyekab9UxwdRzGC",
+  "org": "B",
+  "sender": "3HF8D1QqU82ctQpE6PPWHU9iFFsbStV8APwjjhzXb1vJ",
+  "recipient": "41xXo9H4ttjMS6RgYABhbsk19f7EsRGSTAawGFq5yB6S",
+  "setup": {
+    "mintTx": "LHeBo6AmgGkVU3isddL9kVYBoXLxspWK8xsX9tnCCzxwKTHsr78orKCtVtodp5zy7Ne9p6sRpiXaZxLsDM7iD5o",
+    "guardTx": "3V6thub495F6bcqbQAGAenk9SyffFBKL7hn7uUKzwsiEq8QsGTxTxNVn3H88uyBs9u9LGQ1319LD8MNqaBvDvVTK"
+  },
+  "before": {
+    "mode": "NORMAL",
+    "transferSignature": "2NBywAz97EinV7i7aBWAWsQai2Y3nQZDDMFEFb5KeHBTjviNhyrqTpcqLfXFBEtcjfjb561VkUJJscthF39qY4w6",
+    "amount": "10",
+    "result": "SUCCESS"
+  },
+  "containment": {
+    "caseId": "0x83461333edcf7f1480b41ecfdff8e50dc94f12622b3359116d10ecfd90ed625f",
+    "sourceChain": "base-sepolia",
+    "sourceChainId": 84532,
+    "sourceTx": "0x32ab0635fff14b905027e50d102d71feb25e66383ca40b536b9405a9da1b834f",
+    "sourceBlock": 47802234,
+    "sourceKinds": [
+      3,
+      5,
+      4,
+      2,
+      6,
+      7
+    ],
+    "verifiedOnBase": "KeystoneForwarder ReportProcessed result 1, Receiver ReportProcessed with FREEZE and THREAT",
+    "stateTx": "xcKtP7Q4xsZmNPQXMHKvE1EqttUVuFvYeUEbLjp6r5N4tiCZqAXv49LqiNLyufYacAkP1jp5tQyRNrYrAMC1weU"
+  },
+  "after": {
+    "mode": "CONTAINED",
+    "transferSignature": "2jhbFKJ9uWVgTJbsxnB9WCxWGuVcUsQi1oMabuC1u5BWMusP4cfTFYykhJSs9RdrfGw22w9GjrEGDXqmR5vHwkZd",
+    "amount": "10",
+    "result": "REJECTED",
+    "error": {
+      "InstructionError": [
+        0,
+        {
+          "Custom": 6000
+        }
+      ]
+    }
+  },
+  "pass": true
+}
