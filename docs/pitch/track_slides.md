@@ -232,7 +232,7 @@ Real-world impact and viability 15% · Demo and presentation 15%
 **Experience**
 - Holders send `qUSD-S` like any Token-2022 token; the client resolves the Guard account from the on-chain list
 - When contained, the transfer fails with a readable reason: "Qu3ee guard is CONTAINED: transfer rejected"
-- Judges see every transaction of the run, each with an explorer link: https://dist-two-gamma-80.vercel.app
+- Judges see every transaction of the run, each with an explorer link: https://qu3ee-solana-proof.vercel.app
 - The program runs alone: `pnpm solana:test`
 
 **Who needs it**
