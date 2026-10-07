@@ -94,12 +94,17 @@ obey the QuorumReceiver, which only obeys whitelisted workflows and two officers
 
 Every number is tagged with its source: **on-chain** = public chain data, **assumed** = simulation or assumed
 parameters, **test** = automated test, **testnet fork (local)** = local anvil fork of Base Sepolia driven by the CRE
-CLI (`cre workflow simulate --broadcast`), **testnet** = public Ethereum Sepolia.
+CLI (`cre workflow simulate --broadcast`), **testnet** = public Ethereum Sepolia, **testnet (DON)** = public Base Sepolia
+with the workflows running on the Chainlink DON.
 
 #### Working
 
 | Result | Number | Source |
 | --- | --- | --- |
+| **Live on the Chainlink DON** (public Base Sepolia, PROD contracts, real KeystoneForwarder) | Patrol, Trap and Cosign deployed; Patrol **52/52** reports accepted, cron tick to block 18 s; 7 DON transmitters ([deploy](docs/DEPLOY_BASE_SEPOLIA.md)) | testnet (DON) |
+| Trap on the DON | decoy touch to on-chain freeze in **10 s** (5 blocks): alert 4, warm frozen, hot quota 0, attacker listed (1 run) | testnet (DON) |
+| Cosign on the DON | withdrawal request to APPROVE on chain in **18 s** (9 blocks); paid 50 qUSD after the network-follow delay (1 run) | testnet (DON) |
+| Spike rule (CUSUM + Shewhart) on the Bitget hot wallet | alarm at **18:58**, the minute of the first large theft; Bitget noticed at 19:05 | on-chain |
 | Decoy touched to freeze, end to end | attacker probes, CRE trips, then alert 4, warm frozen, hot quota 0, receiver listed; **15 s** probe to freeze including about 14 s CLI compile | testnet fork (local) |
 | Decoy hit on a public chain | recorded run on Ethereum Sepolia: NOWNodes confirmed the log, trap tripped, a later APPROVE reverted with `AlertConfirmed`; re-verified read-only | testnet |
 | Prevention layer, 8 cases with the real CRE CLI | honest paid; forged REJECT; over-deposit PENDING; large-to-new shadow; passkey delayed then paid; user cancel; officer HOLD then two-officer cancel; over-cap delayed and paid by the keeper: **8/8** | testnet fork (local) |
@@ -118,10 +123,9 @@ CLI (`cre workflow simulate --broadcast`), **testnet** = public Ethereum Sepolia
 | Result | Number | Source | Why |
 | --- | --- | --- | --- |
 | **Decoys still distinguishable** (D28) | top-60 accounts: AUC 0.71 / 0.58, target <= 0.65 | assumed | 10 decoys only; generator may leak through activity features |
-| **CUSUM misses the Bitget drain** | no alarm after the hack at any threshold | on-chain | a few huge transfers over 2.5 hours never accumulate |
 | **Quota bucket only helps in the first minutes** | fast-lane bound USD 16.9M vs USD 47.6M stolen by 19:05 | on-chain | an attacker who splits transfers is slowed, not stopped |
-| **Tracing stops at bridges** | Bitget: 8 of 14 attacker wallets from one seed | on-chain | cross-chain matching not built |
-| No public Base Sepolia or DON run | everything above ran on a local fork, plus one Ethereum Sepolia run | testnet fork (local) | needs a funded deployer and a CRE deployment decision |
+| **Tracing stops at some bridges** | Bitget: 8 to 12 of 14 attacker wallets from one seed with Across and Stargate decoded | on-chain | intent solvers, CCTP and Mayan not decoded yet |
+| DON figures are single runs; frontend still on the fork | the other prevention cases ran on the local fork only; the Observatory reads the fork until it is switched | testnet (DON) | more runs and the frontend switch are in progress |
 | Invariants do not cover the legitimate path | removing some vault checks is caught only by unit tests | test | ghost-variable checks still to add |
 
 Full benchmark write-up (tracing, cross-chain, Trek, alarm rules, limits, deployment plan): [docs/BENCHMARK.md](docs/BENCHMARK.md).
@@ -256,7 +260,8 @@ calls (Trap before Patrol before Cosign). Production limits stay on.
 - [x] Tracing on chain: Trek proposals verified by CRE verify-edge
 - [x] End-to-end runs on the simulation chain with the CRE CLI
 - [ ] Acceptance scenes for the 34 open design items (see [docs/TODO.md](docs/TODO.md))
-- [ ] Public Base Sepolia deployment and CRE mode decision (DON or sim-runner)
+- [x] Public Base Sepolia deployment, mode A: Patrol, Trap and Cosign live on the Chainlink DON
+- [ ] Frontend and indexer switched to the public deployment
 - [ ] AWS deployment ([docs/38_phase8_aws.md](docs/38_phase8_aws.md)): CDK, ECS Fargate, Amplify, CloudWatch
 - [ ] Team decisions: decoy indistinguishability (D28), R7 lane under freeze, decoy rotation
 
