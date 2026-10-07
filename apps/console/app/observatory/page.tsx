@@ -2,7 +2,7 @@
 // Observatory: 3D replay of one incident (decoy hit, vault restricted, threat shared). Port of hexmap.html.
 // Data seam: `replay` and `decoyKeys` are demo constants today. To go live, build a Replay from
 // /api/timeline points (ThreatAdded, Tightened) and fetch decoy positions from an officer-only route (rule 2).
-import { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { useContext, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { HexTerrain, type TerrainHandle } from '@/components/HexTerrain'
 import { RecordingCtx } from '@/lib/client'
 import {
@@ -21,6 +21,7 @@ const decoyKeys = DEMO_DECOY_KEYS
 const replay = demoReplay
 
 export default function Observatory() {
+  const objectsId = useId()
   const masked = useContext(RecordingCtx).on
   const cells = useMemo(() => buildCells(decoyKeys), [])
   const ctx = useMemo(() => {
@@ -311,11 +312,11 @@ export default function Observatory() {
           <div className="text-[11px] text-[#939a9f]">
             Exchange {c.exchange} / {label(c)}
           </div>
-          <label htmlFor="objects" className="mt-4 block text-[9px] font-semibold tracking-[1.4px] text-[#939a9f]">
+          <label htmlFor={objectsId} className="mt-4 block text-[9px] font-semibold tracking-[1.4px] text-[#939a9f]">
             INSPECT AN OBJECT
           </label>
           <select
-            id="objects"
+            id={objectsId}
             className="mt-2 w-full rounded border border-[#2b2f33] bg-[#171c20] p-2 text-[10px]"
             value={c.key}
             onChange={(e) => choose(cells.find((x) => x.key === e.target.value)!, true)}
@@ -389,12 +390,9 @@ export default function Observatory() {
               </li>
             ))}
           </ol>
-          <div
-            role="status"
-            className="mt-4 border-l-2 border-[#a69163] pl-3 text-[10px] leading-relaxed text-[#b7bebc]"
-          >
+          <output className="mt-4 block border-l-2 border-[#a69163] pl-3 text-[10px] leading-relaxed text-[#b7bebc]">
             {notice}
-          </div>
+          </output>
         </section>
 
         <div className="mt-auto p-5">
