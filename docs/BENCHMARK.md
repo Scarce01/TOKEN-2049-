@@ -149,6 +149,36 @@ p99 is per active minute from Bitget 6's own 4 weeks before the hack. False alar
 | Decoy hit probability (10 decoys, 200 wallets, 20 probes) | 66.02% formula, 66.07% Monte Carlo | assumed |
 | Quota bucket vs the Bitget theft | 6 of 7 theft transfers above the fast-lane cap | public on-chain, cap assumed |
 
+### On the Chainlink DON (public Base Sepolia)
+
+Patrol has run on the DON since 2026-10-07 (private registry, contracts in PROD mode behind the real
+KeystoneForwarder, [DEPLOY_BASE_SEPOLIA.md](DEPLOY_BASE_SEPOLIA.md)). Measured with `analysis/don_bench/don_benchmark.py`
+from block 47801000 (after the Receivers' owner was set):
+
+| What | Result | Source |
+| --- | --- | --- |
+| Reports accepted by the Receivers | 52 of 52 (`ReportProcessed` result 1), all through the KeystoneForwarder | testnet (DON) |
+| DON transmitters that delivered them | 7 distinct node addresses | testnet (DON) |
+| Cron tick to report on chain | 18 s median, 24 s p90, 28 s max | testnet (DON) |
+| Workflow execution time | 16 s median, 24 s p90 (71 successful runs) | testnet (DON) |
+| Actions written | 26 PING, 52 ASSET_CHECKPOINT, 52 TOPUP, 8 PATROL_STATE (CUSUM checkpoint) | testnet (DON) |
+| Gas per report | about 218,000 (paid by the DON transmitters) | testnet (DON) |
+| Failed runs | 26, all the native-decoy handler: the `PATROL_DECOYS` secret is not uploaded yet | testnet (DON) |
+
+**Trap on the DON: decoy touch to on-chain freeze in 10 s** (one run, org B, testnet DON). The probe
+`0x236778f2…` (block 47802229) moved 1 qUSD out of a test decoy wallet; 5 blocks later the DON report `0x32ab0635…`
+(block 47802234, via the KeystoneForwarder, result 1) wrote FREEZE, QUOTA_ZERO, SWEEP, ALERT, COLD_DELAY and THREAT.
+Read back on chain afterwards: alert level 4, warm vault frozen, hot quota 0, attacker in the ThreatRegistry. DON execution
+took 9 s. A first probe 2 minutes after the Trap deploy did not trigger: the DON log trigger needs a few minutes to go live.
+
+| Decoy touch to freeze report | Time | Source |
+| --- | --- | --- |
+| Chainlink DON (log trigger delivery, consensus, KeystoneForwarder) | **10 s** (1 run) | testnet (DON) |
+| Local fork, single-node simulate, prebuilt WASM | 3.1 s median (2.9 to 3.5, 3 runs) | testnet fork (local) |
+| Local fork, simulate with compile | 11.2 s (the build alone takes 11.6 s) | testnet fork (local) |
+
+Cosign is not on the DON yet.
+
 ## 7. Limits
 
 - **Decoys can still be told apart** (AUC 0.71, target 0.65 or lower). Only 10 decoys; the generator may leak through
@@ -159,7 +189,7 @@ p99 is per active minute from Bitget 6's own 4 weeks before the hack. False alar
   tracing firms take over.
 - **Bitget's truth set is analyst labels**, weaker than the FBI lists used for Bybit and Stake.
 - **Trek's replay classifies with hindsight**; live it classifies as money arrives.
-- **No public Base Sepolia or DON run yet**: system results come from a local fork plus one Ethereum Sepolia run.
+- **Patrol and Trap run on the DON; Cosign does not yet**: prevention-layer results still come from the local fork. The DON Trap figure is a single run.
 - **Bitget's 18:31 test transfer came from a real hot wallet, not a decoy.** Any "what if it hit a decoy" is a
   hypothetical replay.
 
