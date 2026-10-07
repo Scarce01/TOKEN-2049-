@@ -141,7 +141,9 @@ More detail and caveats: [docs/STATUS.md](docs/STATUS.md), [docs/AUDIT_2026-10-0
 
 This codebase was started before TOKEN2049 Origins in the team's private beta repository
 (`Scarce01/TOKEN-2049-beta`) and was imported into this repository as a single commit on 2026-10-07. The full commit
-history of the beta repository is available to the organizers on request.
+history of the beta repository is available to the organizers on request. The same import brought in the team's
+earlier design notes ([docs/background](docs/background)) and two earlier UI drafts ([archive](archive)); the live UI is
+[apps/observatory](apps/observatory).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -179,6 +181,24 @@ bun packages/offchain/scripts/e2e-prevention.ts   # 8 prevention cases through t
 pnpm demo:trace                               # decoy hit -> freeze -> Trek -> CRE verify-edge -> traced payout held
 ```
 
+**Live demo UI** (the observatory on http://localhost:8443, reading the fork):
+
+```sh
+bun scripts/round3-pg.ts                                   # exchange database (PGlite, 127.0.0.1:54329)
+bun packages/offchain/scripts/fork-demo/setup.ts           # once per fork deployment: hot wallets, decoy, configs
+bun --env-file=apps/exchange-api/.env.fork apps/exchange-api/src/index.ts   # exchange backend, 127.0.0.1:8797
+bun packages/offchain/scripts/fork-demo/bridge.ts          # Attack button and Patrol scheduler, 127.0.0.1:8790
+cd apps/observatory && pnpm install --ignore-workspace && pnpm dev           # UI, http://localhost:8443
+```
+
+| Port | Service | Source |
+| --- | --- | --- |
+| 8545 | anvil fork of Base Sepolia | `anvil` |
+| 54329 | exchange database | `scripts/round3-pg.ts` |
+| 8797 | exchange backend (untrusted) | `apps/exchange-api` |
+| 8790 | bridge: Attack flow and Patrol through the CRE CLI | `packages/offchain/scripts/fork-demo/bridge.ts` |
+| 8443 | observatory UI | `apps/observatory` (`VITE_RPC_URL`, `VITE_BRIDGE_URL` override 8545 and 8790) |
+
 **Single workflow runs:**
 
 ```sh
@@ -210,10 +230,13 @@ calls (Trap before Patrol before Cosign). Production limits stay on.
 | `packages/offchain` | shared off-chain helpers and the fork E2E |
 | `packages/verify` | `pnpm verify:design`, database permission tests, static checks |
 | `apps/exchange-api` | fake exchange backend (untrusted; forwards only) |
+| `apps/observatory` | live demo UI (Vite, React, three.js), port 8443; its 3D map is `hexmap.html` at the repo root. Installs outside the pnpm workspace |
 | `apps/console`, `apps/user-app` | officer console and user wallet app (Next.js) |
 | `services/` | indexer (Ponder), trap-sync, sim-runner, keeper, notifier, decoy-admin, redteam (attacker scanner and demos) |
 | `analysis/` | tracing backtests, Trek, decoy and risk analysis |
 | `datasets/`, `supabase/` | synthetic data and chain seeding; migrations and seed |
+| `packages/offchain/scripts/fork-demo` | fork demo setup, bridge (Attack flow, Patrol scheduler) |
+| `docs/background`, `archive/` | earlier design notes and UI drafts, kept for reference |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

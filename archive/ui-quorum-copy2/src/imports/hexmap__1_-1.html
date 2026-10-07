@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Quorum · Network Observatory</title>
+<style>
+:root{--bg:#101214;--panel:#171a1d;--line:#2b2f33;--muted:#939a9f;--text:#eceeed;--honey:#efb85c;--red:#ed776b;--green:#9cb9a7;font-family:Inter,Arial,sans-serif;color:var(--text);background:var(--bg);font-size:13px}
+*{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button,select{color:inherit;background:transparent;border:1px solid var(--line);border-radius:5px}button{cursor:pointer;padding:9px 12px;transition:background .15s,border-color .15s}button:hover{background:#303438;border-color:#636b70}button:focus-visible,select:focus-visible,input:focus-visible,canvas:focus-visible{outline:2px solid var(--honey);outline-offset:3px}button[aria-pressed=true]{color:var(--honey);background:#332b20;border-color:#76603a}button:disabled{opacity:.4;cursor:default}svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle}button svg{pointer-events:none}small,.muted{color:var(--muted)}.mono{font-family:Consolas,monospace}.eyebrow{font-size:10px;font-weight:600;letter-spacing:2px;color:var(--muted)}
+header{height:68px;display:flex;align-items:center;border-bottom:1px solid var(--line);padding:0 25px;gap:30px;background:#15181b}.brand{display:flex;align-items:center;gap:10px;letter-spacing:3px;font-size:15px;font-weight:650}.brand svg{width:28px;height:28px;color:var(--honey)}.divider{height:22px;width:1px;background:var(--line)}.page-name{font-size:12px;color:#bfc4c5}.header-right{margin-left:auto;display:flex;align-items:center;gap:18px}.badge{display:inline-flex;align-items:center;gap:7px;font-size:10px;letter-spacing:1px;border:1px solid #45403a;padding:6px 9px;border-radius:4px;color:#d2c0a3;background:#26231f}.dot{width:5px;height:5px;background:var(--honey);border-radius:50%}.avatar{width:29px;height:29px;border:1px solid #495052;border-radius:50%;display:grid;place-items:center;color:#c6cece;font-size:10px}
+.workspace{display:grid;grid-template-columns:64px minmax(0,1fr) 330px;height:calc(100dvh - 68px);min-height:650px}.rail{border-right:1px solid var(--line);padding:22px 9px;display:flex;align-items:center;flex-direction:column;gap:17px;background:#15181b}.rail .active{width:40px;height:40px;display:grid;place-items:center;color:var(--honey);background:#2b261e;border:1px solid #655133;border-radius:5px}.rail .rail-line{width:24px;border-top:1px solid var(--line);margin:6px 0}.rail .vertical{writing-mode:vertical-rl;letter-spacing:2px;font-size:9px;color:#71797c;margin-top:auto}.main{min-width:0;display:flex;flex-direction:column}.overview{padding:25px 28px 21px;border-bottom:1px solid var(--line);background:linear-gradient(120deg,#1b1e20,#141719)}.heading-row{display:flex;align-items:center;justify-content:space-between;gap:16px}h1{font-size:23px;font-weight:450;letter-spacing:-.8px;margin:8px 0}p{line-height:1.6}.overview p{margin:0;color:var(--muted);font-size:12px}.outline-honey{border-color:#79613a;color:#f1c781;background:#2e281e}.stats{display:flex;gap:0;margin-top:24px}.stat{padding-right:28px;margin-right:28px;border-right:1px solid var(--line)}.stat:last-child{border:0}.stat label{font-size:10px;letter-spacing:.3px;color:var(--muted);display:block;margin-bottom:7px}.stat strong{font-weight:450;font-size:22px}.stat span{font-size:10px;margin-left:8px;color:var(--muted)}.stat .amber{color:var(--honey)}
+.map{position:relative;flex:1;min-height:340px;overflow:hidden;background:#111416}.map canvas{width:100%;height:100%;display:block;touch-action:none;cursor:grab}.map canvas.dragging{cursor:grabbing}.map-top{position:absolute;left:22px;top:20px;display:flex;gap:10px;align-items:center;pointer-events:none}.map-top .eyebrow{color:#c0c6c6}.map-top span:last-child{font:10px Consolas,monospace;color:#7f898c}.map-hint{position:absolute;top:20px;right:20px;color:#899195;font-size:10px;pointer-events:none}.map-bottom{position:absolute;bottom:18px;left:20px;right:20px;display:flex;justify-content:space-between;align-items:end;gap:10px;pointer-events:none}.legend{display:flex;gap:16px;padding:11px 12px;background:#171b1ee8;border:1px solid #303537;border-radius:5px;font-size:10px;color:#bac0c1}.legend b{font-size:13px;margin-right:5px;color:#848e94}.legend .gold{color:var(--honey)}.legend .red{color:var(--red)}.tools{display:flex;gap:3px;padding:4px;background:#171b1eef;border:1px solid var(--line);border-radius:6px;pointer-events:auto}.tools button{border:0;padding:8px 10px;min-width:34px}.zoom{align-self:center;font:10px Consolas,monospace;color:#a3abad;min-width:35px;text-align:center}.playback{height:89px;display:flex;align-items:center;gap:18px;padding:16px 23px;border-top:1px solid var(--line);background:#181b1e}.play{width:39px;height:39px;border-radius:50%;padding:0;color:var(--honey);font-size:15px}.playback-time{font-size:11px;white-space:nowrap}.playback-time small{display:block;margin-top:5px;font-size:9px;letter-spacing:1px}.track{flex:1;min-width:0}.track input{width:100%;accent-color:var(--honey);height:12px;cursor:pointer}.ticks{display:flex;justify-content:space-between;color:#848e93;font-size:9px;margin-top:7px}.playback select{padding:5px;font-size:10px}
+aside{border-left:1px solid var(--line);background:#181b1e;overflow:auto;display:flex;flex-direction:column}.inspector-head{padding:25px 24px 22px;border-bottom:1px solid var(--line)}.inspector-top{display:flex;justify-content:space-between;align-items:center}.status{font-size:9px;letter-spacing:.7px;padding:5px 7px;border:1px solid #525e55;color:#b4c7ba;border-radius:4px;background:#242d28}h2{font-size:23px;font-weight:450;letter-spacing:-.6px;margin:22px 0 8px}.node-sub{font-size:11px;color:var(--muted);display:flex;gap:8px;align-items:center}.node-sub .square{width:6px;height:6px;background:var(--honey)}.section{padding:23px 24px;border-bottom:1px solid var(--line)}.section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.section-title .eyebrow{font-size:9px}.source-tag{font:9px Consolas,monospace;color:#a39a8b}dl{margin:0;display:grid;grid-template-columns:90px 1fr;gap:15px;font-size:11px}dt{color:var(--muted)}dd{margin:0;text-align:right;overflow-wrap:anywhere}dd.amber{color:var(--honey)}.timeline{list-style:none;padding:0;margin:0}.timeline li{position:relative;padding:0 0 24px 31px}.timeline li:last-child{padding-bottom:0}.timeline li:not(:last-child):after{content:'';position:absolute;left:9px;top:22px;bottom:3px;width:1px;background:#3c4346}.check{position:absolute;left:0;top:0;width:19px;height:19px;border:1px solid #41494c;border-radius:50%;display:grid;place-items:center;font-size:10px;color:#687174}.done .check{color:#171e1b;background:#a5b9ad;border-color:#a5b9ad}.timeline strong{font-size:11px;font-weight:450;display:block;padding-top:2px}.timeline small{display:block;font:10px Consolas,monospace;margin-top:7px}.timeline li:not(.done) strong{color:#737d82}.notice{margin-top:20px;font-size:11px;color:#b7bebc;line-height:1.6;border-left:2px solid #a69163;padding-left:12px}.footer{padding:20px 24px;margin-top:auto}.footer button{width:100%;text-align:left;display:flex;justify-content:space-between;padding:12px}.footer p{font-size:10px;color:#818c91;margin:14px 0 0;line-height:1.7}.object-select{width:100%;padding:10px;background:#1a1e21;font-size:11px;margin-top:16px}.section details summary{cursor:pointer;font-size:11px;color:#cdd3d3}.section details p{font-size:11px;color:#a4aeb0}.section details code{font-size:10px;overflow-wrap:anywhere}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 18px;background:#eee6d8;color:#24221e;border-radius:6px;font-size:12px;z-index:5;box-shadow:0 8px 30px #0006}.toast:empty{display:none}
+@media(min-width:1650px){.workspace{grid-template-columns:72px minmax(0,1fr) 365px}.overview{padding:30px 35px}.map{min-height:450px}}
+@media(max-width:1100px){.workspace{grid-template-columns:54px minmax(0,1fr) 285px}.inspector-head,.section,.footer{padding:20px}.stat{padding-right:17px;margin-right:17px}.legend{gap:9px}.legend span:first-child{display:none}.map-hint{display:none}.overview{padding:20px}.ticks{font-size:8px}.header-right{gap:10px}}
+@media(max-width:780px){header{padding:0 16px;height:60px;gap:15px}.page-name,.divider,.header-right .avatar{display:none}.header-right{gap:8px}.header-right button{font-size:10px}.workspace{display:flex;flex-direction:column;height:auto;min-height:calc(100dvh - 60px)}.rail{display:none}.main{min-height:720px}.map{min-height:420px}.overview{padding:20px 18px}.stats{margin-top:20px}.stat{margin-right:18px;padding-right:18px}.stat strong{font-size:20px}.stat span{display:none}.heading-row{gap:8px}h1{font-size:22px}.heading-row button{font-size:10px;padding:10px}.map-bottom{left:12px;right:12px;flex-wrap:wrap}.legend{font-size:9px}.legend span:first-child{display:inline}.tools{margin-left:auto}.playback{padding:15px 12px;gap:10px}.ticks span:nth-child(2){display:none}aside{border-left:0;border-top:1px solid var(--line);overflow:visible}.footer{margin-top:0}.section{padding:22px}.map-top{left:16px}.badge{font-size:8px}.eyebrow{font-size:9px}}
+.map canvas{position:absolute;inset:0}
+/* Keep the map and replay controls inside the desktop viewport, including short laptops. */
+html,body{height:100%;overflow:hidden}body{font-family:Inter,"Segoe UI",Arial,sans-serif}
+header{height:56px;padding:0 20px;gap:23px}.brand{font-size:13px}.brand svg{width:25px;height:25px}.header-right{gap:13px}.page-name{color:#90999e;font-size:11px}
+.workspace{height:calc(100dvh - 56px);min-height:0;grid-template-columns:54px minmax(0,1fr) 306px}
+.main,aside{min-height:0}.rail{padding:17px 7px}.rail .active{width:36px;height:36px}
+.overview{padding:16px 23px 13px;background:#171b1e;flex-shrink:0}.overview .eyebrow,.overview p{display:none}
+.heading-row{gap:12px}h1{font-size:19px;letter-spacing:-.5px;margin:0}.heading-row button{padding:8px 11px;font-size:11px}
+.stats{margin-top:14px;gap:25px}.stat{display:flex;align-items:baseline;gap:8px;border:0;margin:0;padding:0}.stat label{font-size:10px;margin:0}.stat strong{font-size:17px}.stat span{font-size:9px;margin-left:0}.stat label{order:1}.stat strong{order:0}.stat span{order:2}
+.map{min-height:0;background:#14181b}.map:after{content:'';position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 100px 20px #080c1044;background:linear-gradient(#10161988,transparent 15%,transparent 83%,#10161955)}
+.map-top,.map-hint,.map-bottom{z-index:2}.map-top{left:20px;top:17px;gap:12px}.map-top .eyebrow{font-size:9px;letter-spacing:1.7px}.map-top span:last-child{font-size:9px;color:#909b9e}.map-hint{top:auto;bottom:73px;right:20px;font-size:9px;color:#a5aeb1}
+.map-bottom{bottom:17px;left:17px;right:17px}.legend{background:#14191ee8;border-color:#3a4148;gap:13px;backdrop-filter:blur(12px)}.tools{background:#14191eee;border-color:#3a4148;backdrop-filter:blur(12px)}.tools button{padding:8px;min-width:30px}
+.playback{height:70px;flex:0 0 70px;padding:12px 20px;background:#171c20;gap:15px}.play{width:34px;height:34px;flex-shrink:0}.playback-time{font-size:10px}.track input{height:3px;appearance:none;background:linear-gradient(to right,#d7b575 0%,#d7b575 var(--progress,27%),#414b54 var(--progress,27%),#414b54 100%);border-radius:3px;display:block;margin:6px 0 10px}.track input::-webkit-slider-thumb{appearance:none;width:10px;height:10px;border-radius:50%;background:#edc47e;box-shadow:0 0 0 4px #edc47e13}.track input::-moz-range-thumb{width:10px;height:10px;border:0;border-radius:50%;background:#edc47e}.ticks{margin-top:0;font-size:8px;letter-spacing:.2px}
+aside{background:linear-gradient(145deg,#1c2024,#161a1e);scrollbar-width:thin;scrollbar-color:#444d53 transparent}.inspector-head{padding:20px 20px 16px}.inspector-head h2{font-size:22px;margin:16px 0 8px}.inspector-head label.eyebrow{margin-top:17px!important;font-size:9px;letter-spacing:1.4px}.object-select{margin-top:9px;padding:8px;font-size:10px;background:#171c20}.section{padding:18px 20px}.section-title{margin-bottom:14px}.section-title .eyebrow{letter-spacing:1.4px}dl{gap:12px;font-size:11px;grid-template-columns:90px minmax(0,1fr)}.timeline li{padding-bottom:19px}.timeline strong{font-size:11px}.timeline small{margin-top:5px;font-size:9px}.notice{font-size:10px;line-height:1.6;margin-top:16px}.footer{padding:16px 20px}.footer p{font-size:9px;margin-top:10px}.status{font-size:9px}.status[data-state="RESPONDING"]{color:#edc185;background:#34291d;border-color:#6a5232}.status[data-state="RESTRICTED"]{color:#efaaa0;background:#342321;border-color:#6b4841}
+@media(min-width:1600px){.workspace{grid-template-columns:58px minmax(0,1fr) 330px}.overview{padding:18px 25px 15px}.section{padding:22px 24px}.inspector-head{padding:24px}.stats{gap:32px}}
+@media(max-width:1200px){.workspace{grid-template-columns:48px minmax(0,1fr) 286px}.stat span{display:none}.stats{gap:20px}.legend{gap:9px;font-size:9px}.legend span:first-child{display:none}.map-hint{display:none}.map-top span:last-child{display:none}.page-name{font-size:10px}.map-bottom{left:12px;right:12px;gap:6px}.tools{gap:0}.tools button{padding:8px 7px;min-width:27px}.zoom{min-width:31px}}
+@media(max-height:780px) and (min-width:781px){.inspector-head{padding:15px 18px 13px}.inspector-head h2{font-size:21px;margin-top:13px}.inspector-head label.eyebrow{margin-top:13px!important}.section{padding:14px 18px}.section-title{margin-bottom:11px}dl{gap:10px}.timeline li{padding-bottom:14px}.notice{margin-top:13px}.footer{padding:13px 18px}}
+@media(max-width:780px){html,body{height:auto;overflow:auto}header{height:56px;padding:0 13px;gap:12px}.brand{font-size:12px;letter-spacing:2px}.brand svg{width:23px}.header-right{gap:8px}.header-right .badge{font-size:7px;letter-spacing:.6px;padding:5px}.header-right button{font-size:9px;padding:7px}.workspace{display:flex;height:auto;min-height:0}.main{min-height:0}.overview{padding:16px}.stats{gap:20px;margin-top:15px}.stat{display:block}.stat label{margin-top:3px;font-size:9px}.stat strong{font-size:20px}.stat span{display:none}.map{height:520px;min-height:0;flex:none}.map-bottom{flex-wrap:wrap;bottom:14px}.legend span:first-child{display:inline}.legend{gap:11px}.tools{margin-left:auto}.tools button{min-width:36px;min-height:38px}.map-hint{display:block;left:16px;right:auto;bottom:116px;font-size:8px}.playback{padding:12px;gap:10px}.ticks span:nth-child(2){display:none}.inspector-head,.section{padding:20px}.inspector-head h2{font-size:23px}.section-title .eyebrow{font-size:10px}aside{overflow:visible}.footer{padding:20px}}
+@media(max-width:780px){.map-top span:last-child{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<svg style="display:none" aria-hidden="true"><defs>
+<symbol id="hex" viewBox="0 0 24 24"><path d="m12 2 9 5v10l-9 5-9-5V7Z M3 7l9 5 9-5M12 12v10"/></symbol>
+<symbol id="map" viewBox="0 0 24 24"><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2ZM9 3v16M15 5v16"/></symbol>
+<symbol id="shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6ZM8 12l3 3 5-6"/></symbol>
+<symbol id="reset" viewBox="0 0 24 24"><path d="M4 9a8 8 0 1 1 0 6M4 3v6h6"/></symbol>
+<symbol id="cross" viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M8 6l4-3 4 3M8 18l4 3 4-3M6 8l-3 4 3 4M18 8l3 4-3 4"/></symbol>
+</defs></svg>
+<header><div class="brand"><svg><use href="#hex"/></svg>QUORUM</div><div class="divider"></div><span class="page-name">Security operations / Observatory</span><div class="header-right"><span class="badge"><span class="dot"></span>DEMO · ASSUMED DATA</span><button id="privacy" aria-pressed="false" title="Hide decoy labels and highlights">Recording mode</button><span class="avatar" title="Demo officer">OP</span></div></header>
+<div class="workspace">
+<nav class="rail" aria-label="Current view"><span class="active" title="Network map"><svg><use href="#map"/></svg></span><div class="rail-line"></div><svg aria-label="Security console" role="img"><use href="#shield"/></svg><span class="vertical">NETWORK OBSERVATORY · 01</span></nav>
+<main class="main">
+<section class="overview"><div class="heading-row"><div><div class="eyebrow">THE SECOND LINE OF DEFENSE</div><h1>Network observatory</h1><p>One signal. A coordinated response.</p></div><button id="trigger" class="outline-honey">↗ &nbsp; Simulate attack</button></div><div class="stats"><div class="stat"><label>Terrain cells</label><strong id="count">0</strong><span>across 6 exchanges</span></div><div class="stat"><label id="decoy-label">Armed decoys</label><strong class="amber" id="decoy-count">03</strong><span>officer view</span></div><div class="stat"><label>Active incidents</label><strong id="incident-count">01</strong><span id="summary-state">contained</span></div></div></section>
+<section class="map" aria-label="Interactive network terrain"><canvas id="terrain" tabindex="0" aria-label="Three.js 3D network map. Drag or use arrow keys to pan, right-drag to orbit, plus and minus to zoom. Choose an object from the inspector to inspect it."></canvas><div class="map-top"><span class="eyebrow">NETWORK TOPOLOGY</span><span>06 EXCHANGES / 03 CONNECTED · DEMO</span></div><div class="map-hint">Drag to pan · Right-drag to orbit · Scroll to zoom</div><div class="map-bottom"><div class="legend"><span><b>⬡</b>Terrain</span><span><b>⬢</b>Vault</span><span id="decoy-legend"><b class="gold">⬢</b>Honeypot</span><span><b class="red">▼</b>Threat</span></div><div class="tools"><button id="pan-left" aria-label="Pan left">←</button><button id="pan-right" aria-label="Pan right">→</button><button id="zoom-out" aria-label="Zoom out">−</button><span class="zoom" id="zoom">100%</span><button id="zoom-in" aria-label="Zoom in">+</button><button id="reset-view" aria-label="Reset map view" title="Reset view"><svg><use href="#reset"/></svg></button><button id="top-view" aria-pressed="false">Top view</button></div></div></section>
+<section class="playback" aria-label="Event replay"><button class="play" id="play" aria-label="Play event replay">▶</button><div class="playback-time mono" id="clock">00:12 / 00:12<small>EVENT REPLAY</small></div><div class="track"><input id="seek" type="range" min="0" max="12" step="0.01" value="12" aria-label="Replay time in seconds"><div class="ticks"><span>00:01 · DECOY HIT</span><span>00:04 · VAULT FROZEN</span><span>00:08 · NETWORK SYNCED</span></div></div><select id="speed" aria-label="Replay speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></section>
+</main>
+<aside aria-label="Selected object inspector"><div class="inspector-head"><div class="inspector-top"><span class="eyebrow" id="inspector-id">INCIDENT 024</span><span class="status" id="status">CONTAINED</span></div><h2 id="node-title">Decoy interaction</h2><div class="node-sub"><span class="square"></span><span id="node-sub">Exchange A / Honeypot 03</span></div><label for="objects" class="eyebrow" style="display:block;margin-top:23px">INSPECT AN OBJECT</label><select class="object-select" id="objects"></select></div>
+<section class="section"><div class="section-title"><span class="eyebrow">OBJECT DETAILS</span><span class="source-tag">assumed / demo</span></div><dl><dt>Object</dt><dd id="detail-object">Honeypot 03</dd><dt>Exchange</dt><dd id="detail-exchange">Exchange A</dd><dt>Reference</dt><dd class="mono" id="detail-ref">DEMO-DECOY-03</dd><dt>Available quota</dt><dd class="mono" id="detail-quota">0.00 ETH</dd><dt>Signal</dt><dd id="detail-signal" class="amber">Unauthorized withdrawal</dd></dl></section>
+<section class="section"><div class="section-title"><span class="eyebrow">INCIDENT 024 · RESPONSE</span><svg style="width:15px;color:#9dad9f"><use href="#shield"/></svg></div><ol class="timeline"><li id="event-hit"><span class="check">✓</span><strong>Decoy interaction detected</strong><small>+01.0s · trap signal</small></li><li id="event-freeze"><span class="check">✓</span><strong>Vault A limit set to zero</strong><small>+04.0s · receiver confirmed</small></li><li id="event-share"><span class="check">✓</span><strong>Exchange B notified</strong><small>+08.0s · shared threat registry</small></li></ol><div class="notice" id="notice" role="status">Threat shared across the network. Withdrawal capacity remains restricted.</div></section>
+<section class="section"><details id="evidence"><summary>Evidence &amp; event payload</summary><p>Illustrative replay only. No wallet is connected and no on-chain transaction is sent.</p><code>{ incident: "DEMO-024", source: "assumed", trigger: "decoy_touch", action: "tighten" }</code></details></section>
+<div class="footer"><button id="focus-threat">Locate incident <span>↗</span></button><p>All exchanges, balances and events are synthetic.<br>Terrain is decorative. Vault height identifies Hot / Warm / Cold; a restricted hot vault sinks.</p></div>
+</aside></div><div class="toast" id="toast" role="status"></div>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.185.1/examples/jsm/"}}</script>
+<script type="module">
+try {
+const THREE = await import('three');
+const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+'use strict';
+const $ = id => document.getElementById(id);
+const canvas = $('terrain');
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+const cells = [], R = 15;
+const decoyKeys = ['4:5','29:7','9:12'];
+const exchanges=[
+  {id:'A',name:'Atlas',served:true,q:-5,r:10},
+  {id:'B',name:'Beacon',served:true,q:38,r:15},
+  {id:'C',name:'Cinder',served:false,q:-43,r:17},
+  {id:'D',name:'Delta',served:true,q:0,r:-27},
+  {id:'E',name:'Ember',served:false,q:48,r:-28},
+  {id:'F',name:'Fjord',served:false,q:-42,r:-29}
+];
+const tiers=[{name:'Hot',dq:0,dr:6,height:62},{name:'Warm',dq:0,dr:4,height:122},{name:'Cold',dq:0,dr:1,height:195}];
+function hexDistance(q,r,cq,cr){const dq=q-cq,dr=r-(q-(Math.abs(q)%2))/2-cr+(cq-(Math.abs(cq)%2))/2;return Math.max(Math.abs(dq),Math.abs(dr),Math.abs(dq+dr));}
+function regionAt(q,r){
+  const west=-23+Math.sin(r*.105)*6+Math.sin(r*.28+1)*2.1;
+  const east=20+Math.sin((r-12)*.105)*4.5+Math.sin((r-12)*.27)*1.6;
+  const north=-11+Math.sin(q*.095)*5.5+Math.sin(q*.25+2)*2;
+  const westWidth=1.3+(Math.sin(r*.14+1)+1)*1.1;
+  const eastWidth=1.1+(Math.sin(r*.18-1)+1)*1.15;
+  const northWidth=1.1+(Math.sin(q*.13)+1)*.95;
+  const river=Math.min(Math.abs(q-west)/westWidth,Math.abs(q-east)/eastWidth,Math.abs(r-north)/northWidth)<1;
+  const col=q<west?2:q>east?1:0;
+  return {river,region:exchanges[col+(r<north?3:0)]};
+}
+for(let q=-60;q<100;q++) for(let r=-45;r<65;r++) {
+  const {river,region}=regionAt(q,r);if(river)continue;
+  const key=`${q}:${r}`,seed=(((q*73+r*37)%101)+101)%101/101;
+  const radius=hexDistance(q,r,region.q,region.r);
+  const tier=radius<=2?tiers[2]:radius<=4?tiers[1]:radius<=6?tiers[0]:null;
+  const kind=decoyKeys.includes(key)?'decoy':tier?'vault':seed>.94?'account':'terrain';
+  const quota=kind==='vault'?120+Math.round(seed*80):Math.round((.2+seed*4)*100)/100;
+  const ridge=Math.pow((Math.sin(q*.17+r*.073)+1)/2,3)*100;
+  const hills=(Math.sin(q*.085-r*.13)*Math.cos(r*.105+q*.025)+1)*39;
+  const peaks=Math.max(0,Math.sin(q*.41-r*.27)*Math.cos(r*.31))*65;
+  const basin=Math.exp(-((q-9)**2+(r-12)**2)/100);
+  const centerClearance=Math.exp(-((q-region.q)**2+(r-region.r+3)**2)/95);
+  let baseHeight=12+(ridge+hills+peaks)*(1-Math.max(basin*.88,centerClearance*.85))+seed*16+(seed>.94?32:0);
+  // Reserve a low basin around every honeypot so terrain cannot bury the signal.
+  let clearance=0;
+  for(const key of decoyKeys){const [hq,hr]=key.split(':').map(Number);const dx=(q-hq)*22.5,dz=(r-hr)*26;const distance=Math.hypot(dx,dz);clearance=Math.max(clearance,1-Math.min(1,Math.max(0,distance-95)/150));const forward=dx*.26+dz*.965,side=Math.abs(dx*.965-dz*.26);if(forward>0&&forward<350&&side<65)clearance=Math.max(clearance,(1-side/65)*(1-forward/350));}
+  baseHeight=baseHeight*(1-clearance)+13*clearance;
+  cells.push({key,q,r,x:(q-18.5)*R*1.5,y:(r-9.5+(Math.abs(q)%2)*.5)*R*Math.sqrt(3),kind,exchange:region.id,served:region.served,tier:tier?.name,quota,height:kind==='vault'?tier.height:kind==='decoy'?23:baseHeight,index:cells.length+1});
+
+}
+const threat=cells.find(c=>c.key==='9:12');
+let selected=threat, width=1,height=1,topView=false,privacy=false;
+let time=3.2,playing=false,lastFrame=0,request=0,dirty=true,pointer=null;
+const duration=12;
+const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
+function stateAt(t){return {hit:t>=1,frozen:t>=4,shared:t>=8};}
+function label(c){return c.kind==='decoy'?(privacy?'Protected object':`Honeypot ${String(decoyKeys.indexOf(c.key)+1).padStart(2,'0')}`):c.kind==='vault'?`${c.tier} vault ${c.exchange}`:c.kind==='terrain'?`Terrain ${c.key}`:`Account ${String(c.index).padStart(3,'0')}`;}
+// Real WebGL geometry, instance transforms and ray picking; no projected 2D terrain.
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#171c20');
+const renderer = new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
+renderer.setPixelRatio(Math.min(devicePixelRatio || 1,2));
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFShadowMap;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.1;
+const camera = new THREE.OrthographicCamera(-550,550,350,-350,1,6000);
+const controls = new OrbitControls(camera,canvas);
+controls.enableDamping=false;
+controls.screenSpacePanning=false;
+controls.minZoom=.22;controls.maxZoom=3.8;controls.maxTargetRadius=2000;
+controls.minPolarAngle=.15;controls.maxPolarAngle=Math.PI*.39;
+controls.minAzimuthAngle=-.8;controls.maxAzimuthAngle=.8;
+controls.mouseButtons={LEFT:THREE.MOUSE.PAN,MIDDLE:THREE.MOUSE.DOLLY,RIGHT:THREE.MOUSE.ROTATE};
+controls.touches={ONE:THREE.TOUCH.PAN,TWO:THREE.TOUCH.DOLLY_ROTATE};
+controls.zoomToCursor=true;
+controls.addEventListener('change',()=>{updateZoom();invalidate();});
+scene.add(new THREE.HemisphereLight('#e1e7ed','#222933',1.7));
+const sun=new THREE.DirectionalLight('#fff3e4',3);
+sun.position.set(-450,700,-200);sun.castShadow=true;
+sun.shadow.mapSize.set(2048,2048);
+Object.assign(sun.shadow.camera,{left:-850,right:850,top:850,bottom:-850,near:1,far:2000});
+sun.shadow.bias=-.0004;sun.shadow.normalBias=.65;scene.add(sun);
+const fill=new THREE.DirectionalLight('#9eafc1',.7);fill.position.set(300,200,-450);scene.add(fill);
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(9000,9000),new THREE.MeshStandardMaterial({color:'#122b35',emissive:'#10232b',emissiveIntensity:.3,roughness:.48,metalness:.3}));
+floor.rotation.x=-Math.PI/2;floor.position.y=-1;floor.receiveShadow=true;scene.add(floor);
+// A bevel catches the key light without adding a separate outline draw call per cell.
+const shape=new THREE.Shape();
+for(let i=0;i<6;i++){const angle=i*Math.PI/3,x=Math.cos(angle)*R*.968,y=Math.sin(angle)*R*.968;i?shape.lineTo(x,y):shape.moveTo(x,y);}
+shape.closePath();
+const geometry=new THREE.ExtrudeGeometry(shape,{depth:1,bevelEnabled:true,bevelSegments:1,steps:1,bevelSize:.25,bevelThickness:.014});
+geometry.rotateX(-Math.PI/2);
+const material=new THREE.MeshStandardMaterial({color:'#81888e',roughness:.78,metalness:.16});
+const columns=new THREE.InstancedMesh(geometry,material,cells.length);
+columns.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+columns.castShadow=true;columns.receiveShadow=true;columns.boundingSphere=new THREE.Sphere(new THREE.Vector3(0,80,0),3200);scene.add(columns);
+const dummy=new THREE.Object3D(),color=new THREE.Color();
+for(const c of cells){color.setHSL(.57,c.served?.045:.025,(c.served?.43:.15)+(c.index*7%9)/300);columns.setColorAt(c.index-1,color);}
+const honeyMaterial=new THREE.MeshStandardMaterial({color:'#bd7d24',emissive:'#ff951d',emissiveIntensity:.35,roughness:.35,metalness:.18});
+// A shared radial texture adds restrained local glow without full-screen bloom passes.
+const glowCanvas=document.createElement('canvas');glowCanvas.width=glowCanvas.height=128;
+const glowContext=glowCanvas.getContext('2d'),gradient=glowContext.createRadialGradient(64,64,0,64,64,64);
+gradient.addColorStop(0,'rgba(255,173,57,.48)');gradient.addColorStop(.3,'rgba(243,144,28,.2)');gradient.addColorStop(1,'rgba(243,144,28,0)');
+glowContext.fillStyle=gradient;glowContext.fillRect(0,0,128,128);
+const glowTexture=new THREE.CanvasTexture(glowCanvas);
+const glowMaterial=new THREE.SpriteMaterial({map:glowTexture,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:.5});
+const decoys=cells.filter(c=>c.kind==='decoy').map(c=>{
+  const mesh=new THREE.Mesh(geometry,honeyMaterial);mesh.castShadow=true;scene.add(mesh);
+  const light=new THREE.PointLight('#ffb84e',1900,90,2);scene.add(light);
+  const glow=new THREE.Sprite(glowMaterial);glow.scale.set(95,95,1);scene.add(glow);
+  return {cell:c,mesh,light,glow};
+});
+const selectionPoints=Array.from({length:6},(_,i)=>new THREE.Vector3(Math.cos(i*Math.PI/3)*R*.97,0,Math.sin(i*Math.PI/3)*R*.97));
+const selection=new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(selectionPoints),new THREE.LineBasicMaterial({color:'#f4d298'}));scene.add(selection);
+const raycaster=new THREE.Raycaster(),mouse=new THREE.Vector2();
+const labelLayer=document.createElement('div');labelLayer.style.cssText='position:absolute;inset:0;pointer-events:none;overflow:hidden';canvas.after(labelLayer);
+function makeLabel(text,style=''){
+  const el=document.createElement('div');el.textContent=text;el.style.cssText='position:absolute;white-space:nowrap;transform:translate(-50%,-100%);font:10px Consolas,monospace;color:#c1cbce;padding:7px 10px;background:#151b1eed;border:1px solid #48545b;border-radius:4px;box-shadow:0 5px 15px #0003;'+style;labelLayer.append(el);return el;
+}
+const regionLabels=exchanges.map(e=>({region:e,el:makeLabel(`${e.name.toUpperCase()} / ${e.served?'CONNECTED':'NOT CONNECTED'}`,`color:${e.served?'#d5dddf':'#99a1a5'};background:#141a20d9;font:11px Arial;`)}));
+const regionSelect=document.createElement('select');regionSelect.setAttribute('aria-label','Jump to exchange');regionSelect.id='exchange-jump';
+regionSelect.style.cssText='pointer-events:auto;background:#171e24;padding:7px;font-size:10px;max-width:190px';
+regionSelect.innerHTML='<option value="">Explore exchanges</option>'+exchanges.map(e=>`<option value="${e.id}">${e.name} / ${e.served?'Connected':'Not connected'}</option>`).join('');
+$('terrain').parentElement.querySelector('.map-top').append(regionSelect);
+regionSelect.onchange=()=>{const e=exchanges.find(e=>e.id===regionSelect.value);if(!e)return;const c=cells.find(c=>c.q===e.q&&c.r===e.r);if(c)choose(c,true);};
+const worldButton=document.createElement('button');worldButton.id='world-view';worldButton.textContent='All regions';worldButton.onclick=()=>{resetView();zoomBy(.48);};document.querySelector('.tools').prepend(worldButton);
+const tierLabels=exchanges.flatMap(e=>tiers.map(t=>({cell:cells.find(c=>c.q===e.q+t.dq&&c.r===e.r+t.dr),el:makeLabel(`${t.name.toUpperCase()} / ${e.id}${e.served?'':' / SCHEMATIC'}`,'font:9px Consolas,monospace;color:#bfcbd0;background:#131a20dd')}))).filter(t=>t.cell);
+const vaultLabel=makeLabel('VAULT A \u00b7 LIMIT 0'),threatLabel=makeLabel('DEMO-024');
+threatLabel.style.color='#edb5a1';
+const marker=makeLabel('\u25bc','background:transparent;border:0;color:#f7816b;font-size:26px;padding:0;text-shadow:0 2px 10px #000;');
+const shareLabel=makeLabel('B \u00b7 THREAT RECEIVED','color:#bdcfc1');
+const vault=cells.find(c=>c.q===exchanges[0].q&&c.r===exchanges[0].r+6),networkTarget=cells.find(c=>c.q===exchanges[1].q&&c.r===exchanges[1].r+6);
+const path=new THREE.CatmullRomCurve3([new THREE.Vector3(threat.x,42,threat.y),new THREE.Vector3(-40,90,20),new THREE.Vector3(120,75,50),new THREE.Vector3(networkTarget.x,110,networkTarget.y)]);
+const link=new THREE.Line(new THREE.BufferGeometry().setFromPoints(path.getPoints(75)),new THREE.LineDashedMaterial({color:'#c0cdc5',dashSize:2,gapSize:8,transparent:true,opacity:.55}));link.computeLineDistances();scene.add(link);
+function projectLabel(el,x,y,z,visible=true){
+  const p=new THREE.Vector3(x,y,z).project(camera);
+  const sx=(p.x*.5+.5)*width,sy=(-p.y*.5+.5)*height;
+  el.hidden=!visible||p.z<-1||p.z>1||sx<85||sx>width-85||sy<68||sy>height-85;
+  el.style.left=`${sx}px`;el.style.top=`${sy}px`;
+}
+function heightAt(c){
+  let h=c.height;
+  if(c.kind==='vault' && c.tier==='Hot' && c.exchange==='A' && time>=4) return Math.max(3,h*(1-clamp((time-4)/.65,0,1)));
+  if(c.served && c.kind!=='vault' && c.kind!=='decoy' && !reduceMotion.matches && time>=1 && time<10){
+    const distance=Math.hypot(c.x-threat.x,c.y-threat.y);
+    const toVault=Math.hypot(vault.x-threat.x,vault.y-threat.y),toNetwork=Math.hypot(networkTarget.x-threat.x,networkTarget.y-threat.y);
+    const front=time<=4?(time-1)*toVault/3:toVault+(time-4)*(toNetwork-toVault)/4;
+    const fade=clamp(time-1,0,1)*clamp((10-time)/1.5,0,1);
+    h+=fade*(40*Math.exp(-Math.pow((distance-front)/28,2))+23*Math.exp(-Math.pow((distance-front+62)/23,2))-6*Math.exp(-Math.pow((distance-front-38)/20,2)));
+  }
+  return Math.max(2,h);
+}
+let terrainTime=-1;
+function draw(){
+  dirty=false;const state=stateAt(time);
+  if(terrainTime!==time){
+  for(const c of cells){const h=heightAt(c);dummy.position.set(c.x,0,c.y);dummy.scale.set(1,h,1);dummy.updateMatrix();columns.setMatrixAt(c.index-1,dummy.matrix);}
+  columns.instanceMatrix.needsUpdate=true;terrainTime=time;
+  }
+  for(const d of decoys){const h=heightAt(d.cell);d.mesh.position.set(d.cell.x,.1,d.cell.y);d.mesh.scale.set(1.012,h,1.012);d.mesh.visible=!privacy;d.light.position.set(d.cell.x,h+9,d.cell.y);d.light.visible=!privacy;d.glow.position.set(d.cell.x,h+3,d.cell.y);d.glow.visible=!privacy;}
+  selection.position.set(selected.x,heightAt(selected)+1,selected.y);selection.material.color.set(privacy?'#d4dcdf':'#f4d298');
+  link.visible=state.frozen;link.material.opacity=state.shared?.55:.18;
+  renderer.render(scene,camera);
+  for(const {region:e,el} of regionLabels)projectLabel(el,(e.q-18.5)*R*1.5,285,(e.r-12.5)*R*Math.sqrt(3));
+  for(const {cell:c,el} of tierLabels)projectLabel(el,c.x,heightAt(c)+14,c.y,camera.zoom>=.7&&!(c.exchange==='A'&&c.tier==='Hot'));
+  vaultLabel.textContent=state.frozen?'HOT A / LIMIT 0':'HOT A / ARMED';projectLabel(vaultLabel,vault.x,heightAt(vault)+18,vault.y);
+  threatLabel.textContent=`DEMO-024 \u00b7 +${Math.max(0,time-1).toFixed(1)}s`;
+  projectLabel(threatLabel,threat.x,heightAt(threat)+65,threat.y,state.hit);
+  projectLabel(marker,threat.x,heightAt(threat)+18,threat.y,state.hit);
+  projectLabel(shareLabel,networkTarget.x,heightAt(networkTarget)+24,networkTarget.y,state.shared);
+}
+function options(){
+  const list=[...cells.filter(c=>c.kind==='decoy'),...cells.filter(c=>c.kind==='vault'),...cells.filter(c=>c.kind==='account')];
+  $('objects').replaceChildren(...list.map(c=>{const opt=document.createElement('option');opt.value=c.key;opt.textContent=`${label(c)} · Exchange ${c.exchange}`;return opt;}));
+  if(selected.kind==='terrain'){const opt=new Option(label(selected),selected.key);opt.dataset.terrain='true';$('objects').append(opt);}
+  $('objects').value=selected.key;
+}
+function updateInspector(){
+  const c=selected,state=stateAt(time),isThreat=c===threat;
+  $('inspector-id').textContent=isThreat&&state.hit?'INCIDENT 024':'OBJECT INSPECTOR';
+  $('node-title').textContent=isThreat&&state.hit?(privacy?'Flagged interaction':'Decoy interaction'):label(c);
+  $('node-sub').textContent=`Exchange ${c.exchange} / ${label(c)}`;
+  $('detail-object').textContent=label(c);$('detail-exchange').textContent=`${exchanges.find(e=>e.id===c.exchange).name} / ${c.exchange}`;
+  $('detail-ref').textContent=privacy&&c.kind==='decoy'?'••••••••':`DEMO-${c.kind.toUpperCase()}-${String(c.index).padStart(3,'0')}`;
+  const frozen=c.kind==='vault'&&c.tier==='Hot'&&c.exchange==='A'&&state.frozen;
+  $('detail-quota').textContent=!c.served?'No telemetry':c.kind==='terrain'?'Not an account':`${(frozen?0:c.quota).toFixed(2)} ETH`;
+  $('detail-signal').textContent=!c.served?'Not connected':c.kind==='terrain'?'Decorative terrain':isThreat&&state.hit?'Unauthorized withdrawal':frozen?'Quota restricted':'No local alert';
+  const status=!c.served?'NOT CONNECTED':c.kind==='terrain'?'TERRAIN':isThreat&&state.hit?(state.shared?'CONTAINED':'RESPONDING'):frozen?'RESTRICTED':'MONITORED';
+  $('status').textContent=status;$('status').dataset.state=status;$('objects').value=c.key;
+}
+function updateUI(){
+  const state=stateAt(time);
+  $('seek').value=time;$('seek').style.setProperty('--progress',`${time/duration*100}%`);$('clock').firstChild.textContent=`00:${Math.floor(time).toString().padStart(2,'0')} / 00:12`;
+  $('play').textContent=playing?'Ⅱ':'▶';$('play').setAttribute('aria-label',playing?'Pause event replay':'Play event replay');
+  $('incident-count').textContent=state.hit?'01':'00';$('summary-state').textContent=state.shared?'contained':state.hit?'responding':'monitoring';
+  for(const [id,done] of [['event-hit',state.hit],['event-freeze',state.frozen],['event-share',state.shared]]){$(id).classList.toggle('done',done);$(id).querySelector('.check').textContent=done?'✓':'·';}
+  const notice=state.shared?'Threat shared across the network. Withdrawal capacity remains restricted.':state.frozen?'Vault A is restricted. Sharing the threat with Exchange B.':state.hit?'Decoy touched. A coordinated response is in progress.':'Monitoring. Replay an incident to see the response propagate.';
+  if($('notice').textContent!==notice)$('notice').textContent=notice;
+  $('event-hit').querySelector('strong').textContent=privacy?'Flagged interaction detected':'Decoy interaction detected';
+  updateInspector();
+}
+function frame(now){request=0;if(playing){time=Math.min(duration,time+Math.min((now-lastFrame)/1000,.1)*Number($('speed').value));lastFrame=now;if(time>=duration)playing=false;updateUI();dirty=true;}if(dirty)draw();if(playing)request=requestAnimationFrame(frame);}
+function invalidate(){dirty=true;if(!request)request=requestAnimationFrame(frame);}
+function setTime(value){time=clamp(value,0,duration);updateUI();invalidate();}
+function togglePlay(){if(!playing&&time>=duration)time=0;playing=!playing;lastFrame=performance.now();updateUI();invalidate();}
+function choose(c,focus=false){selected=c;const old=$('objects').querySelector('[data-terrain]');if(old)old.remove();if(c.kind==='terrain'){const opt=new Option(label(c),c.key);opt.dataset.terrain='true';$('objects').append(opt);}updateInspector();if(focus){const offset=camera.position.clone().sub(controls.target);controls.target.set(c.x,0,c.y);camera.position.copy(controls.target).add(offset);controls.update();}invalidate();}
+function resetView(){
+  camera.zoom=1;controls.target.set(0,0,0);
+  controls.enableRotate=!topView;controls.minPolarAngle=topView?0:.15;
+  camera.position.set(topView?0:230,topView?1000:920,topView?.01:850);
+  camera.updateProjectionMatrix();controls.update();updateZoom();invalidate();
+}
+function updateZoom(){$('zoom').textContent=`${Math.round(camera.zoom*100)}%`;}
+function zoomBy(factor){camera.zoom=clamp(camera.zoom*factor,.22,3.8);camera.updateProjectionMatrix();controls.update();updateZoom();invalidate();}
+function panBy(x,z){const delta=new THREE.Vector3(x,0,z);camera.position.add(delta);controls.target.add(delta);controls.update();invalidate();}
+function resize(){
+  const rect=canvas.getBoundingClientRect();width=rect.width;height=rect.height;
+  const span=Math.max(1000,1800*height/width),aspect=width/height;
+  camera.left=-span*aspect/2;camera.right=span*aspect/2;camera.top=span/2;camera.bottom=-span/2;
+  camera.updateProjectionMatrix();renderer.setSize(width,height,false);invalidate();
+}
+canvas.addEventListener('pointerdown',e=>{canvas.focus({preventScroll:true});pointer={id:e.pointerId,x:e.clientX,y:e.clientY,moved:e.button!==0};});
+canvas.addEventListener('pointermove',e=>{if(pointer&&Math.hypot(e.clientX-pointer.x,e.clientY-pointer.y)>5)pointer.moved=true;});
+canvas.addEventListener('pointerup',e=>{
+  if(pointer&&pointer.id===e.pointerId&&!pointer.moved){const rect=canvas.getBoundingClientRect();mouse.set((e.clientX-rect.left)/width*2-1,-(e.clientY-rect.top)/height*2+1);raycaster.setFromCamera(mouse,camera);const hit=raycaster.intersectObject(columns)[0];if(hit)choose(cells[hit.instanceId]);}pointer=null;
+});
+canvas.addEventListener('pointercancel',()=>pointer=null);
+canvas.addEventListener('keydown',e=>{const shifts={ArrowLeft:[-35,0],ArrowRight:[35,0],ArrowUp:[0,-35],ArrowDown:[0,35]};if(shifts[e.key]){e.preventDefault();panBy(...shifts[e.key]);}else if(e.key==='+'||e.key==='='){e.preventDefault();zoomBy(1.2);}else if(e.key==='-'){e.preventDefault();zoomBy(1/1.2);}else if(e.key==='Home'){e.preventDefault();resetView();}});
+$('zoom-in').onclick=()=>zoomBy(1.2);$('zoom-out').onclick=()=>zoomBy(1/1.2);$('reset-view').onclick=resetView;
+$('pan-left').onclick=()=>panBy(-60,0);$('pan-right').onclick=()=>panBy(60,0);
+$('top-view').onclick=()=>{topView=!topView;$('top-view').setAttribute('aria-pressed',String(topView));$('top-view').textContent=topView?'Isometric':'Top view';resetView();};
+$('objects').onchange=e=>choose(cells.find(c=>c.key===e.target.value),true);
+$('focus-threat').onclick=()=>choose(threat,true);
+$('play').onclick=togglePlay;
+$('seek').oninput=e=>{playing=false;setTime(Number(e.target.value));};
+$('trigger').onclick=()=>{choose(threat);time=0;playing=true;lastFrame=performance.now();updateUI();invalidate();};
+$('privacy').onclick=()=>{privacy=!privacy;$('privacy').setAttribute('aria-pressed',String(privacy));$('decoy-legend').hidden=privacy;$('decoy-label').textContent=privacy?'Protected objects':'Armed decoys';$('decoy-count').textContent=privacy?'••':'03';options();updateUI();invalidate();};
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&playing){playing=false;updateUI();}});
+reduceMotion.addEventListener('change',()=>{terrainTime=-1;invalidate();});
+$('count').textContent=cells.length;options();updateUI();resetView();new ResizeObserver(resize).observe(canvas);
+canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();playing=false;updateUI();$('toast').textContent='3D graphics interrupted. Reload this page to restore the map.';});
+// Run this small invariant check with hexmap.html?selftest=1. It does not contact a server.
+function selfTest(){
+  const assert=(ok,message)=>{if(!ok)throw Error(message);};
+  assert(new Set(cells.map(c=>c.key)).size===cells.length,'Duplicate object identifiers');
+  assert(cells.filter(c=>c.kind==='decoy').length===3,'Expected three decoys');
+  assert(!stateAt(.99).hit&&stateAt(1).hit,'Trigger boundary');
+  assert(!stateAt(3.99).frozen&&stateAt(4).frozen,'Freeze boundary');
+  assert(!stateAt(7.99).shared&&stateAt(8).shared,'Sharing boundary');
+  const saved=time;time=5;
+  assert(heightAt(vault)===3,'Frozen vault height');time=saved;
+  assert(columns.count===cells.length,'Instance count');
+  return '7 checks passed';
+}
+if(new URLSearchParams(location.search).has('selftest')){
+  $('toast').textContent=selfTest();console.info(selfTest());
+  window.hexmapTest={cells,stateAt,heightAt,setTime,choose,project:(c)=>{const p=new THREE.Vector3(c.x,heightAt(c)+1,c.y).project(camera);return {x:(p.x*.5+.5)*width,y:(-p.y*.5+.5)*height};},memory:()=>({cells:cells.length,instanceBytes:columns.instanceMatrix.array.byteLength+columns.instanceColor.array.byteLength,geometryBytes:Object.values(geometry.attributes).reduce((n,a)=>n+a.array.byteLength,0)+(geometry.index?.array.byteLength||0),glowTextureBytes:128*128*4,shadowPixels:2048*2048,geometryCount:renderer.info.memory.geometries,textureCount:renderer.info.memory.textures,jsHeapBytes:performance.memory?.usedJSHeapSize}),exchanges,tiers,regionAt,vault,networkTarget,hexDistance,get selected(){return selected;},get time(){return time;},get playing(){return playing;},get camera(){return camera;},get controls(){return controls;},get renderer(){return renderer;},get privacy(){return privacy;},get topView(){return topView;}};
+}
+} catch(error) {
+  console.error(error);
+  document.getElementById('toast').textContent='Unable to start 3D. Check your connection to cdn.jsdelivr.net and browser WebGL support, then reload.';
+}
+</script>
+</body>
+</html>

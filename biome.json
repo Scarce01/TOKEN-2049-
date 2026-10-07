@@ -15,7 +15,10 @@
       "!reports",
       "!deployments",
       "!**/binary.wasm",
-      "!analysis/trace_bybit/results"
+      "!analysis/trace_bybit/results",
+      "!apps/observatory",
+      "!archive",
+      "!media"
     ]
   },
   "formatter": {

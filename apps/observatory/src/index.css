@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+
+  /* Hive palette — the only accents allowed */
+  --color-ink: #0b0d10;
+  --color-coal: #0f1115;
+  --color-coal-2: #14161b;
+  --color-coal-3: #191b20;
+  --color-line: #292618;
+  --color-honey: #ffc700;
+  --color-flare: #fcef3c;
+  --color-wax: #facf30;
+  --color-amber: #fcad17;
+  --color-cream: #fff1c1;
+  --color-gold: #d6a61f;
+  --color-gold-2: #e2b52e;
+  --color-dim: #9a9488;
+  --color-mute: #6a665e;
+  --color-threat: #e88b7a;
+}
+
+@layer base {
+  html, body { background: var(--color-ink); color: var(--color-cream); }
+  body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+  ::selection { background: var(--color-honey); color: var(--color-ink); }
+  * { scrollbar-width: none; }
+}
+
+@layer components {
+  .honeycomb {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='48.5' viewBox='0 0 28 48.5'%3E%3Cpath d='M14 0l14 8.08v16.17L14 32.33 0 24.25V8.08z M14 32.33v16.17' fill='none' stroke='%23FFC700' stroke-opacity='0.05' stroke-width='1'/%3E%3C/svg%3E");
+  }
+  .clip-hexcard { clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px); }
+  .clip-tri { clip-path: polygon(0 0, 100% 0, 50% 100%); }
+  .clip-hex { clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%); }
+  .flow { stroke-dasharray: 4 10; animation: flow 1.2s linear infinite; }
+  .flow-slow { stroke-dasharray: 2 12; animation: flow 3s linear infinite; }
+  .pulse-ring { animation: pulse 2s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+  .blink { animation: blink 1.4s steps(2) infinite; }
+}
+
+@keyframes flow { to { stroke-dashoffset: -28; } }
+@keyframes pulse { 0% { opacity: .8; transform: scale(.9); } 100% { opacity: 0; transform: scale(1.5); } }
+@keyframes blink { 50% { opacity: .25; } }
+@keyframes tag-in { from { opacity: 0; transform: translateY(-3px); } }
+.tag-in { animation: tag-in .35s ease-out; }
+
+@keyframes panel-in { from { opacity: 0; transform: translateX(10px); } }
+.panel-in { animation: panel-in .28s cubic-bezier(.2,.7,.2,1); }
+
+@layer components {
+  .hive-pattern { opacity: .65; mask-image: linear-gradient(to right, transparent, black 18%, black 82%, transparent); }
+  .hive-stage::before { content: ''; position: absolute; inset: 1px; background: var(--color-coal-3); clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%); }
+  .hive-active::before { background: color-mix(in srgb, var(--color-amber) 12%, var(--color-coal-3)); }
+  .hive-active { animation: hive-breathe 7s ease-in-out infinite; }
+  .hive-done { filter: drop-shadow(0 0 3px color-mix(in srgb, var(--color-gold) 15%, transparent)); }
+  .hive-pool { border-radius: 50%; background-color: color-mix(in srgb, var(--color-amber) 12%, transparent); box-shadow: 0 0 22px 9px color-mix(in srgb, var(--color-amber) 7%, transparent); transform: scale(1.65); mask-image: radial-gradient(ellipse, black 10%, transparent 72%); animation: hive-breathe 7s ease-in-out infinite; }
+  .hive-connector { height: 5px; margin-top: -2px; }
+  .hive-future { height: 1px; margin-top: 0; border-top: 1px dashed color-mix(in srgb, var(--color-dim) 20%, transparent); }
+  .hive-future > * { display: none; }
+  .hive-live { overflow: hidden; border-radius: 50%; background: color-mix(in srgb, var(--color-gold) 16%, transparent); box-shadow: 0 0 7px color-mix(in srgb, var(--color-amber) 9%, transparent); }
+  .hive-liquid { position: absolute; inset: 1px -100%; background: repeating-linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--color-amber) 32%, transparent) 12%, color-mix(in srgb, var(--color-gold) 18%, transparent) 24%, transparent 33.333%); border-radius: 50%; animation: hive-travel 7s linear infinite, hive-viscosity 7s ease-in-out infinite; }
+  .hive-highlight { position: absolute; inset: 2px -100%; background: repeating-linear-gradient(90deg, transparent 0%, transparent 21%, color-mix(in srgb, var(--color-wax) 48%, transparent) 26%, transparent 33.333%); animation: hive-travel 7s linear infinite; }
+  .hive-droplet { position: absolute; top: 1px; width: 2px; height: 2px; border-radius: 50%; background: var(--color-amber); opacity: 0; animation: hive-droplet-travel 7s linear infinite; }
+  .hive-droplet-late { animation-delay: -3.5s; }
+}
+@keyframes hive-travel { from { transform: translateX(0); } to { transform: translateX(33.333%); } }
+@keyframes hive-viscosity { 0%, 100% { scale: 1 .75; } 50% { scale: 1 1.3; } }
+@keyframes hive-breathe { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.16); } }
+@keyframes hive-droplet-travel { 0% { left: 0%; opacity: 0; } 20% { opacity: .45; } 65% { opacity: .3; } 85%, 100% { left: 100%; opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .hive-journey *, .hive-journey *::before { animation: none !important; }
+  .hive-droplet { display: none; }
+}

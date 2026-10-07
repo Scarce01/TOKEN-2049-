@@ -10,8 +10,8 @@
 - [ ] **公开 Base Sepolia 部署**：`deployments/base-sepolia.json` 还不存在（现在只有 fork、anvil、Ethereum Sepolia）。需要有测试币的 deployer；`SIM_OPERATOR` 要等于 workflows/.env 里 CRE key 的地址；`pnpm deploy:base-sepolia`
 - [ ] 公开链上的诱饵：decoy-admin 生成并经 ConfigTimelock 提交 DecoyCommit root（fork 上由 fork-demo/setup.ts 做；公开链要正式流程，只用 secrets/）
 - [ ] Base Sepolia 没有 NOWNodes：trap 配置 `nownodesRpcUrl` 为空，只用 CRE 自己的收据（审计 H1/H2 已处理）。要不要另找第二数据源，团队决定
-- [ ] **8443 的 UI 不在仓库里**（在本机 `Downloads/Quorum (Copy)`，hexmap 在仓库根目录、未跟踪）。Amplify 部署的是 `apps/console`。要决定：把 8443 UI 搬进 `apps/`，还是继续用 `apps/console`
-- [ ] 另一个会话的 `packages/offchain/scripts/fork-demo/`（setup、bridge、patrol）还没提交，由它的作者提交
+- [x] 8443 的 UI 已搬进仓库：`apps/observatory`（`hexmap.html` 在仓库根目录）。还要决定：Amplify 部署 `apps/observatory` 还是 `apps/console`
+- [x] `packages/offchain/scripts/fork-demo/`（setup、bridge、patrol）已提交
 
 ## 2. AWS 部署本身（38_phase8_aws.md）
 
@@ -55,3 +55,7 @@
 - [ ] `trek.py watch` 只适用主网（evidenceHash 写死 chainId 1）；fork 上用 `fork_source.py`，请 chunlong 确认（handoff）
 - [ ] `packages/offchain/scripts` 不在 tsc 范围内（`e2e-prevention.ts` 有一个无害的类型断言错误一直没被发现）
 - [ ] CRE CLI 1.36.0 → 1.37.0 可升级
+- [ ] `apps/observatory` 用 oxfmt、不在 biome 与 pnpm workspace 里：之后统一格式与 lint
+- [ ] `archive/` 里的两份旧 UI 草稿：确认没有要回收的东西后可以删
+- [ ] `media/2049-tracking-demo.mp4`（27 MB）没进 git：有人看过确认画面里没有真实诱饵地址（规则 2）后再决定提交或另外存放
+- [ ] UI 曾出现 React「重复 key」警告（key 是一笔 trap 报告交易 hash 加序号），仓库版载入时没有复现；跑 Attack 动画时留意

@@ -1,6 +1,8 @@
 packages:
   - packages/*
   - apps/*
+  # apps/observatory (the 8443 UI from Figma Make) installs on its own: pnpm install --ignore-workspace
+  - '!apps/observatory'
   - services/*
   - datasets
   - analysis

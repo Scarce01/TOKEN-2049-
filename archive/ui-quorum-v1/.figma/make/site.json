@@ -1,0 +1,10 @@
+{
+  "description": "Quorum enhances cybersecurity for crypto exchanges by trapping attackers during probing, automatically tightening fund controls, and sharing verified threat intelligence.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

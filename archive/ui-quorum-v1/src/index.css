@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+
+  /* Hive palette — the only accents allowed */
+  --color-ink: #0b0d10;
+  --color-coal: #0f1115;
+  --color-coal-2: #14161b;
+  --color-coal-3: #191b20;
+  --color-line: #292618;
+  --color-honey: #ffc700;
+  --color-flare: #fcef3c;
+  --color-wax: #facf30;
+  --color-amber: #fcad17;
+  --color-cream: #fff1c1;
+  --color-dim: #9a9488;
+  --color-mute: #6a665e;
+}
+
+@layer base {
+  html, body { background: var(--color-ink); color: var(--color-cream); }
+  body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+  ::selection { background: var(--color-honey); color: var(--color-ink); }
+  * { scrollbar-width: none; }
+}
+
+@layer components {
+  .honeycomb {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='48.5' viewBox='0 0 28 48.5'%3E%3Cpath d='M14 0l14 8.08v16.17L14 32.33 0 24.25V8.08z M14 32.33v16.17' fill='none' stroke='%23FFC700' stroke-opacity='0.05' stroke-width='1'/%3E%3C/svg%3E");
+  }
+  .clip-hexcard { clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px); }
+  .clip-hex { clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%); }
+  .flow { stroke-dasharray: 4 10; animation: flow 1.2s linear infinite; }
+  .flow-slow { stroke-dasharray: 2 12; animation: flow 3s linear infinite; }
+  .pulse-ring { animation: pulse 2s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+  .blink { animation: blink 1.4s steps(2) infinite; }
+}
+
+@keyframes flow { to { stroke-dashoffset: -28; } }
+@keyframes pulse { 0% { opacity: .8; transform: scale(.9); } 100% { opacity: 0; transform: scale(1.5); } }
+@keyframes blink { 50% { opacity: .25; } }
+@keyframes tag-in { from { opacity: 0; transform: translateY(-3px); } }
+.tag-in { animation: tag-in .35s ease-out; }

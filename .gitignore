@@ -29,3 +29,5 @@ workflows/**/binary.wasm
 workflows/**/.cre_build_tmp.*
 datasets/out/
 **/.verify-junit.xml
+# demo videos: commit only after someone checked no real decoy address is on screen (rule 2)
+media/*.mp4
