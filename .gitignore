@@ -26,6 +26,7 @@ supabase/.temp/
 supabase/.branches/
 analysis/out/
 workflows/**/binary.wasm
+workflows/**/binary.wasm.br.b64
 workflows/**/.cre_build_tmp.*
 datasets/out/
 **/.verify-junit.xml

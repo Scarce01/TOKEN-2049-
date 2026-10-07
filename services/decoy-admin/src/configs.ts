@@ -164,7 +164,8 @@ export function genWorkflowConfigs(d: Deployment): void {
     enablePing: true,
     enableDecoys: true,
     // docs/36 6.4 verify-edge (patrol trigger 5). Multicall3 is at the same address on Base and Ethereum Sepolia;
-    // the plain anvil devnet has none, so verify-edge stays off there. authorizedKeys: filled for a DON deployment.
+    // the plain anvil devnet has none, so verify-edge stays off there. authorizedKeys: a DON deployment needs at least
+    // one (CRE refuses an HTTP trigger without one): the addresses that sign Trek's requests, from VERIFY_EDGE_SIGNERS.
     ...(d.chainId === 31337
       ? {}
       : {
@@ -174,7 +175,11 @@ export function genWorkflowConfigs(d: Deployment): void {
             maxEdges: 12,
             derivedTtl: 24 * 3600,
             minAmounts: ['1000000', (10n ** 15n).toString()], // 1 qUSD, 0.001 qETH (same order as tokens)
-            authorizedKeys: [],
+            authorizedKeys: (process.env.VERIFY_EDGE_SIGNERS ?? '')
+              .split(',')
+              .map((x) => x.trim())
+              .filter((x) => /^0x[0-9a-fA-F]{40}$/.test(x))
+              .map((publicKey) => ({ type: 'KEY_TYPE_ECDSA_EVM' as const, publicKey })),
           },
         }),
   })
