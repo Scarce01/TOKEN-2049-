@@ -5,24 +5,9 @@
 // address is shown (CLAUDE.md rule 2). Mounted in Overview.tsx.
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
-import { BRIDGE } from '../live/bridge'
+import { useAttackFeed, type AttackStep } from '../live/attackFeed'
 
-type Step = {
-  seq: number
-  at: number
-  type: 'start' | 'step' | 'response' | 'done' | 'error'
-  phase?: string
-  org?: string
-  detail?: string
-  tx?: string
-  block?: number
-  cre?: string
-  nownodes?: string
-  verdict?: string
-  event?: string
-  message?: string
-}
-type Status = { running: boolean; startedAt?: number; steps: Step[] }
+type Step = AttackStep
 
 const STAGES = [
   { key: 'start', title: 'Backend compromised' },
@@ -41,8 +26,9 @@ const keyOf = (s: Step): Key | null =>
   s.type === 'start' ? 'start' : s.type === 'done' ? 'done' : s.type === 'response' ? 'tighten' : ((s.phase as Key) ?? null)
 const secs = (ms: number) => `+${(ms / 1000).toFixed(1)}s`
 
-export default function AttackTimeline() {
-  const [st, setSt] = useState<Status>({ running: false, steps: [] })
+export default function AttackTimeline({ insetBottom = 96 }: { insetBottom?: number }) {
+  const feed = useAttackFeed()
+  const st = feed.status ?? { running: false, steps: [] as Step[] }
   const [open, setOpen] = useState(false)
   const [phase, setPhase] = useState<'timeline' | 'collapsed' | 'hidden'>('hidden')
   const [countdown, setCountdown] = useState(10)
@@ -51,30 +37,18 @@ export default function AttackTimeline() {
   const nav = useNavigate()
   const goIncidents = () => nav('/cases')
 
-  // poll fast while an attack runs, slowly otherwise (the bridge keeps the last run until the next one)
+  // The shared bridge poll feeds this panel. A new run opens it; containment collapses it.
   useEffect(() => {
-    let stop = false
-    let t: ReturnType<typeof setTimeout>
-    const tick = async () => {
-      const s = (await fetch(`${BRIDGE}/attack/status`).then((r) => (r.ok ? r.json() : null)).catch(() => null)) as Status | null
-      if (stop) return
-      if (s) {
-        setSt(s)
-        const start = s.steps.find((x) => x.type === 'start')?.at ?? null
-        if (s.running) {
-          if (start !== lastStart.current) { setOpen(true); setPhase('timeline'); setCountdown(10) } // a new attack opens the panel
-          wasRunning.current = true
-        } else if (wasRunning.current && s.steps.some((x) => x.type === 'done')) {
-          wasRunning.current = false
-          setPhase('collapsed'); setCountdown(10) // contained -> collapse to the redirect tab
-        }
-        lastStart.current = start
-      }
-      t = setTimeout(tick, s?.running ? 600 : 2000)
+    const start = st.steps.find((x) => x.type === 'start')?.at ?? null
+    if (st.running) {
+      if (start !== lastStart.current) { setOpen(true); setPhase('timeline'); setCountdown(10) }
+      wasRunning.current = true
+    } else if (wasRunning.current && st.steps.some((x) => x.type === 'done')) {
+      wasRunning.current = false
+      setPhase('collapsed'); setCountdown(10)
     }
-    tick()
-    return () => { stop = true; clearTimeout(t) }
-  }, [])
+    lastStart.current = start
+  }, [st])
 
   // countdown while collapsed, then hide the tab entirely
   useEffect(() => {
@@ -132,8 +106,8 @@ export default function AttackTimeline() {
         onClick={goIncidents}
         role="link"
         title="Open the incident"
-        className="absolute left-0 top-20 bottom-24 z-30 w-[340px] flex flex-col bg-[#0B0D10]/92 backdrop-blur border-r border-white/[0.08] shadow-[8px_0_30px_rgba(0,0,0,.45)] cursor-pointer"
-        style={{ transform: open ? 'none' : 'translateX(-100%)', transition: 'transform .35s ease' }}
+        className="absolute left-0 top-20 z-30 w-[340px] flex flex-col bg-[#0B0D10]/92 backdrop-blur border-r border-white/[0.08] shadow-[8px_0_30px_rgba(0,0,0,.45)] cursor-pointer"
+        style={{ bottom: insetBottom, transform: open ? 'none' : 'translateX(-100%)', transition: 'transform .35s ease, bottom .3s ease' }}
         aria-hidden={!open}
       >
         <header className="px-4 pt-4 pb-3 border-b border-white/[0.06]">

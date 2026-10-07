@@ -48,6 +48,10 @@
 @keyframes blink { 50% { opacity: .25; } }
 @keyframes tag-in { from { opacity: 0; transform: translateY(-3px); } }
 .tag-in { animation: tag-in .35s ease-out; }
+@keyframes cre-log-in { from { opacity: 0; transform: translateY(4px); } }
+.cre-log-in { animation: cre-log-in 180ms ease-out; }
+@keyframes cre-live { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
+.cre-live { animation: cre-live 2.8s ease-in-out infinite; }
 
 @keyframes panel-in { from { opacity: 0; transform: translateX(10px); } }
 .panel-in { animation: panel-in .28s cubic-bezier(.2,.7,.2,1); }
@@ -75,4 +79,5 @@
 @media (prefers-reduced-motion: reduce) {
   .hive-journey *, .hive-journey *::before { animation: none !important; }
   .hive-droplet { display: none; }
+  .cre-log-in, .cre-live { animation: none !important; }
 }
