@@ -1,0 +1,15 @@
+{
+  "org": "a",
+  "withdrawals": 191,
+  "pending": 7,
+  "delayed_l1": 0,
+  "false_pending_rate": 0.03664921465968586,
+  "delayed_per_10k": 366.4921465968586,
+  "added_wait_avg_seconds_for_delayed": 0,
+  "manual_reviews_per_day": 0.25,
+  "reasons": {
+    "51 R5_OVER_DEPOSIT": 7
+  },
+  "source": "assumed",
+  "note": "synthetic traffic; most PENDING come from gate 5 (deposits fully withdrawn) and gate 7 caps"
+}

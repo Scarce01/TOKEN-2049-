@@ -1,0 +1,11 @@
+{
+  "m": 200,
+  "d": 10,
+  "k": 20,
+  "formula": 0.660225623763214,
+  "monte_carlo": 0.66071,
+  "runs": 100000,
+  "abs_diff_pp": 0.04843762367859883,
+  "D39_pass": true,
+  "source": "assumed"
+}

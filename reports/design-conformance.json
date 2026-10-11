@@ -1279,13 +1279,13 @@
       "phases": [
         2
       ],
-      "status": "not-yet",
+      "status": "pass",
       "subs": [
         {
-          "type": "E2E",
-          "name": "measure_trap",
-          "status": "not-yet",
-          "evidence": "needs testnet deployment and CRE login (scene not run yet)"
+          "type": "DON",
+          "name": "trap touch to freeze on the DON",
+          "status": "pass",
+          "evidence": "10 s on Base Sepolia, trigger 0x236778f240c573d869949d54c4f3d2bf66e07057944d696a7e4006ba6299abde, freeze 0x32ab0635fff14b905027e50d102d71feb25e66383ca40b536b9405a9da1b834f (one sample)"
         }
       ],
       "gating": true
@@ -1584,7 +1584,7 @@
           "type": "OFF",
           "name": "adversary_sim",
           "status": "pass",
-          "evidence": "s1 hit 66.05%, s2 hit 99.30%, s4 hit 98.75%"
+          "evidence": "s1 hit 66.08%, s2 hit 99.34%, s4 hit 99.06%"
         }
       ],
       "gating": true

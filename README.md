@@ -374,7 +374,7 @@ The track asks for a working product in which a NOWNodes RPC or API endpoint tak
 refused payout, linked on Etherscan) and all 65 cross-chain bridge links found over NOWNodes, each with the origin-chain
 deposit and the Ethereum fill linked on their explorers.
 
-Trap uses `https://eth-sepolia.nownodes.io`. After a decoy transfer, each CRE node already holds the chain receipt. Before `writeReport`, the workflow sends `eth_getTransactionReceipt` for the same hash to that endpoint. The call is an HTTP POST from the CRE HTTP client. The key is the secret `NOWNODES_KEY`, sent as the `api-key` header (`workflows/trap/workflow.ts`, `workflows/trap/src/logic/nownodes.ts`). The nodes agree on one canonical receipt. When that receipt contradicts the trigger log, the workflow writes nothing. On the recorded Ethereum Sepolia run, NOWNodes confirmed the log, the trap tripped, and a later APPROVE reverted with `AlertConfirmed`.
+Trap uses `https://eth-sepolia.nownodes.io`. After a decoy transfer, each CRE node already holds the chain receipt. Before `writeReport`, the workflow sends `eth_getTransactionReceipt` for the same hash to that endpoint. The call is an HTTP POST from the CRE HTTP client. The key is the secret `NOWNODES_KEY`, sent as the `api-key` header (`workflows/trap/workflow.ts`, `workflows/trap/src/logic/nownodes.ts`). The nodes agree on one canonical receipt. When that receipt contradicts the trigger log, the workflow writes nothing. On the recorded Ethereum Sepolia run, NOWNodes confirmed the log, the trap tripped, and a later APPROVE reverted with `AlertConfirmed`. The live DON Trap on Base Sepolia has no second source: NOWNodes does not serve Base Sepolia, so there the Trap acts on the CRE receipt alone (audit H2). Where NOWNodes does answer, 180 of 180 receipts matched an independent RPC on 2026-10-11 (docs/BACKTEST_2026-10-11.md).
 
 The same key is the RPC for cross-chain tracing of the Bitget case (`analysis/trace_bybit/xchain.py`):
 
@@ -385,6 +385,8 @@ The same key is the RPC for cross-chain tracing of the Bitget case (`analysis/tr
 | Base | `https://base.nownodes.io` |
 | BSC | `https://bsc.nownodes.io` |
 | Avalanche C-Chain | `https://avax.nownodes.io/ext/bc/C/rpc` |
+
+As of 2026-10-11 the Arbitrum, Optimism, BSC and Avalanche endpoints answer HTTP 404 with the team key. The 12 of 14 result comes from the 2026-10-07 run and its cache (`results/bitget_xchain_result.json`); a live re-run today reaches Base only and finds 9 of 14.
 
 **Quality and completeness, 25%.** The path from a decoy hit through the second source to the vault is covered by the DON freeze, the fork demo, and `workflows/trap/test/nownodes.test.ts`.
 

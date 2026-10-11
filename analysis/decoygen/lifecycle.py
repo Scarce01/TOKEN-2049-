@@ -21,6 +21,7 @@ LIFE = {
     "epochDays": 7,
     "turnoverMonthly": 0.20,
     "budgetUsd": 200_000,  # total balance the active decoys may hold
+    "gateRetries": 2,  # fresh draws after a failed adversarial gate before the epoch fails closed
     "genesis": 1_791_158_400,  # 2026-10-05T00:00:00Z, start of epoch 0
     # datasets/src/gen-withdrawals.ts W (assumed): UTC hour weights and transfer size as a share of balance
     "hourWeight": [6, 8, 10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4, 3, 2, 2, 2, 2, 3, 3, 4, 5],
@@ -123,9 +124,18 @@ def run_epoch(
             active.remove(rec)
             retire(rec, "rotated", t_rot)
 
-    # 4. generate, validate, refill the pool
-    fresh = generate(pop, rng, life["generate"])
-    gate = adversarial(pop, fresh + [r["account"] for r in active + pool], int(rng.integers(2**62)))
+    # 4. generate, validate, refill the pool. A failed gate redraws from a fresh HMAC stream (still fail closed):
+    # one unlucky draw must not leave the first epoch with no decoys at all (backtest 2026-10-11, A1)
+    for attempt in range(life["gateRetries"] + 1):
+        if attempt:
+            rng = _rng(k, f"decoy-gen-retry-{attempt}", epoch)
+        fresh = generate(pop, rng, life["generate"])
+        gate = adversarial(pop, fresh + [r["account"] for r in active + pool], int(rng.integers(2**62)))
+        if gate["gate"]:
+            break
+        events.append({"t": start, "kind": "gate-fail", "aucUpper": gate.get("aucUpper"), "attempt": attempt,
+                       "reason": gate.get("reason", "auc or honeyword")})
+    gate["attempts"] = attempt + 1
     used = set(taken_ids) | set(state["usedIds"])
     names = sorted({a["displayName"].rsplit("-", 1)[0] for a in real})
     id_rng = _rng(k, "decoy-id", epoch)
@@ -137,8 +147,6 @@ def run_epoch(
             rec = {"account": acct, "ident": "0x" + ident.hex(), "tag": "0x" + decoy_tag(k, "acct", ident).hex(), "born": epoch}
             pool.append(rec)
             events.append({"t": start, "kind": "generate", "tag": rec["tag"], "segments": pop.segments_of(acct)})
-    else:
-        events.append({"t": start, "kind": "gate-fail", "aucUpper": gate.get("aucUpper"), "reason": gate.get("reason", "auc or honeyword")})
 
     # 5. promote from the mature pool; the first epoch has nothing mature, so it promotes fresh (marked)
     bootstrap = not active and not any(epoch - r["born"] >= life["ageEpochs"] for r in pool)
@@ -177,7 +185,8 @@ def run_epoch(
     feed = {
         "epoch": epoch, "window": epoch_window(epoch, life), "rotateAt": t_rot, "root": root_hex, "leafCount": size,
         "funnel": {"generated": life["generate"], "accepted": len(fresh)},
-        "gate": {"pass": gate["gate"], "aucUpper": gate.get("aucUpper"), "aucLower": gate.get("aucLower"), "honeyword": gate.get("honeyword", {}).get("rate")},
+        "gate": {"pass": gate["gate"], "aucUpper": gate.get("aucUpper"), "aucLower": gate.get("aucLower"), "honeyword": gate.get("honeyword", {}).get("rate"),
+                 "attempts": gate["attempts"]},
         "active": [{"tag": r["tag"], "segments": pop.segments_of(r["account"])} for r in active],
         "pool": [{"tag": r["tag"], "born": r["born"]} for r in pool],
         "pFirst": pf, "events": events, "source": "assumed",

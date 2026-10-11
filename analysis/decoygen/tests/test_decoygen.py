@@ -127,3 +127,24 @@ def test_deterministic_with_k_and_different_without():
 def test_rotate_time_varies_by_epoch():
     times = [rotate_at(K, e) - epoch_window(e)[0] for e in range(1, 9)]
     assert len(set(times)) == len(times)
+
+
+def test_failed_gate_redraws_instead_of_leaving_epoch_one_empty(monkeypatch):
+    import lifecycle
+
+    real_gate, calls = lifecycle.adversarial, []
+
+    def flaky(*a, **kw):  # first draw fails the gate, later draws use the real check
+        calls.append(1)
+        return {"gate": False, "aucUpper": 0.7} if len(calls) == 1 else real_gate(*a, **kw)
+
+    monkeypatch.setattr(lifecycle, "adversarial", flaky)
+    _, _, feed, _ = run_epoch(None, REAL, K, "a", 84532, 1, SALT, set())
+    assert feed["gate"]["pass"] and feed["gate"]["attempts"] == 2
+    assert len(feed["active"]) > 0
+    assert [e["attempt"] for e in feed["events"] if e["kind"] == "gate-fail"] == [0]
+
+    monkeypatch.setattr(lifecycle, "adversarial", lambda *a, **kw: {"gate": False, "aucUpper": 0.7})
+    _, _, feed, _ = run_epoch(None, REAL, K, "a", 84532, 1, SALT, set())
+    assert not feed["gate"]["pass"] and feed["gate"]["attempts"] == LIFE["gateRetries"] + 1
+    assert feed["active"] == [] and feed["pool"] == []  # still fail closed after every retry

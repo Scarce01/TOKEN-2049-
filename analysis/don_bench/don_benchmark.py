@@ -18,6 +18,7 @@ import datetime as dt
 import json
 import os
 import re
+import shutil
 import subprocess
 import time
 import urllib.request
@@ -49,7 +50,7 @@ def rpc(method, params, tries=6):
 
 
 def cre(args):
-    exe = os.environ.get("CRE_BIN") or str(Path.home() / ".cre/bin/cre")
+    exe = os.environ.get("CRE_BIN") or shutil.which("cre") or str(Path.home() / ".cre/bin/cre")
     out = subprocess.run([exe, *args, "-e", ".env"], cwd=ROOT / "workflows", capture_output=True, text=True, timeout=300)
     return out.stdout
 
@@ -144,13 +145,14 @@ def main():
     a = ap.parse_args()
     d = json.loads(Path(a.deployment).read_text())
     receivers = sorted(v["receiver"] for k, v in d.items() if re.fullmatch(r"org[A-Z]", k))
+    workflows = {w: executions(w, a.since, a.limit) for w in a.workflows.split(",")}  # before the long chain scan
     head = int(rpc("eth_blockNumber", []), 16)
     rs = reports(receivers, a.from_block or d["startBlock"], head)
     out = {
         "source": "testnet (public Base Sepolia, Chainlink DON, private registry)",
         "generated_utc": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "chain": {"chainId": d["chainId"], "mode": d.get("mode"), "receivers": receivers, "blocks": [a.from_block or d["startBlock"], head]},
-        "workflows": {w: executions(w, a.since, a.limit) for w in a.workflows.split(",")},
+        "workflows": workflows,
         "reports": summarize_reports(rs),
     }
     if a.trap_trigger_tx:

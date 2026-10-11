@@ -1,0 +1,47 @@
+{
+ "quorum-trap": {
+  "executions": 0,
+  "window_utc": null,
+  "by_status": {},
+  "success_duration_s_p50_p90_max": [
+   null,
+   null,
+   null
+  ],
+  "failure_causes_sampled": {},
+  "credit_used": 0
+ },
+ "quorum-cosign": {
+  "executions": 0,
+  "window_utc": null,
+  "by_status": {},
+  "success_duration_s_p50_p90_max": [
+   null,
+   null,
+   null
+  ],
+  "failure_causes_sampled": {},
+  "credit_used": 0
+ },
+ "quorum-patrol": {
+  "executions": 100,
+  "window_utc": [
+   "2026-10-10T16:50:01Z",
+   "2026-10-10T17:14:01Z"
+  ],
+  "by_status": {
+   "SUCCESS/SUCCESS": 96,
+   "FAILURE/USER_ERROR": 4
+  },
+  "success_duration_s_p50_p90_max": [
+   11,
+   22,
+   24
+  ],
+  "failure_causes_sampled": {
+   "[2]Unknown: rpc error: code = Unknown desc = RPC call failed: referenced block request failed: context canceled": 3,
+   "error executing request: INTERNAL_ERROR : Public:User:Unknown:rpc error: code = Unknown desc = RPC call failed: referenced block request failed: context canceled (x10)": 3
+  },
+  "credit_used": 0.0
+ }
+}

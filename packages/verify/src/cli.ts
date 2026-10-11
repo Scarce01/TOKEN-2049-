@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// pnpm verify:design [--phase N] [--env local|testnet|aws]
+// pnpm verify:design [--phase N|all] [--env local|testnet|aws]
 // Writes reports/design-conformance.md and .json (40_verification.md section 5).
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -11,7 +11,9 @@ const flag = (k: string) => {
   const i = process.argv.indexOf(`--${k}`)
   return i > 0 ? process.argv[i + 1] : undefined
 }
-const phase = flag('phase') ? Number(flag('phase')) : undefined
+const phaseArg = flag('phase')
+const phase = phaseArg === undefined || phaseArg === 'all' ? undefined : Number(phaseArg)
+if (phase !== undefined && !Number.isInteger(phase)) throw new Error(`--phase must be a number or all, got ${phaseArg}`)
 const env = flag('env') ?? 'local'
 const ctx = mkCtx(env)
 

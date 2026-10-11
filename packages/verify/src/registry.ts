@@ -84,6 +84,35 @@ export const E2E =
     }
   }
 
+/** D36 on the live DON: decoy touch to the first FREEZE, measured by analysis/don_bench (reports/don/don_benchmark.json). */
+export const donTrap: Sub = () => {
+  const name = 'trap touch to freeze on the DON'
+  try {
+    const r = JSON.parse(readFileSync(join(repoRoot, 'reports', 'don', 'don_benchmark.json'), 'utf8')) as {
+      trap?: { trigger_tx?: string; freeze_tx?: string; decoy_touch_to_freeze_s?: number }
+    }
+    const s = r.trap?.decoy_touch_to_freeze_s
+    if (s === undefined)
+      return { type: 'DON', name, status: 'not-yet', evidence: 'no trap probe in reports/don/don_benchmark.json' }
+    return {
+      type: 'DON',
+      name,
+      status: s <= 60 ? 'pass' : 'fail',
+      evidence: `${s} s on Base Sepolia, trigger ${r.trap!.trigger_tx}, freeze ${r.trap!.freeze_tx} (one sample)`,
+    }
+  } catch {
+    return { type: 'DON', name, status: 'not-yet', evidence: 'reports/don/don_benchmark.json missing' }
+  }
+}
+
+/** A scene result when one was recorded, otherwise the fallback evidence. */
+const sceneOr =
+  (name: string, fallback: Sub): Sub =>
+  (ctx) => {
+    const r = E2E(name)(ctx) as SubResult
+    return r.status === 'not-yet' ? fallback(ctx) : r
+  }
+
 const srcHas = (file: string, re: RegExp) => re.test(readFileSync(join(repoRoot, file), 'utf8'))
 
 export const ITEMS: Item[] = [
@@ -357,7 +386,7 @@ export const ITEMS: Item[] = [
       ),
     ],
   },
-  { id: 'D36', title: 'Trap to freeze under a minute', phases: [2], checks: [E2E('measure_trap')] },
+  { id: 'D36', title: 'Trap to freeze under a minute', phases: [2], checks: [sceneOr('measure_trap', donTrap)] },
   {
     id: 'D38',
     title: 'Non-EVM multi-chain reconciliation',

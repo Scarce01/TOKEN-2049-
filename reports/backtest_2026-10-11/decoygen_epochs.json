@@ -1,0 +1,376 @@
+{
+ "synthetic1000_seed2049": [
+  {
+   "epoch": 1,
+   "pass": true,
+   "aucUpper": 0.583,
+   "gate": {
+    "pass": true,
+    "aucUpper": 0.5827709772497006,
+    "aucLower": 0.4149387206177357,
+    "honeyword": 0.19486581096849476
+   },
+   "online": 8,
+   "pool": 8,
+   "sec": 9.3
+  },
+  {
+   "epoch": 2,
+   "pass": true,
+   "aucUpper": 0.549,
+   "gate": {
+    "pass": true,
+    "aucUpper": 0.5490802943135507,
+    "aucLower": 0.4164758222649746,
+    "honeyword": 0.15136226034308778
+   },
+   "online": 6,
+   "pool": 16,
+   "sec": 9.3
+  },
+  {
+   "epoch": 3,
+   "pass": true,
+   "aucUpper": 0.596,
+   "gate": {
+    "pass": true,
+    "aucUpper": 0.5957878760711919,
+    "aucLower": 0.3769226702533266,
+    "honeyword": 0.13922764227642276
+   },
+   "online": 8,
+   "pool": 13,
+   "sec": 10.7
+  },
+  {
+   "epoch": 4,
+   "pass": true,
+   "aucUpper": 0.524,
+   "gate": {
+    "pass": true,
+    "aucUpper": 0.5238879854661344,
+    "aucLower": 0.3656202666281808,
+    "honeyword": 0.12586719524281467
+   },
+   "online": 8,
+   "pool": 15,
+   "sec": 11.1
+  },
+  {
+   "epoch": 5,
+   "pass": true,
+   "aucUpper": 0.583,
+   "gate": {
+    "pass": true,
+    "aucUpper": 0.5834432491434041,
+    "aucLower": 0.3822730434107214,
+    "honeyword": 0.18936170212765957
+   },
+   "online": 8,
+   "pool": 15,
+   "sec": 10.7
+  },
+  {
+   "epoch": 6,
+   "pass": true,
+   "aucUpper": 0.577,
+   "gate": {
+    "pass": true,
+    "aucUpper": 0.5765066366691611,
+    "aucLower": 0.4148542689687945,
+    "honeyword": 0.22
+   },
+   "online": 8,
+   "pool": 14,
+   "sec": 10.5
+  }
+ ],
+ "synthetic1000_seed7": [
+  {
+   "epoch": 1,
+   "pass": true,
+   "aucUpper": 0.531,
+   "gate": {
+    "pass": true,
+    "aucUpper": 0.5310334370735053,
+    "aucLower": 0.39308916778807645,
+    "honeyword": 0.1560364464692483
+   },
+   "online": 8,
+   "pool": 8,
+   "sec": 9.4
+  },
+  {
+   "epoch": 2,
+   "pass": true,
+   "aucUpper": 0.591,
+   "gate": {
+    "pass": true,
+    "aucUpper": 0.5914400597100762,
+    "aucLower": 0.40511759280953796,
+    "honeyword": 0.23529411764705882
+   },
+   "online": 6,
+   "pool": 16,
+   "sec": 9.3
+  },
+  {
+   "epoch": 3,
+   "pass": true,
+   "aucUpper": 0.568,
+   "gate": {
+    "pass": true,
+    "aucUpper": 0.5676088436096317,
+    "aucLower": 0.45512019306004503,
+    "honeyword": 0.18041237113402062
+   },
+   "online": 8,
+   "pool": 13,
+   "sec": 8.9
+  },
+  {
+   "epoch": 4,
+   "pass": true,
+   "aucUpper": 0.583,
+   "gate": {
+    "pass": true,
+    "aucUpper": 0.5827753314026112,
+    "aucLower": 0.3993211084017454,
+    "honeyword": 0.21663019693654267
+   },
+   "online": 8,
+   "pool": 15,
+   "sec": 9.0
+  },
+  {
+   "epoch": 5,
+   "pass": true,
+   "aucUpper": 0.579,
+   "gate": {
+    "pass": true,
+    "aucUpper": 0.5788308274924651,
+    "aucLower": 0.37779090720660347,
+    "honeyword": 0.215625
+   },
+   "online": 8,
+   "pool": 15,
+   "sec": 8.5
+  },
+  {
+   "epoch": 6,
+   "pass": true,
+   "aucUpper": 0.576,
+   "gate": {
+    "pass": true,
+    "aucUpper": 0.5760505252250536,
+    "aucLower": 0.4587257645969436,
+    "honeyword": 0.21007604562737642
+   },
+   "online": 8,
+   "pool": 14,
+   "sec": 8.3
+  }
+ ],
+ "synthetic1000_seed11": [
+  {
+   "epoch": 1,
+   "pass": true,
+   "aucUpper": 0.55,
+   "gate": {
+    "pass": true,
+    "aucUpper": 0.5496340374637828,
+    "aucLower": 0.36597433327128,
+    "honeyword": 0.19754464285714285
+   },
+   "online": 8,
+   "pool": 8,
+   "sec": 8.5
+  },
+  {
+   "epoch": 2,
+   "pass": true,
+   "aucUpper": 0.531,
+   "gate": {
+    "pass": true,
+    "aucUpper": 0.5305143829600351,
+    "aucLower": 0.35220436133914396,
+    "honeyword": 0.15306122448979592
+   },
+   "online": 6,
+   "pool": 16,
+   "sec": 9.0
+  },
+  {
+   "epoch": 3,
+   "pass": true,
+   "aucUpper": 0.538,
+   "gate": {
+    "pass": true,
+    "aucUpper": 0.538448049642298,
+    "aucLower": 0.39158343221694514,
+    "honeyword": 0.1665034280117532
+   },
+   "online": 8,
+   "pool": 13,
+   "sec": 8.9
+  },
+  {
+   "epoch": 4,
+   "pass": true,
+   "aucUpper": 0.602,
+   "gate": {
+    "pass": true,
+    "aucUpper": 0.6021948135843485,
+    "aucLower": 0.38676411487141693,
+    "honeyword": 0.21553398058252426
+   },
+   "online": 8,
+   "pool": 15,
+   "sec": 8.8
+  },
+  {
+   "epoch": 5,
+   "pass": true,
+   "aucUpper": 0.58,
+   "gate": {
+    "pass": true,
+    "aucUpper": 0.5799080231301408,
+    "aucLower": 0.4177478114798144,
+    "honeyword": 0.20408163265306123
+   },
+   "online": 8,
+   "pool": 15,
+   "sec": 8.6
+  },
+  {
+   "epoch": 6,
+   "pass": true,
+   "aucUpper": 0.559,
+   "gate": {
+    "pass": true,
+    "aucUpper": 0.5587613193091296,
+    "aucLower": 0.36618801581229327,
+    "honeyword": 0.20962888665997995
+   },
+   "online": 8,
+   "pool": 14,
+   "sec": 9.1
+  }
+ ],
+ "synthetic1000_seed1234": [
+  {
+   "epoch": 1,
+   "pass": false,
+   "aucUpper": 0.55,
+   "gate": {
+    "pass": false,
+    "aucUpper": 0.5496134041877924,
+    "aucLower": 0.3284901013648274,
+    "honeyword": 0.19815059445178335
+   },
+   "online": 0,
+   "pool": 0,
+   "sec": 9.0
+  },
+  {
+   "epoch": 2,
+   "pass": true,
+   "aucUpper": 0.499,
+   "gate": {
+    "pass": true,
+    "aucUpper": 0.4993737596943505,
+    "aucLower": 0.35052014771151446,
+    "honeyword": 0.14819759679572764
+   },
+   "online": 8,
+   "pool": 8,
+   "sec": 8.7
+  },
+  {
+   "epoch": 3,
+   "pass": true,
+   "aucUpper": 0.544,
+   "gate": {
+    "pass": true,
+    "aucUpper": 0.5441805221881617,
+    "aucLower": 0.4293635055802011,
+    "honeyword": 0.18477043673012317
+   },
+   "online": 7,
+   "pool": 16,
+   "sec": 8.8
+  },
+  {
+   "epoch": 4,
+   "pass": true,
+   "aucUpper": 0.54,
+   "gate": {
+    "pass": true,
+    "aucUpper": 0.5396073272230678,
+    "aucLower": 0.4120998386970888,
+    "honeyword": 0.16400911161731208
+   },
+   "online": 8,
+   "pool": 14,
+   "sec": 8.2
+  },
+  {
+   "epoch": 5,
+   "pass": false,
+   "aucUpper": 0.562,
+   "gate": {
+    "pass": false,
+    "aucUpper": 0.5618636190574642,
+    "aucLower": 0.34835380357426654,
+    "honeyword": 0.19351100811123986
+   },
+   "online": 7,
+   "pool": 14,
+   "sec": 8.9
+  },
+  {
+   "epoch": 6,
+   "pass": true,
+   "aucUpper": 0.564,
+   "gate": {
+    "pass": true,
+    "aucUpper": 0.5641896337058219,
+    "aucLower": 0.4157249433969669,
+    "honeyword": 0.20719738276990185
+   },
+   "online": 8,
+   "pool": 13,
+   "sec": 9.1
+  }
+ ],
+ "demo100": [
+  {
+   "epoch": 1,
+   "pass": false,
+   "aucUpper": 0.598,
+   "gate": {
+    "pass": false,
+    "aucUpper": 0.597617251234859,
+    "aucLower": 0.2666183574879227,
+    "honeyword": 0.16981132075471697
+   },
+   "online": 0,
+   "pool": 0,
+   "sec": 4.4
+  },
+  {
+   "epoch": 2,
+   "pass": false,
+   "aucUpper": 0.635,
+   "gate": {
+    "pass": false,
+    "aucUpper": 0.6352072010869565,
+    "aucLower": 0.23339657747266604,
+    "honeyword": 0.20741989881956155
+   },
+   "online": 0,
+   "pool": 0,
+   "sec": 4.9
+  }
+ ]
+}

@@ -1,0 +1,105 @@
+{
+ "run1_30tx_per_chain": {
+  "eth-sepolia": {
+   "n": 30,
+   "errors": {},
+   "agree": 30,
+   "disagree": 0,
+   "nn_miss": 0,
+   "head_lag_blocks_vs_ref": 0,
+   "available": true,
+   "lat_ms_p50_p90_max": [
+    425.7,
+    837.2,
+    893.1
+   ]
+  },
+  "eth": {
+   "n": 30,
+   "errors": {},
+   "agree": 30,
+   "disagree": 0,
+   "nn_miss": 0,
+   "head_lag_blocks_vs_ref": 0,
+   "available": true,
+   "lat_ms_p50_p90_max": [
+    424.3,
+    837.0,
+    920.8
+   ]
+  },
+  "base": {
+   "n": 30,
+   "errors": {},
+   "agree": 0,
+   "disagree": 30,
+   "nn_miss": 0,
+   "head_lag_blocks_vs_ref": 0,
+   "available": true,
+   "lat_ms_p50_p90_max": [
+    514.7,
+    749.5,
+    1130.5
+   ]
+  },
+  "arbitrum": {
+   "available": false,
+   "error": "HTTPError:404"
+  },
+  "optimism": {
+   "available": false,
+   "error": "HTTPError:404"
+  },
+  "bsc": {
+   "available": false,
+   "error": "HTTPError:404"
+  },
+  "base-sepolia": {
+   "available": false,
+   "error": "HTTPError:404"
+  }
+ },
+ "note": "run1 base disagreements were the reference RPC (publicnode) answering 403; run2 used mainnet.base.org",
+ "run2_60tx_per_chain": {
+  "eth-sepolia": {
+   "n": 60,
+   "errors": {},
+   "agree": 60,
+   "disagree": 0,
+   "nn_miss": 0,
+   "head_lag_blocks_vs_ref": 0,
+   "lat_ms_p50_p90_max": [
+    462.9,
+    845.1,
+    1393.2
+   ]
+  },
+  "eth": {
+   "n": 60,
+   "errors": {},
+   "agree": 60,
+   "disagree": 0,
+   "nn_miss": 0,
+   "head_lag_blocks_vs_ref": 0,
+   "lat_ms_p50_p90_max": [
+    428.1,
+    657.8,
+    1029.9
+   ]
+  },
+  "base": {
+   "n": 60,
+   "errors": {},
+   "agree": 60,
+   "disagree": 0,
+   "nn_miss": 0,
+   "head_lag_blocks_vs_ref": 0,
+   "lat_ms_p50_p90_max": [
+    435.6,
+    770.3,
+    1018.3
+   ]
+  }
+ },
+ "source": "measured (live NOWNodes vs independent public RPC, 2026-10-10)"
+}

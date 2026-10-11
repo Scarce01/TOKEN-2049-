@@ -1,0 +1,28 @@
+[
+  {
+    "strategy": 1,
+    "runs": 5000,
+    "k": 20,
+    "hit_rate": 0.6608,
+    "mean_probes_before_first_hit": 8.846549636803875,
+    "source": "assumed",
+    "formula": 0.660225623763214,
+    "abs_diff_pp": 0.05743762367860228
+  },
+  {
+    "strategy": 2,
+    "runs": 5000,
+    "k": 20,
+    "hit_rate": 0.9934,
+    "mean_probes_before_first_hit": 5.363801087175357,
+    "source": "assumed"
+  },
+  {
+    "strategy": 4,
+    "runs": 5000,
+    "k": 20,
+    "hit_rate": 0.9906,
+    "mean_probes_before_first_hit": 5.291540480516859,
+    "source": "assumed"
+  }
+]
