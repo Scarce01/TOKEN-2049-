@@ -52,7 +52,7 @@ def main():
     def one_chain(chain):
         try:
             return trace_chain(chain)
-        except RuntimeError as ex:  # e.g. a node without historical state: record it, keep the other chains
+        except (RuntimeError, OSError) as ex:  # no historical state, or the endpoint is gone (HTTP 404): keep the other chains
             print(f"{chain}: skipped ({str(ex)[:120]})", flush=True)
             return [], {"skipped": str(ex)[:200]}
 

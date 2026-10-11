@@ -1,0 +1,33 @@
+{
+ "accepted_reports": 238,
+ "forwarder_result_1": 238,
+ "by_kind": {
+  "PING": 120,
+  "TOPUP": 174,
+  "ASSET_CHECKPOINT": 232,
+  "PATROL_STATE": 20,
+  "THRESHOLD_COMMIT": 4,
+  "THRESHOLD_REVEAL": 4
+ },
+ "dON_transmitters": 7,
+ "via_keystone_forwarder": [
+  "0xf8344cfd5c43616a4366c34e3eee75af79a74482"
+ ],
+ "cron_tick_to_block_s_p50_p90_max": [
+  16,
+  22,
+  26
+ ],
+ "gas_per_report_p50": 121062,
+ "fees_eth_total": 0.00024079,
+ "examples": [
+  "0x003b8d64b42019a72b73e5ceb50f372ad926e5d854a7e7dbb8739e9f1cfe524f",
+  "0x004d4c236703e5d64be420fd95c01c939a05a4698a94337ff2a72b23949d18c9",
+  "0x012ccfcaad11fa0d85e182cb38d22790e0a348a31a8c4c0c5856f58ca75b41e7"
+ ],
+ "blocks": [
+  47940311,
+  47942111
+ ],
+ "report_gap_s_max": 3366
+}

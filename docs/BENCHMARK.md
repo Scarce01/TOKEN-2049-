@@ -88,7 +88,8 @@ Method (`analysis/trace_bybit/bridges.py`, `xchain.py`):
 | **Total** | **12** | **65** |
 
 Cost: 2,671 distinct JSON-RPC calls, all cached (the free NOWNodes plan allows 100,000 a month). Two runs give the
-same sha256.
+same sha256. On 2026-10-11 the Arbitrum, Optimism, BSC and Avalanche endpoints answer HTTP 404 with the team key, so a
+live re-run without the 2026-10-07 cache reaches Base only and finds 9 of 14 (docs/BACKTEST_2026-10-11.md).
 
 **Still missed: 2 of 14.** Both sit under the hub wallet, which is now 40% tainted, still under the follow line. The
 remaining clean-looking inflows come from intent bridges whose solvers pay from their own wallets (Relay, deBridge
@@ -247,7 +248,8 @@ python3 ../bitget_spike.py                # spike rule (PR #3)
 ```
 
 With the team's cache package unzipped into `analysis/out/`, no API keys are needed and the outputs match byte for
-byte. Without it, put `ETHERSCAN_API_KEY` and `NOWNODES_KEY` in `analysis/trace_bybit/.env`.
+byte. Without it, put `ETHERSCAN_API_KEY` and `NOWNODES_KEY` in `analysis/trace_bybit/.env`. The cross-chain run always
+needs `NOWNODES_KEY` (it reads the chain head live) and, without the cache, only reproduces the Base leg (see section 3).
 
 Sources: FBI PSA I-022625-PSA (Bybit); FBI release on Stake.com (Sep 2023); Bitquery, Etherscan labels, TRM Labs,
 BlockSec (Bitget); public chain data via Etherscan, BigQuery and NOWNodes.

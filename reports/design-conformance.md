@@ -1,9 +1,9 @@
 # Design conformance report
 
-- Generated: 2026-10-07T04:21:09.848Z
+- Generated: 2026-10-11T03:23:15.806Z
 - Phase: all
 - Env: local
-- Gating items: 83, pass 47, fail 1, not-yet 34, waived 1
+- Gating items: 83, pass 48, fail 1, not-yet 33, waived 1
 
 | D | Requirement | Phases | Status | Evidence |
 | --- | --- | --- | --- | --- |
@@ -48,7 +48,7 @@
 | D33 | Only moves this exchange own funds | 2 | pass | INV invariant_I1_onlyLegitOutflows: pass (forge pass) |
 | D34 | Backend sees only APPROVE/REJECT/PENDING + case id | 3 | pass | ST exchange-api imports no seal/unseal: pass (exchange-api and workflows are isolated) |
 | D35 | Manual lane: two + queue + one veto; funded first key queued | 3 | pass | U test_manualNeedsTwoAndDelay: pass (forge pass)<br>U test_manualCancelledByOne: pass (forge pass)<br>U test_officerCancelsQueuedRegistration: pass (forge pass)<br>U test_registerQueuedWithDeposit: pass (forge pass) |
-| D36 | Trap to freeze under a minute | 2 | not-yet | E2E measure_trap: not-yet (needs testnet deployment and CRE login (scene not run yet)) |
+| D36 | Trap to freeze under a minute | 2 | pass | DON trap touch to freeze on the DON: pass (10 s on Base Sepolia, trigger 0x236778f240c573d869949d54c4f3d2bf66e07057944d696a7e4006ba6299abde, freeze 0x32ab0635fff14b905027e50d102d71feb25e66383ca40b536b9405a9da1b834f (one sample)) |
 | D37 | Config drift freezes | 6 | not-yet | WU config drift freezes that vault (D37): pass (bun test pass)<br>E2E config_drift: not-yet (needs testnet deployment and CRE login (scene not run yet)) |
 | D38 | Non-EVM multi-chain reconciliation | 6 | waived | ST waived: waived (STATUS design changes: D38 out of 36h scope (XRP decoy only)) |
 | D39 | Hit probability: formula vs Monte Carlo within 1 pp | 5 | pass | OFF hit_probability: pass (formula 66.02%, MC 66.07% (100000 runs), diff 0.048 pp) |
@@ -63,7 +63,7 @@
 | D49 | Ops traffic replay trips decoys 0 times | 6 | not-yet | E2E ops_replay: not-yet (needs testnet deployment and CRE login (scene not run yet)) |
 | D50 | Fixed point matches float reference | 5, 6 | pass | WU decay after 24 h follows gamma = 0.9 per hour; fixed point within 1 milli-nat of float (D50): pass (bun test pass) |
 | D51 | Tracing backtest: recall reported, identical across sources | 6 | not-yet | E2E trace_bybit: not-yet (needs testnet deployment and CRE login (scene not run yet)) |
-| D52 | Attacker strategy simulations have results | 5 | pass | OFF adversary_sim: pass (s1 hit 66.05%, s2 hit 99.30%, s4 hit 98.75%) |
+| D52 | Attacker strategy simulations have results | 5 | pass | OFF adversary_sim: pass (s1 hit 66.08%, s2 hit 99.34%, s4 hit 99.06%) |
 | D53 | Score is explainable (lambda per signal in sealedReason) | 5 | pass | WU decrypting before and after: L2 = decay(L1) + lambda (D23): pass (bun test pass) |
 | D54 | False positives reported as delays per 10k, added wait, manual reviews per day | 6 | pass | OFF false_positive_a: pass (three metrics present (source assumed)) |
 | D55 | CUSUM by hour of week; planned ops excluded | 6 | pass | WU same outflow judged differently by hour of week: pass (bun test pass)<br>WU planned op discounts the minute down to zero, not below; registration minute bounds it: pass (bun test pass) |
